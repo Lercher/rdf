@@ -2,13 +2,14 @@ package graph
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/zhenjl/cityhash"
 )
 
-// Virtual is the datatype for virtualizing values inside a Graph. 
+// Virtual is the datatype for virtualizing values inside a Graph.
 // It consists of 16 bytes and is formed from the Cityhash of a binary representation
-// of a Value 
+// of a Value
 type Virtual cityhash.Uint128
 
 // Virtual2 is a pair of Virtuals
@@ -37,4 +38,11 @@ func (v Virtual) Value(g *Graph) Value {
 func hash(block []byte) Virtual {
 	s := cityhash.CityHash128(block, uint32(len(block)))
 	return Virtual(s)
+}
+
+// Encode writes the binary representation
+func (v Virtual) Encode(w io.Writer) error {
+	b := cityhash.Uint128(v).Bytes()
+	_, err:= w.Write(b)
+	return err
 }

@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-type virtualType int
-
 // VirtualValue pairs a Virtual (i.e. the hash value) with its real Value
 type VirtualValue struct {
 	Virtual
@@ -38,7 +36,7 @@ func VirtualValueInt(g *Graph, i int) VirtualValue {
 	i64 := int64(i)
 	b := make([]byte, 8, 9)
 	binary.LittleEndian.PutUint64(b, uint64(i64))
-	b = append(b, byte(valueTypeInt))
+	b = append(b, valueTypeInt)
 	return vvalue(g, b, i)
 }
 
@@ -46,7 +44,7 @@ func VirtualValueInt(g *Graph, i int) VirtualValue {
 func VirtualValueFloat(g *Graph, f float64) VirtualValue {
 	b := make([]byte, 8, 9)
 	binary.LittleEndian.PutUint64(b, uint64(f))
-	b = append(b, byte(valueTypeFloat))
+	b = append(b, valueTypeFloat)
 	return vvalue(g, b, f)
 }
 
@@ -64,7 +62,7 @@ func vvalue(g *Graph, bytes []byte, v interface{}) VirtualValue {
 }
 
 const (
-	valueTypeString = virtualType(iota)
+	valueTypeString = iota
 	valueTypeInt
 	valueTypeFloat
 )
