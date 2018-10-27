@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"math"
 )
 
 // Value is virtualized and can be stored in a Graphs assertions
@@ -15,7 +16,7 @@ func ValueEncode(w io.Writer, v Value) error {
 	case int:
 		return encodeVal(w, valueTypeInt, uint64(val))
 	case float64:
-		return encodeVal(w, valueTypeFloat, uint64(val))
+		return encodeVal(w, valueTypeFloat, math.Float64bits(val))
 	case string:
 		b := []byte(val)
 		err := encodeVal(w, valueTypeString, uint64(len(b)))
@@ -53,7 +54,7 @@ func ValueDecode(r io.Reader) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("invalid type byte %d", t)
 	case valueTypeFloat:
-		return float64(ui), nil
+		return math.Float64frombits(ui), nil
 	case valueTypeInt:
 		return int(ui), nil
 	case valueTypeString:
@@ -72,9 +73,12 @@ func ValueDecode(r io.Reader) (interface{}, error) {
 func encodeVal(w io.Writer, typ byte, payload uint64) error {
 	b := make([]byte, 8)
 	b[0] = typ
-	_, err := w.Write(b[:1])
+	n, err := w.Write(b[:1])
 	if err != nil {
 		return err
+	}
+	if n != 1 {
+		return fmt.Errorf("wanted type byte written, but only %d bytes was", n)
 	}
 	binary.LittleEndian.PutUint64(b, payload)
 	_, err = w.Write(b)

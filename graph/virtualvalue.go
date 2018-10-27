@@ -62,7 +62,7 @@ func vvalue(g *Graph, bytes []byte, v interface{}) VirtualValue {
 }
 
 const (
-	valueTypeString = iota
-	valueTypeInt
-	valueTypeFloat
+	valueTypeString = byte('S')
+	valueTypeInt= byte('I')
+	valueTypeFloat = byte('F')
 )
