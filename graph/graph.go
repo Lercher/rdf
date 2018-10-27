@@ -1,5 +1,6 @@
 package graph
 
+// Graph forms an RDF graph including several hidden indices
 type Graph struct {
 	Dataset  []Triple
 	valuemap map[Virtual]Value
@@ -12,10 +13,12 @@ type Graph struct {
 	spoindex map[Triple]bool
 }
 
+// CountValues counts all distinct values in s/p/o position of the Graph
 func (g *Graph) CountValues() int {
 	return len(g.valuemap)
 }
 
+// Values returns an unsorted list of all distinct valus in the Graph 
 func (g *Graph) Values() []Value {
 	list := make([]Value, 0, g.CountValues())
 	for _, v := range g.valuemap {
@@ -24,6 +27,7 @@ func (g *Graph) Values() []Value {
 	return list
 }
 
+// New creates a new Graph
 func New() *Graph {
 	return &Graph{
 		nil,
@@ -38,10 +42,11 @@ func New() *Graph {
 	}
 }
 
+// Assert appends a new Triple to the Graph, unless it is already present
 func (g *Graph) Assert(s, p, o interface{}) Triple {
-	vs := NewVValue(g, s)
-	vp := NewVValue(g, p)
-	vo := NewVValue(g, o)
+	vs := NewVirtualValue(g, s)
+	vp := NewVirtualValue(g, p)
+	vo := NewVirtualValue(g, o)
 	t := Triple{vs.Virtual, vp.Virtual, vo.Virtual}
 	duplicate := g.spoindex[t]
 	if duplicate {
@@ -58,14 +63,15 @@ func (g *Graph) Assert(s, p, o interface{}) Triple {
 	return t
 }
 
+// Match locates a list of Triples that match a given triple of patterns
 func (g *Graph) Match(p *TriplePattern) []*Triple {
 	givens := !p.S.IsVariable()
 	givenp := !p.P.IsVariable()
 	giveno := !p.O.IsVariable()
-	
+	t := p.Triple()
+
 	// 3 crit, no variables
 	if givens && givenp && giveno {
-		t := Triple{S: p.S.virtual, P: p.P.virtual, O: p.O.virtual}
 		if g.spoindex[t] {
 			return []*Triple{&t}
 		}
@@ -74,16 +80,13 @@ func (g *Graph) Match(p *TriplePattern) []*Triple {
 
 	// 2 crit
 	if givens && givenp {
-		v2 := Virtual2{V1: p.S.virtual, V2: p.P.virtual}
-		return g.spindex[v2]
+		return g.spindex[t.SP()]
 	}
 	if givens && giveno {
-		v2 := Virtual2{V1: p.S.virtual, V2: p.O.virtual}
-		return g.soindex[v2]
+		return g.soindex[t.SO()]
 	}
 	if givenp && giveno {
-		v2 := Virtual2{V1: p.P.virtual, V2: p.O.virtual}
-		return g.poindex[v2]
+		return g.poindex[t.PO()]
 	}
 
 	// 1 crit

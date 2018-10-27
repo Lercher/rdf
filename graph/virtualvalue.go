@@ -5,42 +5,48 @@ import (
 	"fmt"
 )
 
-type VirtualType int
+type virtualType int
 
+// VirtualValue pairs a Virtual (i.e. the hash value) with its real Value
 type VirtualValue struct {
 	Virtual
 	Value
 }
 
-func NewVValue(g *Graph, primitive interface{}) VirtualValue {
+// NewVirtualValue creates a VirtualValue from a string, int or float64 and associates it with a Graph.
+// Any other type raises a panic.
+func NewVirtualValue(g *Graph, primitive interface{}) VirtualValue {
 	switch v := primitive.(type) {
 	case int:
-		return VValueInt(g, v)
+		return VirtualValueInt(g, v)
 	case float64:
-		return VValueFloat(g, v)
+		return VirtualValueFloat(g, v)
 	case string:
-		return VValueString(g, v)
+		return VirtualValueString(g, v)
 	default:
 		panic(fmt.Errorf("unsupported value type %T", primitive))
 	}
 }
 
-func VValueString(g *Graph, s string) VirtualValue {
+// VirtualValueString creates a VirtualValue from a string
+func VirtualValueString(g *Graph, s string) VirtualValue {
 	return vvalue(g, []byte(s), s)
 }
 
-func VValueInt(g *Graph, i int) VirtualValue {
+// VirtualValueInt creates a VirtualValue from an int
+func VirtualValueInt(g *Graph, i int) VirtualValue {
 	i64 := int64(i)
 	b := make([]byte, 8, 9)
 	binary.LittleEndian.PutUint64(b, uint64(i64))
-	b = append(b, byte(ValueTypeInt))
+	b = append(b, byte(valueTypeInt))
 	return vvalue(g, b, i)
 }
 
-func VValueFloat(g *Graph, f float64) VirtualValue {
+// VirtualValueFloat creates a VirtualValue from a float64
+func VirtualValueFloat(g *Graph, f float64) VirtualValue {
 	b := make([]byte, 8, 9)
 	binary.LittleEndian.PutUint64(b, uint64(f))
-	b = append(b, byte(ValueTypeFloat))
+	b = append(b, byte(valueTypeFloat))
 	return vvalue(g, b, f)
 }
 
@@ -58,7 +64,7 @@ func vvalue(g *Graph, bytes []byte, v interface{}) VirtualValue {
 }
 
 const (
-	ValueTypeString = VirtualType(iota)
-	ValueTypeInt
-	ValueTypeFloat
+	valueTypeString = virtualType(iota)
+	valueTypeInt
+	valueTypeFloat
 )
