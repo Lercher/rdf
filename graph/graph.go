@@ -57,3 +57,50 @@ func (g *Graph) Assert(s, p, o interface{}) Triple {
 	g.spoindex[t] = true
 	return t
 }
+
+func (g *Graph) Match(p *TriplePattern) []*Triple {
+	givens := !p.S.IsVariable()
+	givenp := !p.P.IsVariable()
+	giveno := !p.O.IsVariable()
+	
+	// 3 crit, no variables
+	if givens && givenp && giveno {
+		t := Triple{S: p.S.virtual, P: p.P.virtual, O: p.O.virtual}
+		if g.spoindex[t] {
+			return []*Triple{&t}
+		}
+		return nil
+	}
+
+	// 2 crit
+	if givens && givenp {
+		v2 := Virtual2{V1: p.S.virtual, V2: p.P.virtual}
+		return g.spindex[v2]
+	}
+	if givens && giveno {
+		v2 := Virtual2{V1: p.S.virtual, V2: p.O.virtual}
+		return g.soindex[v2]
+	}
+	if givenp && giveno {
+		v2 := Virtual2{V1: p.P.virtual, V2: p.O.virtual}
+		return g.poindex[v2]
+	}
+
+	// 1 crit
+	if givens {
+		return g.sindex[p.S.virtual]
+	}
+	if givenp {
+		return g.pindex[p.P.virtual]
+	}
+	if giveno {
+		return g.oindex[p.O.virtual]
+	}
+
+	// 0 crit, all variables
+	list := make([]*Triple, len(g.Dataset))
+	for i := range g.Dataset {
+		list[i] = &g.Dataset[i]
+	}
+	return list
+}

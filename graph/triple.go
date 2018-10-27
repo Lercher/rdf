@@ -1,7 +1,16 @@
 package graph
 
+import "fmt"
+
 type Triple struct {
 	S, P, O Virtual
+}
+
+func (t *Triple) String(g *Graph) string {
+	s := t.S.String(g)
+	p := t.P.String(g)
+	o := t.O.String(g)
+	return fmt.Sprintf("[%s %s %s]", s, p, o)
 }
 
 func NewTriple(g *Graph, s, p, o interface{}) Triple {
