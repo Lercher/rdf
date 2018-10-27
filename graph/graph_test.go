@@ -7,6 +7,7 @@ func TestGraphAsserts(t *testing.T) {
 	g.Assert("martin", "telefon", "+49897482400")
 	g.Assert("andreas", "telefon", "+49897482400")
 	g.Assert("martin", "boss", "justus")
+	g.Assert("martin", "telefon", "+49897482400")
 	if len(g.Dataset) != 3 {
 		t.Fatal("graph dataset length want 3, got", len(g.Dataset))
 	}
