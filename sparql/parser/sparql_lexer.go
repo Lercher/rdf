@@ -1,4 +1,4 @@
-// Code generated from /home/lercher/go/src/github.com/lercher/rdf/sparql/sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from /home/lercher/go/src/github.com/lercher/rdf/sparql/Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
 
 package parser
 
@@ -428,7 +428,7 @@ func NewSparqlLexer(input antlr.CharStream) *SparqlLexer {
 	l.RuleNames = lexerRuleNames
 	l.LiteralNames = lexerLiteralNames
 	l.SymbolicNames = lexerSymbolicNames
-	l.GrammarFileName = "sparql.g4"
+	l.GrammarFileName = "Sparql.g4"
 	// TODO: l.EOF = antlr.TokenEOF
 
 	return l
