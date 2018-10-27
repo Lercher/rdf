@@ -8,7 +8,7 @@ type Virtual2 struct {
 	V1, V2 Virtual
 }
 
-func (v Virtual) Value(g Graph) Value {
+func (v Virtual) Value(g *Graph) Value {
 	val := g.values[v]
 	return val
 }
