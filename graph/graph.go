@@ -105,6 +105,7 @@ func (g *Graph) Match(p *TriplePattern) []*Triple {
 	return list
 }
 
+// PrepareValueSpace reserves memory for the given count of distinct values, it panics if the Graph is not empty 
 func (g *Graph) PrepareValueSpace(size int) {
 	if len(g.valuemap) != 0 {
 		panic(errors.New("value space can only prepared if the graph is empty"))
@@ -112,6 +113,7 @@ func (g *Graph) PrepareValueSpace(size int) {
 	g.valuemap = make(map[Virtual]Value, size)
 }
 
+// PrepareVirtualSpace reserves memory for 3 times size hashes of 16 bytes, it panics if tha Graph is not empty
 func (g *Graph) PrepareVirtualSpace(size int) {
 	if g.Dataset != nil {
 		panic(errors.New("virtual space can only prepared if the graph is empty"))
@@ -119,11 +121,13 @@ func (g *Graph) PrepareVirtualSpace(size int) {
 	g.Dataset = make([]Triple, 0, size)
 }
 
+// BulkAddValue adds a primitive keyed by its hash to the graph
 func (g *Graph) BulkAddValue(primitive interface{}) {
 	_ = NewVirtualValue(g, primitive)
 	// log.Println("hash", vv.Virtual.Bytes(), "for", vv.Value)
 }
 
+// BulkAddTriple adds a Triple without checking to the Graph, see Assert instead
 func (g *Graph) BulkAddTriple(t Triple) {
 	g.Dataset = append(g.Dataset, t)
 	g.sindex[t.S] = append(g.sindex[t.S], &t)

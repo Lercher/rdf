@@ -29,6 +29,7 @@ func ValueEncode(w io.Writer, v Value) error {
 	}
 }
 
+// ValueDecode deserializes a Value from a Reader
 func ValueDecode(r io.Reader) (interface{}, error) {
 	b8 := make([]byte, 8)
 	b1 := b8[:1]
