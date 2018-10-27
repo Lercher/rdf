@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"encoding/binary"
 	"fmt"
 	"io"
 
@@ -42,7 +43,32 @@ func hash(block []byte) Virtual {
 
 // Encode writes the binary representation
 func (v Virtual) Encode(w io.Writer) error {
-	b := cityhash.Uint128(v).Bytes()
-	_, err:= w.Write(b)
+	_, err := w.Write(v.Bytes())
 	return err
+}
+
+// Bytes gets a copy of the bytes for this hash, see also VirtualFrom
+func (v Virtual) Bytes() []byte {
+	return cityhash.Uint128(v).Bytes()
+}
+
+// VirtualDecode reads a virtualized Value
+func VirtualDecode(r io.Reader) (Virtual, error) {
+	b := make([]byte, 16)
+	n, err := io.ReadFull(r, b)
+	if err != nil {
+		return Virtual{}, err
+	}
+	if n != len(b) {
+		return Virtual{}, fmt.Errorf("wanted to read a %d byte hash but got only %d bytes", len(b), n)
+	}
+	return VirtualFrom(b), nil
+}
+
+// VirtualFrom creates a Virtual from 16 bytes, see also Bytes
+func VirtualFrom(b []byte) Virtual {
+	lower := binary.LittleEndian.Uint64(b[:8])
+	upper := binary.LittleEndian.Uint64(b[8:])
+	ui := cityhash.Uint128{lower, upper}
+	return Virtual(ui)
 }

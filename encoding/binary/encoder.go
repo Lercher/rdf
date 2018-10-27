@@ -7,6 +7,11 @@ import (
 	"github.com/lercher/rdf/graph"
 )
 
+const (
+	headerDataset = "RDFGRA01"
+	headerValues  = "RDFVAL01"
+)
+
 // Encoder is used to serialize a virtualized rdf.Graph
 type Encoder struct {
 	w io.Writer
@@ -27,7 +32,7 @@ func (e *Encoder) Encode(g *graph.Graph) error {
 }
 
 func (e *Encoder) encodeDataset(triples []graph.Triple) error {
-	_, err := e.w.Write([]byte("RDFGRA01"))
+	_, err := e.w.Write([]byte(headerDataset))
 	if err != nil {
 		return err
 	}
@@ -53,7 +58,7 @@ func (e *Encoder) encodeDataset(triples []graph.Triple) error {
 }
 
 func (e *Encoder) encodeValues(values []graph.Value) error {
-	_, err := e.w.Write([]byte("RDFVAL01"))
+	_, err := e.w.Write([]byte(headerValues))
 	if err != nil {
 		return err
 	}

@@ -1,5 +1,9 @@
 package graph
 
+import (
+	"github.com/pkg/errors"
+)
+
 // Graph forms an RDF graph including several hidden indices
 type Graph struct {
 	Dataset  []Triple
@@ -18,7 +22,7 @@ func (g *Graph) CountValues() int {
 	return len(g.valuemap)
 }
 
-// Values returns an unsorted list of all distinct valus in the Graph 
+// Values returns an unsorted list of all distinct valus in the Graph
 func (g *Graph) Values() []Value {
 	list := make([]Value, 0, g.CountValues())
 	for _, v := range g.valuemap {
@@ -52,14 +56,7 @@ func (g *Graph) Assert(s, p, o interface{}) Triple {
 	if duplicate {
 		return t
 	}
-	g.Dataset = append(g.Dataset, t)
-	g.sindex[t.S] = append(g.sindex[t.S], &t)
-	g.pindex[t.P] = append(g.pindex[t.P], &t)
-	g.oindex[t.O] = append(g.oindex[t.O], &t)
-	g.spindex[t.SP()] = append(g.spindex[t.SP()], &t)
-	g.soindex[t.SO()] = append(g.soindex[t.SO()], &t)
-	g.poindex[t.PO()] = append(g.poindex[t.PO()], &t)
-	g.spoindex[t] = true
+	g.BulkAddTriple(t)
 	return t
 }
 
@@ -106,4 +103,34 @@ func (g *Graph) Match(p *TriplePattern) []*Triple {
 		list[i] = &g.Dataset[i]
 	}
 	return list
+}
+
+func (g *Graph) PrepareValueSpace(size int) {
+	if len(g.valuemap) != 0 {
+		panic(errors.New("value space can only prepared if the graph is empty"))
+	}
+	g.valuemap = make(map[Virtual]Value, size)
+}
+
+func (g *Graph) PrepareVirtualSpace(size int) {
+	if g.Dataset != nil {
+		panic(errors.New("virtual space can only prepared if the graph is empty"))
+	}
+	g.Dataset = make([]Triple, 0, size)
+}
+
+func (g *Graph) BulkAddValue(primitive interface{}) {
+	_ = NewVirtualValue(g, primitive)
+	// log.Println("hash", vv.Virtual.Bytes(), "for", vv.Value)
+}
+
+func (g *Graph) BulkAddTriple(t Triple) {
+	g.Dataset = append(g.Dataset, t)
+	g.sindex[t.S] = append(g.sindex[t.S], &t)
+	g.pindex[t.P] = append(g.pindex[t.P], &t)
+	g.oindex[t.O] = append(g.oindex[t.O], &t)
+	g.spindex[t.SP()] = append(g.spindex[t.SP()], &t)
+	g.soindex[t.SO()] = append(g.soindex[t.SO()], &t)
+	g.poindex[t.PO()] = append(g.poindex[t.PO()], &t)
+	g.spoindex[t] = true
 }

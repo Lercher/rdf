@@ -1,9 +1,9 @@
 package graph
 
 import (
+	"encoding/binary"
 	"fmt"
 	"io"
-	"encoding/binary"
 )
 
 // Value is virtualized and can be stored in a Graphs assertions
@@ -26,6 +26,45 @@ func ValueEncode(w io.Writer, v Value) error {
 		return err
 	default:
 		return fmt.Errorf("encode: illegal datatype %T:%[1]v", v)
+	}
+}
+
+func ValueDecode(r io.Reader) (interface{}, error) {
+	b8 := make([]byte, 8)
+	b1 := b8[:1]
+	n, err := io.ReadFull(r, b1)
+	if err != nil {
+		return nil, err
+	}
+	if n != len(b1) {
+		return 0, fmt.Errorf("wanted to read %d byte type, got only %d", len(b1), n)
+	}
+	t := b1[0]
+	n, err = io.ReadFull(r, b8)
+	if err != nil {
+		return nil, err
+	}
+	if n != len(b8) {
+		return nil, fmt.Errorf("wanted to read %d bytes size/value, got only %d", len(b8), n)
+	}
+	ui := binary.LittleEndian.Uint64(b8)
+	switch t {
+	default:
+		return nil, fmt.Errorf("invalid type byte %d", t)
+	case valueTypeFloat:
+		return float64(ui), nil
+	case valueTypeInt:
+		return int(ui), nil
+	case valueTypeString:
+		buf := make([]byte, int(ui))
+		n, err := io.ReadFull(r, buf)
+		if err != nil {
+			return nil, err
+		}
+		if n != len(buf) {
+			return nil, fmt.Errorf("wanted to read %d bytes of utf8 string, got only %d", len(buf), n)
+		}
+		return string(buf), nil
 	}
 }
 
