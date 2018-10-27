@@ -2,7 +2,7 @@ package graph
 
 type Graph struct {
 	Dataset  []Triple
-	values   map[Virtual]Value
+	valuemap map[Virtual]Value
 	sindex   map[Virtual][]*Triple
 	pindex   map[Virtual][]*Triple
 	oindex   map[Virtual][]*Triple
@@ -10,6 +10,18 @@ type Graph struct {
 	soindex  map[Virtual2][]*Triple
 	poindex  map[Virtual2][]*Triple
 	spoindex map[Triple]bool
+}
+
+func (g *Graph) CountValues() int {
+	return len(g.valuemap)
+}
+
+func (g *Graph) Values() []Value {
+	list := make([]Value, 0, g.CountValues())
+	for _, v := range g.valuemap {
+		list = append(list, v)
+	}
+	return list
 }
 
 func New() *Graph {
@@ -27,9 +39,9 @@ func New() *Graph {
 }
 
 func (g *Graph) Assert(s, p, o interface{}) Triple {
-	vs := CreateVValue(g, s)
-	vp := CreateVValue(g, p)
-	vo := CreateVValue(g, o)
+	vs := NewVValue(g, s)
+	vp := NewVValue(g, p)
+	vo := NewVValue(g, o)
 	t := Triple{vs.Virtual, vp.Virtual, vo.Virtual}
 	duplicate := g.spoindex[t]
 	if duplicate {

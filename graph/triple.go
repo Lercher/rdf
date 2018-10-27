@@ -4,10 +4,10 @@ type Triple struct {
 	S, P, O Virtual
 }
 
-func CreateTriple(g *Graph, s, p, o interface{}) Triple {
-	vs := CreateVValue(g, s)
-	vp := CreateVValue(g, p)
-	vo := CreateVValue(g, o)
+func NewTriple(g *Graph, s, p, o interface{}) Triple {
+	vs := NewVValue(g, s)
+	vp := NewVValue(g, p)
+	vo := NewVValue(g, o)
 	return Triple{vs.Virtual, vp.Virtual, vo.Virtual}
 }
 

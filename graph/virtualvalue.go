@@ -12,7 +12,7 @@ type VirtualValue struct {
 	Value
 }
 
-func CreateVValue(g *Graph, primitive interface{}) VirtualValue {
+func NewVValue(g *Graph, primitive interface{}) VirtualValue {
 	switch v := primitive.(type) {
 	case int:
 		return VValueInt(g, v)
@@ -46,10 +46,10 @@ func VValueFloat(g *Graph, f float64) VirtualValue {
 
 func vvalue(g *Graph, bytes []byte, v interface{}) VirtualValue {
 	h := hash(bytes)
-	val, ok := g.values[h]
+	val, ok := g.valuemap[h]
 	if !ok {
 		val = Value(v)
-		g.values[h] = val
+		g.valuemap[h] = val
 	}
 	return VirtualValue{
 		Virtual: h,

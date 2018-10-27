@@ -9,7 +9,7 @@ type Virtual2 struct {
 }
 
 func (v Virtual) Value(g *Graph) Value {
-	val := g.values[v]
+	val := g.valuemap[v]
 	return val
 }
 
