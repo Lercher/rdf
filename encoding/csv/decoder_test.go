@@ -1,6 +1,7 @@
 package csv
 
 import (
+	"time"
 	"compress/gzip"
 	"os"
 	"runtime"
@@ -135,6 +136,8 @@ func TestSmallSPPattern(t *testing.T) {
 }
 
 func TestLoadLargeCSVFile(t *testing.T) {
+	ti := time.Now()
+
 	if testing.Short() {
 		t.Skip("Not testing in short mode")
 	}
@@ -163,14 +166,45 @@ func TestLoadLargeCSVFile(t *testing.T) {
 		t.Errorf("want %d triples, got %d", 6249408, g.CountTriples())
 	}
 	PrintMemUsage(t, "dataset only")
+	t.Log(time.Now().Sub(ti), "dataset only")
 
 	g.RebuildIndex()
 	PrintMemUsage(t, "reindexed")
+	t.Log(time.Now().Sub(ti),"reindexed")
 
 	ds, val, idx := g.ByteSizes()
 	t.Logf("Dataset %v MiB", bToMb(uint64(ds)))
 	t.Logf("Values  %v MiB", bToMb(uint64(val)))
 	t.Logf("Indices %v MiB", bToMb(uint64(idx)))
+
+
+
+	vv := g.VirtualValue(nsEst + `129216`)
+	if !vv.Known {
+		t.Errorf("%q is not known in the loaded graph", vv.Value)
+	}
+
+	vv2 := g.VirtualValue(nsSchool + `EstablishmentName`)
+	if !vv2.Known {
+		t.Errorf("%q is not known in the loaded graph", vv2.Value)
+	}
+
+	tp := &graph.TriplePattern{S: vv.Pattern(), P: vv2.Pattern()}
+	ms := g.Match(tp)
+	if len(ms) != 1 {
+		t.Log(tp.String(g))
+		for _, tr := range ms {
+			t.Log(tr.String(g))
+		}
+		t.Errorf("want %d SP-match, got %d", 1, len(ms))
+	} else {
+		tr0 := ms[0].String(g)
+		want0 := `[(string:http://education.data.gov.uk/def/school/establishment/129216) (string:http://education.data.gov.uk/def/school/EstablishmentName) (string:Yarborough Middle School)]`
+		if tr0 != want0 {
+			t.Errorf("want %s, got %s", want0, tr0)
+		}
+	}
+	t.Log(time.Now().Sub(ti), "SP pattern")
 }
 
 // PrintMemUsage outputs the current, total and OS memory being used. As well as the number
