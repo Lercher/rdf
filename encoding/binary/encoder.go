@@ -12,12 +12,12 @@ const (
 	headerValues  = "RDFVAL01"
 )
 
-// Encoder is used to serialize a virtualized rdf.Graph
+// Encoder is used to serialize a virtualized rdf.Graph in binary form
 type Encoder struct {
 	w io.Writer
 }
 
-// NewEncoder creates an Encoder and assoiciates it with a Writer
+// NewEncoder creates a new binary Encoder for rdf.Graph and assoiciates it with a Writer
 func NewEncoder(w io.Writer) *Encoder {
 	return &Encoder{w}
 }

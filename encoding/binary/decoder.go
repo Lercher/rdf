@@ -8,12 +8,12 @@ import (
 	"github.com/lercher/rdf/graph"
 )
 
-// Decoder deserializes a graph.Graph
+// Decoder deserializes a binary serialized graph.Graph
 type Decoder struct {
 	r io.Reader
 }
 
-// NewDecoder creates a new Decoder for graph.Graphs
+// NewDecoder creates a new Decoder for binary serialized graph.Graphs
 func NewDecoder(r io.Reader) *Decoder {
 	return &Decoder{r}
 }
