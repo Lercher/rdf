@@ -36,8 +36,9 @@ func (v Virtual) Value(g *Graph) Value {
 	return val
 }
 
-func hash(block []byte) Virtual {
-	s := cityhash.CityHash128(block, uint32(len(block)))
+func hash(seedByte byte, block []byte) Virtual {
+	seed := cityhash.Uint128{uint64(seedByte), uint64(seedByte)}
+	s := cityhash.CityHash128WithSeed(block, uint32(len(block)), seed)
 	return Virtual(s)
 }
 

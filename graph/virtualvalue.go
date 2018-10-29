@@ -28,28 +28,26 @@ func NewVirtualValue(g *Graph, primitive interface{}) VirtualValue {
 
 // VirtualValueString creates a VirtualValue from a string
 func VirtualValueString(g *Graph, s string) VirtualValue {
-	return vvalue(g, []byte(s), s)
+	return vvalue(g, valueTypeString, []byte(s), s)
 }
 
 // VirtualValueInt creates a VirtualValue from an int
 func VirtualValueInt(g *Graph, i int) VirtualValue {
-	i64 := int64(i)
-	b := make([]byte, 8, 9)
-	binary.LittleEndian.PutUint64(b, uint64(i64))
+	b := make([]byte, 8)
+	binary.LittleEndian.PutUint64(b, uint64(i))
 	b = append(b, valueTypeInt)
-	return vvalue(g, b, i)
+	return vvalue(g, valueTypeInt, b, i)
 }
 
 // VirtualValueFloat creates a VirtualValue from a float64
 func VirtualValueFloat(g *Graph, f float64) VirtualValue {
-	b := make([]byte, 8, 9)
+	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(f))
-	b = append(b, valueTypeFloat)
-	return vvalue(g, b, f)
+	return vvalue(g, valueTypeFloat, b, f)
 }
 
-func vvalue(g *Graph, bytes []byte, v interface{}) VirtualValue {
-	h := hash(bytes)
+func vvalue(g *Graph, seed byte, bytes []byte, v interface{}) VirtualValue {
+	h := hash(seed, bytes)
 	val, ok := g.valuemap[h]
 	if !ok {
 		val = Value(v)

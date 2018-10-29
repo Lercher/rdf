@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"github.com/pkg/errors"
+	"errors"
 )
 
 // Graph forms an RDF graph including several hidden indices
