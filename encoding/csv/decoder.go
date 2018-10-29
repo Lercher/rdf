@@ -1,6 +1,7 @@
 package csv
 
 import (
+	"net/url"
 	stdcsv "encoding/csv"
 	"fmt"
 	"io"
@@ -31,6 +32,9 @@ func (d *Decoder) Decode() (*graph.Graph, error) {
 	if err != nil {
 		return nil, err
 	}
+	for i := range hdr {
+		hdr[i] = url.PathEscape(hdr[i])
+	}
 	// log.Printf("Header read, %d columns", len(hdr))
 
 	n := 0
@@ -47,7 +51,7 @@ func (d *Decoder) Decode() (*graph.Graph, error) {
 		if len(line) != len(hdr) {
 			return nil, fmt.Errorf("csv line %d expected %d columns, got %d", n+1, len(hdr), len(line))
 		}
-		s := g.BulkAddValue(d.Entityprefix + line[0])
+		s := g.BulkAddValue(d.Entityprefix + url.PathEscape(line[0]))
 		for col := 1; col < len(line); col++ {
 			p := g.BulkAddValue(d.Propertyprefix + hdr[col])
 			o := g.BulkAddValue(line[col])
