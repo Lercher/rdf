@@ -2,38 +2,35 @@ package graph
 
 import "testing"
 
-func gr() *Graph {
+func gr() (*Graph, *Triple, *Triple, *Triple) {
 	g := New()
+	t0 := g.Assert("martin", "telefon", "+49897482400")
+	t1 := g.Assert("andreas", "telefon", "+49897482400")
+	t2 := g.Assert("martin", "boss", "justus")
 	g.Assert("martin", "telefon", "+49897482400")
-	g.Assert("andreas", "telefon", "+49897482400")
-	g.Assert("martin", "boss", "justus")
-	g.Assert("martin", "telefon", "+49897482400")
-	return g
+	return g, t0, t1, t2
 }
 
 func TestGraphLength(t *testing.T) {
-	g := gr()
-	if len(g.Dataset) != 3 {
-		t.Fatal("graph dataset length want 3, got", len(g.Dataset))
+	g, _, _, _ := gr()
+	if g.CountTriples() != 3 {
+		t.Fatal("graph dataset length want 3, got", g.CountTriples())
 	}
 }
 
 func TestGraphSimpleProps(t *testing.T) {
-	g := gr()
+	g, tr0, tr1, tr2 := gr()
 
-	tr0 := g.Dataset[0]
 	s := tr0.S.Value(g)
 	if s != "martin" {
 		t.Error("subject[0] want martin, got", s)
 	}
 
-	tr1 := g.Dataset[1]
 	p := tr1.P.Value(g)
 	if p != "telefon" {
 		t.Error("predicate[1] want telefon, got", p)
 	}
 
-	tr2 := g.Dataset[2]
 	o := tr2.O.Value(g)
 	if o != "justus" {
 		t.Error("object[2] want justus, got", o)
@@ -41,14 +38,14 @@ func TestGraphSimpleProps(t *testing.T) {
 }
 
 func TestTriple(t *testing.T) {
-	g := gr()
-	l := len(g.Dataset)
+	g, _, _, _ := gr()
+	l := g.CountTriples()
 	c := g.CountValues()
 	tr0 := g.Assert(0, 0, 0)
 	trfloat := g.Assert(float64(0), float64(0), float64(0))
 	trmixed := g.Assert(0, float64(0), "0")
-	if len(g.Dataset) != l+3 {
-		t.Fatalf("graph dataset length want %d, got %d", l+3, len(g.Dataset))
+	if g.CountTriples() != l+3 {
+		t.Fatalf("graph dataset length want %d, got %d", l+3, g.CountTriples())
 	}
 	for _, v := range g.Values() {
 		t.Logf("%T: %[1]v", v)

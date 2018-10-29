@@ -3,19 +3,19 @@ package graph
 import "testing"
 
 func TestPatterns0Criteria(t *testing.T) {
-	g := gr()
+	g, _, _, _ := gr()
 
 	all := g.Match(&TriplePattern{})
-	if len(all) != len(g.Dataset) {
-		t.Error("want full length", len(g.Dataset), "got", len(all))
+	if len(all) != g.CountTriples() {
+		t.Error("want full length", g.CountTriples(), "got", len(all))
 	}
 	t.Log()
 }
 
 func TestPatterns1Criteria(t *testing.T) {
-	g := gr()
+	g, t0, _, _ := gr()
 
-	s0 := g.Dataset[0].S
+	s0 := t0.S
 	allS := &TriplePattern{S: PatternLiteral(s0)}
 	t.Log("match", allS.String(g))
 	ms := g.Match(allS)
@@ -27,7 +27,7 @@ func TestPatterns1Criteria(t *testing.T) {
 	}
 	t.Log()
 
-	p0 := g.Dataset[0].P
+	p0 := t0.P
 	allP := &TriplePattern{P: PatternLiteral(p0)}
 	t.Log("match", allP.String(g))
 	mp := g.Match(allP)
@@ -39,7 +39,7 @@ func TestPatterns1Criteria(t *testing.T) {
 	}
 	t.Log()
 
-	o0 := g.Dataset[0].O
+	o0 := t0.O
 	allO := &TriplePattern{O: PatternLiteral(o0)}
 	t.Log("match", allO.String(g))
 	mo := g.Match(allO)
@@ -53,11 +53,11 @@ func TestPatterns1Criteria(t *testing.T) {
 }
 
 func TestPatterns2Criteria(t *testing.T) {
-	g := gr()
+	g, t0, _, _ := gr()
 
-	s0 := g.Dataset[0].S
-	p0 := g.Dataset[0].P
-	o0 := g.Dataset[0].O
+	s0 := t0.S
+	p0 := t0.P
+	o0 := t0.O
 
 	allSP := &TriplePattern{S: PatternLiteral(s0), P: PatternLiteral(p0), O: PatternVariable("$o")}
 	t.Log("match", allSP.String(g))
@@ -94,12 +94,12 @@ func TestPatterns2Criteria(t *testing.T) {
 }
 
 func TestPatterns3Criteria(t *testing.T) {
-	g := gr()
+	g, t0, _, _ := gr()
 
-	s0 := g.Dataset[0].S
-	p0 := g.Dataset[0].P
-	o0 := g.Dataset[0].O
-	allSPO := &TriplePattern{S: PatternLiteral(s0), P: PatternLiteral(p0), O: PatternLiteral(o0)}
+	s0 := t0.S
+	p0 := t0.P
+	o0 := t0.O
+	allSPO := &TriplePattern{S: s0.Pattern(), P: p0.Pattern(), O: o0.Pattern()}
 	t.Log("match", allSPO.String(g))
 	mspo := g.Match(allSPO)
 	for _, tr := range mspo {

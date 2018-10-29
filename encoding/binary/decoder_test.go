@@ -18,14 +18,11 @@ func TestReadEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	
-	if g.Dataset == nil {
-		t.Errorf("want dataset not nil, got nil")
+
+	if g.CountTriples() != 0 {
+		t.Errorf("want dataset %d len, got %d", 0, g.CountTriples())
 	}
-	if len(g.Dataset) != 0 {
-		t.Errorf("want dataset %d len, got %d", 0, len(g.Dataset))
-	}
-	
+
 	if g.CountValues() != 0 {
 		t.Errorf("want values %d len, got %d", 0, g.CountValues())
 	}
@@ -38,25 +35,28 @@ func TestReadSimpleGraph(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	
-	for _, tr := range g.Dataset {
+
+	for tr := range g.DatasetMap() {
 		t.Log(tr.String(g))
 	}
-	
+
 	if g.CountValues() != 6 {
 		t.Errorf("want values %d len, got %d", 6, g.CountValues())
 	}
-	
-	if len(g.Dataset) != 3 {
-		t.Fatalf("want dataset %d len, got %d", 3, len(g.Dataset))
+
+	if g.CountTriples() != 3 {
+		t.Fatalf("want dataset %d len, got %d", 3, g.CountTriples())
 	}
-	
-	t.Log(g.Dataset[0].S.Bytes(), g.Dataset[0].S.String(g))
-	s0 := g.Dataset[0].String(g)
-	want0 := "[(string:martin) (string:telefon) (string:+49897482400)]"
-	if s0 != want0 {
-		t.Errorf("want triple0 %s, got %s", want0, s0)
+
+	want := "[(string:martin) (string:telefon) (string:+49897482400)]"
+	for tr := range g.DatasetMap() {
+		t.Log(tr.S.Bytes(), tr.S.String(g))
+		s := tr.String(g)
+		if s == want {
+			return
+		}
 	}
+	t.Errorf("want triple %s, but not found", want)
 }
 
 func TestReadMixedGraph(t *testing.T) {
@@ -66,22 +66,26 @@ func TestReadMixedGraph(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	
-	for _, tr := range g.Dataset {
+
+	for tr := range g.DatasetMap() {
 		t.Log(tr.String(g))
 	}
-	
+
 	if g.CountValues() != 9 {
 		t.Errorf("want values %d len, got %d", 9, g.CountValues())
 	}
-	
-	if len(g.Dataset) != 3 {
-		t.Fatalf("want dataset %d len, got %d", 3, len(g.Dataset))
+
+	if g.CountTriples() != 3 {
+		t.Fatalf("want dataset %d len, got %d", 3, g.CountTriples())
 	}
 
-	s2 := g.Dataset[2].String(g)
-	want2 := "[(string:august) (int:0) (float64:-211.7677182)]"
-	if s2 != want2 {
-		t.Errorf("want triple2 %s, got %s", want2, s2)
+	want := "[(string:august) (int:0) (float64:-211.7677182)]"
+	for tr := range g.DatasetMap() {
+		t.Log(tr.S.Bytes(), tr.S.String(g))
+		s := tr.String(g)
+		if s == want {
+			return
+		}
 	}
+	t.Errorf("want triple %s, but not found", want)
 }

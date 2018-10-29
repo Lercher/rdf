@@ -15,6 +15,11 @@ const path = `D:\Profiles\mlercher\Downloads\edubasealldata20181029.csv.gz`
 // comes with git reop
 const smallpath = `edubasealldata20181029_20.csv`
 
+const (
+	nsEst    = `http://education.data.gov.uk/def/school/establishment/`
+	nsSchool = `http://education.data.gov.uk/def/school/`
+)
+
 func small() (*graph.Graph, error) {
 	f, err := os.Open(smallpath)
 	if err != nil {
@@ -22,7 +27,7 @@ func small() (*graph.Graph, error) {
 	}
 	defer f.Close()
 
-	dec := NewDecoder(f, "http://education.data.gov.uk/def/school/establishment/", "http://education.data.gov.uk/def/school/")
+	dec := NewDecoder(f, nsEst, nsSchool)
 	return dec.Decode()
 }
 
@@ -34,19 +39,8 @@ func TestLoadSmallCSVFile(t *testing.T) {
 	if g.CountValues() != 667 {
 		t.Errorf("want %d values, got %d", 667, g.CountValues())
 	}
-	if len(g.Dataset) != 2640 {
-		t.Errorf("want %d triples, got %d", 2640, len(g.Dataset))
-	}
-
-	got := g.Dataset[2613].String(g)
-	want := `[(string:http://education.data.gov.uk/def/school/establishment/100019) (string:http://education.data.gov.uk/def/school/AdministrativeWard%20%28code%29) (string:E05000135)]`
-	if got != want {
-		for i, tr := range g.Dataset {
-			if 2611 <= i && i <= 2615 {
-				t.Logf("%2d %s", i+1, tr.String(g))
-			}
-		}
-		t.Errorf("want %s, got %s", want, got)
+	if g.CountTriples() != 2640 {
+		t.Errorf("want %d triples, got %d", 2640, g.CountTriples())
 	}
 
 	ds := g.DistinctS()
@@ -77,7 +71,7 @@ func TestSmallSPattern(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vv := g.VirtualValue(`http://education.data.gov.uk/def/school/establishment/100012`)
+	vv := g.VirtualValue(nsEst + `100012`)
 	if !vv.Known {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)
 	}
@@ -93,7 +87,7 @@ func TestSmallSPattern(t *testing.T) {
 	}
 
 	found := false
-	want := `http://education.data.gov.uk/def/school/EstablishmentName`
+	want := nsSchool + `EstablishmentName`
 	for i, tr := range ms {
 		got := tr.P.Value(g)
 		if got == want {
@@ -113,12 +107,12 @@ func TestSmallSPPattern(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vv := g.VirtualValue(`http://education.data.gov.uk/def/school/establishment/100012`)
+	vv := g.VirtualValue(nsEst + `100012`)
 	if !vv.Known {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)
 	}
 
-	vv2 := g.VirtualValue(`http://education.data.gov.uk/def/school/EstablishmentName`)
+	vv2 := g.VirtualValue(nsSchool + `EstablishmentName`)
 	if !vv2.Known {
 		t.Errorf("%q is not known in the loaded graph", vv2.Value)
 	}
@@ -156,7 +150,7 @@ func TestLoadLargeCSVFile(t *testing.T) {
 	}
 	defer zr.Close()
 
-	dec := NewDecoder(zr, "http://education.data.gov.uk/def/school/establishment/", "http://education.data.gov.uk/def/school/")
+	dec := NewDecoder(zr, nsEst, nsSchool)
 	dec.Reindex = false
 	g, err := dec.Decode()
 	if err != nil {
@@ -165,8 +159,8 @@ func TestLoadLargeCSVFile(t *testing.T) {
 	if g.CountValues() != 433796 {
 		t.Errorf("want %d values, got %d", 433796, g.CountValues())
 	}
-	if len(g.Dataset) != 6249408 {
-		t.Errorf("want %d triples, got %d", 6249408, len(g.Dataset))
+	if g.CountTriples() != 6249408 {
+		t.Errorf("want %d triples, got %d", 6249408, g.CountTriples())
 	}
 	PrintMemUsage(t, "dataset only")
 

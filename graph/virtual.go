@@ -73,3 +73,8 @@ func VirtualFrom(b []byte) Virtual {
 	ui := cityhash.Uint128{lower, upper}
 	return Virtual(ui)
 }
+
+// Pattern creates a literal Pattern from this Virtual
+func (v Virtual) Pattern() *Pattern {
+	return PatternLiteral(v)
+}

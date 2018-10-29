@@ -24,14 +24,14 @@ func NewEncoder(w io.Writer) *Encoder {
 
 // Encode writes a Graph to the initialized writer
 func (e *Encoder) Encode(g *graph.Graph) error {
-	err := e.encodeDataset(g.Dataset)
+	err := e.encodeDataset(g.DatasetMap())
 	if err != nil {
 		return err
 	}
 	return e.encodeValues(g.Values())
 }
 
-func (e *Encoder) encodeDataset(triples []*graph.Triple) error {
+func (e *Encoder) encodeDataset(triples map[graph.Triple]*graph.Triple) error {
 	_, err := e.w.Write([]byte(headerDataset))
 	if err != nil {
 		return err
@@ -40,7 +40,7 @@ func (e *Encoder) encodeDataset(triples []*graph.Triple) error {
 	if err != nil {
 		return err
 	}
-	for _, tr := range triples {
+	for tr := range triples {
 		err = tr.S.Encode(e.w)
 		if err != nil {
 			return err
