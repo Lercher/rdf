@@ -10,9 +10,6 @@ import (
 	"github.com/lercher/rdf/graph"
 )
 
-// Download from https://get-information-schools.service.gov.uk/Downloads and gzip it:
-const path = `D:\Profiles\mlercher\Downloads\edubasealldata20181029.csv.gz`
-
 // comes with git reop
 const smallpath = `edubasealldata20181029_20.csv`
 
