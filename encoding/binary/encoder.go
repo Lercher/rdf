@@ -31,7 +31,7 @@ func (e *Encoder) Encode(g *graph.Graph) error {
 	return e.encodeValues(g.Values())
 }
 
-func (e *Encoder) encodeDataset(triples []graph.Triple) error {
+func (e *Encoder) encodeDataset(triples []*graph.Triple) error {
 	_, err := e.w.Write([]byte(headerDataset))
 	if err != nil {
 		return err

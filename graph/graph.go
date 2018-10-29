@@ -7,7 +7,7 @@ import (
 
 // Graph forms an RDF graph including several hidden indices
 type Graph struct {
-	Dataset  []Triple
+	Dataset  []*Triple
 	valuemap map[Virtual]Value
 	sindex   map[Virtual][]*Triple
 	pindex   map[Virtual][]*Triple
@@ -47,17 +47,26 @@ func New() *Graph {
 	}
 }
 
+// AddValue adds an unknown primitive to the graph's values. Returns either this new VirtualValue or the known one.
+func (g *Graph) AddValue(primitive interface{}) VirtualValue {
+	vv := g.VirtualValue(primitive)
+	if !vv.Known {
+		g.valuemap[vv.Virtual] = vv.Value
+	}
+	return vv
+}
+
 // Assert appends a new Triple to the Graph, unless it is already present
 func (g *Graph) Assert(s, p, o interface{}) Triple {
-	vs := NewVirtualValue(g, s)
-	vp := NewVirtualValue(g, p)
-	vo := NewVirtualValue(g, o)
+	vs := g.AddValue(s)
+	vp := g.AddValue(p)
+	vo := g.AddValue(o)
 	t := Triple{vs.Virtual, vp.Virtual, vo.Virtual}
 	duplicate := g.spoindex[t]
 	if duplicate {
 		return t
 	}
-	g.BulkAddTriple(t, true)
+	g.BulkAddTriple(&t, true)
 	return t
 }
 
@@ -99,11 +108,7 @@ func (g *Graph) Match(p *TriplePattern) []*Triple {
 	}
 
 	// 0 crit, all variables
-	list := make([]*Triple, len(g.Dataset))
-	for i := range g.Dataset {
-		list[i] = &g.Dataset[i]
-	}
-	return list
+	return g.Dataset
 }
 
 // PrepareValueSpace reserves memory for the given count of distinct values, it panics if the Graph is not empty
@@ -119,29 +124,27 @@ func (g *Graph) PrepareVirtualSpace(size int) {
 	if g.Dataset != nil {
 		panic(errors.New("virtual space can only prepared if the graph is empty"))
 	}
-	g.Dataset = make([]Triple, 0, size)
+	g.Dataset = make([]*Triple, 0, size)
 }
 
-// BulkAddValue adds a primitive keyed by its hash to the graph
-func (g *Graph) BulkAddValue(primitive interface{}) VirtualValue {
-	vv := NewVirtualValue(g, primitive)
-	// log.Println("hash", vv.Virtual.Bytes(), "for", vv.Value)
-	return vv
+// VirtualValue retrieves a primitive keyed by its hash from the graph or creates a new VirtualValue
+func (g *Graph) VirtualValue(primitive interface{}) VirtualValue {
+	return newVirtualValue(g, primitive)
 }
 
 // BulkAddTriple adds a Triple without checking to the Graph, see Assert instead
-func (g *Graph) BulkAddTriple(t Triple, withindex bool) *Triple {
+func (g *Graph) BulkAddTriple(t *Triple, withindex bool) *Triple {
 	g.Dataset = append(g.Dataset, t)
 	if withindex {
-		g.sindex[t.S] = append(g.sindex[t.S], &t)
-		g.pindex[t.P] = append(g.pindex[t.P], &t)
-		g.oindex[t.O] = append(g.oindex[t.O], &t)
-		g.spindex[t.SP()] = append(g.spindex[t.SP()], &t)
-		g.soindex[t.SO()] = append(g.soindex[t.SO()], &t)
-		g.poindex[t.PO()] = append(g.poindex[t.PO()], &t)
-		g.spoindex[t] = true
+		g.sindex[t.S] = append(g.sindex[t.S], t)
+		g.pindex[t.P] = append(g.pindex[t.P], t)
+		g.oindex[t.O] = append(g.oindex[t.O], t)
+		g.spindex[t.SP()] = append(g.spindex[t.SP()], t)
+		g.soindex[t.SO()] = append(g.soindex[t.SO()], t)
+		g.poindex[t.PO()] = append(g.poindex[t.PO()], t)
+		g.spoindex[*t] = true
 	}
-	return &t
+	return t
 }
 
 // RebuildIndex rebuilds all the indices on the dataset
@@ -207,9 +210,11 @@ func (g *Graph) RebuildIndex() {
 		g.sindex = make(map[Virtual][]*Triple, len(sindex))
 		for k, v := range sindex {
 			g.sindex[k] = make([]*Triple, 0, v)
+			// log.Println("sindex", v, k.Value(g))
 		}
-		for _, t := range g.Dataset {
-			_ = append(g.sindex[t.S], &t)
+		for _, tt := range g.Dataset {
+			t := tt
+			g.sindex[t.S] = append(g.sindex[t.S], t)
 		}
 		// log.Println("sindex done", len(g.sindex))
 		wg.Done()
@@ -221,7 +226,7 @@ func (g *Graph) RebuildIndex() {
 			g.pindex[k] = make([]*Triple, 0, v)
 		}
 		for _, t := range g.Dataset {
-			_ = append(g.pindex[t.P], &t)
+			g.pindex[t.P] = append(g.pindex[t.P], t)
 		}
 		// log.Println("pindex done", len(g.pindex))
 		wg.Done()
@@ -231,9 +236,10 @@ func (g *Graph) RebuildIndex() {
 		g.oindex = make(map[Virtual][]*Triple, len(oindex))
 		for k, v := range oindex {
 			g.oindex[k] = make([]*Triple, 0, v)
+			// log.Println("oindex", v, k.Value(g))
 		}
 		for _, t := range g.Dataset {
-			_ = append(g.oindex[t.O], &t)
+			g.oindex[t.O] = append(g.oindex[t.O], t)
 		}
 		// log.Println("oindex done", len(g.oindex))
 		wg.Done()
@@ -242,7 +248,7 @@ func (g *Graph) RebuildIndex() {
 	go func() {
 		g.spoindex = make(map[Triple]bool, len(g.Dataset))
 		for _, t := range g.Dataset {
-			g.spoindex[t] = true
+			g.spoindex[*t] = true
 		}
 		// log.Println("spoindex done", len(g.spoindex))
 		wg.Done()
@@ -254,7 +260,7 @@ func (g *Graph) RebuildIndex() {
 			g.spindex[k] = make([]*Triple, 0, v)
 		}
 		for _, t := range g.Dataset {
-			_ = append(g.spindex[t.SP()], &t)
+			g.spindex[t.SP()] = append(g.spindex[t.SP()], t)
 		}
 		// log.Println("spindex done", len(g.spindex))
 		wg.Done()
@@ -266,7 +272,7 @@ func (g *Graph) RebuildIndex() {
 			g.soindex[k] = make([]*Triple, 0, v)
 		}
 		for _, t := range g.Dataset {
-			_ = append(g.soindex[t.SO()], &t)
+			g.soindex[t.SO()] = append(g.soindex[t.SO()], t)
 		}
 		// log.Println("soindex done", len(g.soindex))
 		wg.Done()
@@ -278,11 +284,34 @@ func (g *Graph) RebuildIndex() {
 			g.poindex[k] = make([]*Triple, 0, v)
 		}
 		for _, t := range g.Dataset {
-			_ = append(g.poindex[t.PO()], &t)
+			g.poindex[t.PO()] = append(g.poindex[t.PO()], t)
 		}
 		// log.Println("poindex done", len(g.poindex))
 		wg.Done()
 	}()
 
 	wg.Wait()
+}
+
+func distinct(index map[Virtual][]*Triple) []Virtual {
+	list := make([]Virtual, 0, len(index))
+	for k := range index {
+		list = append(list, k)
+	}
+	return list
+}
+
+// DistinctS returns all distinct P values in the Graph
+func (g *Graph) DistinctS() []Virtual {
+	return distinct(g.sindex)
+}
+
+// DistinctP returns all distinct P values in the Graph
+func (g *Graph) DistinctP() []Virtual {
+	return distinct(g.pindex)
+}
+
+// DistinctO returns all distinct P values in the Graph
+func (g *Graph) DistinctO() []Virtual {
+	return distinct(g.oindex)
 }

@@ -18,11 +18,11 @@ func (t *Triple) String(g *Graph) string {
 }
 
 // NewTriple crates a new Triple of a Graph
-func NewTriple(g *Graph, s, p, o interface{}) Triple {
-	vs := NewVirtualValue(g, s)
-	vp := NewVirtualValue(g, p)
-	vo := NewVirtualValue(g, o)
-	return Triple{vs.Virtual, vp.Virtual, vo.Virtual}
+func NewTriple(g *Graph, s, p, o interface{}) *Triple {
+	vs := newVirtualValue(g, s)
+	vp := newVirtualValue(g, p)
+	vo := newVirtualValue(g, o)
+	return &Triple{vs.Virtual, vp.Virtual, vo.Virtual}
 }
 
 // SP creates a pair from the subject/predicate Virtuals

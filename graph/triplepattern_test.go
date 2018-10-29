@@ -16,7 +16,7 @@ func TestPatterns1Criteria(t *testing.T) {
 	g := gr()
 
 	s0 := g.Dataset[0].S
-	allS := &TriplePattern{S: PatternVirtual(s0)}
+	allS := &TriplePattern{S: PatternLiteral(s0)}
 	t.Log("match", allS.String(g))
 	ms := g.Match(allS)
 	for _, tr := range ms {
@@ -28,7 +28,7 @@ func TestPatterns1Criteria(t *testing.T) {
 	t.Log()
 
 	p0 := g.Dataset[0].P
-	allP := &TriplePattern{P: PatternVirtual(p0)}
+	allP := &TriplePattern{P: PatternLiteral(p0)}
 	t.Log("match", allP.String(g))
 	mp := g.Match(allP)
 	for _, tr := range mp {
@@ -40,7 +40,7 @@ func TestPatterns1Criteria(t *testing.T) {
 	t.Log()
 
 	o0 := g.Dataset[0].O
-	allO := &TriplePattern{O: PatternVirtual(o0)}
+	allO := &TriplePattern{O: PatternLiteral(o0)}
 	t.Log("match", allO.String(g))
 	mo := g.Match(allO)
 	for _, tr := range mo {
@@ -59,7 +59,7 @@ func TestPatterns2Criteria(t *testing.T) {
 	p0 := g.Dataset[0].P
 	o0 := g.Dataset[0].O
 
-	allSP := &TriplePattern{S: PatternVirtual(s0),P: PatternVirtual(p0), O: PatternVariable("$o")}
+	allSP := &TriplePattern{S: PatternLiteral(s0), P: PatternLiteral(p0), O: PatternVariable("$o")}
 	t.Log("match", allSP.String(g))
 	msp := g.Match(allSP)
 	for _, tr := range msp {
@@ -70,7 +70,7 @@ func TestPatterns2Criteria(t *testing.T) {
 	}
 	t.Log()
 
-	allSO := &TriplePattern{S: PatternVirtual(s0),P: PatternVariable("$p"),O: PatternVirtual(o0)}
+	allSO := &TriplePattern{S: PatternLiteral(s0), P: PatternVariable("$p"), O: PatternLiteral(o0)}
 	t.Log("match", allSO.String(g))
 	mso := g.Match(allSO)
 	for _, tr := range mso {
@@ -81,7 +81,7 @@ func TestPatterns2Criteria(t *testing.T) {
 	}
 	t.Log()
 
-	allPO := &TriplePattern{S: PatternVariable("$s"),P: PatternVirtual(p0),O: PatternVirtual(o0)}
+	allPO := &TriplePattern{S: PatternVariable("$s"), P: PatternLiteral(p0), O: PatternLiteral(o0)}
 	t.Log("match", allPO.String(g))
 	mpo := g.Match(allPO)
 	for _, tr := range mpo {
@@ -99,7 +99,7 @@ func TestPatterns3Criteria(t *testing.T) {
 	s0 := g.Dataset[0].S
 	p0 := g.Dataset[0].P
 	o0 := g.Dataset[0].O
-	allSPO := &TriplePattern{S: PatternVirtual(s0),P: PatternVirtual(p0),O: PatternVirtual(o0)}
+	allSPO := &TriplePattern{S: PatternLiteral(s0), P: PatternLiteral(p0), O: PatternLiteral(o0)}
 	t.Log("match", allSPO.String(g))
 	mspo := g.Match(allSPO)
 	for _, tr := range mspo {

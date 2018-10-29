@@ -1,11 +1,10 @@
 package csv
 
 import (
-	"net/url"
 	stdcsv "encoding/csv"
 	"fmt"
 	"io"
-	"log"
+	"net/url"
 
 	"github.com/lercher/rdf/graph"
 )
@@ -51,20 +50,23 @@ func (d *Decoder) Decode() (*graph.Graph, error) {
 		if len(line) != len(hdr) {
 			return nil, fmt.Errorf("csv line %d expected %d columns, got %d", n+1, len(hdr), len(line))
 		}
-		s := g.BulkAddValue(d.Entityprefix + url.PathEscape(line[0]))
+		s := g.AddValue(d.Entityprefix + url.PathEscape(line[0]))
 		for col := 1; col < len(line); col++ {
-			p := g.BulkAddValue(d.Propertyprefix + hdr[col])
-			o := g.BulkAddValue(line[col])
-			g.BulkAddTriple(graph.Triple{S: s.Virtual, P: p.Virtual, O: o.Virtual}, false)
+			p := g.AddValue(d.Propertyprefix + hdr[col])
+			o := g.AddValue(line[col])
+			// log.Println(n, col, p.Value, o.Value)
+			t := &graph.Triple{S: s.Virtual, P: p.Virtual, O: o.Virtual}
+			g.BulkAddTriple(t, false)
+			// log.Println(n, col, tr.P.String(g), tr.O.String(g))
 		}
-		if n%1000 == 0 {
-			// log.Println(n)
-		}
+		// if n%1000 == 0 {
+		//     log.Println(n)
+		// }
 	}
-	log.Println(n)
+	// log.Println(n)
 	if d.Reindex {
 		g.RebuildIndex()
-		log.Println("Reindexed")
+		// log.Println("Reindexed")
 	}
 	return g, nil
 }

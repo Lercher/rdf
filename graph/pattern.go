@@ -45,8 +45,8 @@ func PatternVariable(s string) *Pattern {
 	return &Pattern{variable: Variable(s)}
 }
 
-// PatternVirtual creates a constant matching pattern
-func PatternVirtual(v Virtual) *Pattern {
+// PatternLiteral creates a constant matching pattern
+func PatternLiteral(v Virtual) *Pattern {
 	if v.IsNil() {
 		panic("a virtual pattern must not be nil")
 	}

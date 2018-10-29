@@ -55,7 +55,7 @@ func (d *Decoder) decodeDataset(g *graph.Graph) error {
 		if err != nil {
 			return err
 		}
-		t := graph.Triple{S: s, P: p, O: o}
+		t := &graph.Triple{S: s, P: p, O: o}
 		g.BulkAddTriple(t, false)
 	}
 	g.RebuildIndex()
@@ -77,7 +77,7 @@ func (d *Decoder) decodeValues(g *graph.Graph) error {
 		if err != nil {
 			return err
 		}
-		g.BulkAddValue(val)
+		g.AddValue(val)
 	}
 	return nil
 }

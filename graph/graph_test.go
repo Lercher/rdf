@@ -44,17 +44,17 @@ func TestTriple(t *testing.T) {
 	g := gr()
 	l := len(g.Dataset)
 	c := g.CountValues()
-	tr0 := NewTriple(g, 0, 0, 0)
-	trfloat := NewTriple(g, float64(0), float64(0), float64(0))
-	trmixed := NewTriple(g, 0, float64(0), "0")
-	if len(g.Dataset) != l {
-		t.Fatal("graph dataset length want ", l, ", got", len(g.Dataset))
-	}
-	if g.CountValues() != c+3 {
-		t.Errorf("want %d distinct values, got %d",c+3, g.CountValues())
+	tr0 := g.Assert(0, 0, 0)
+	trfloat := g.Assert(float64(0), float64(0), float64(0))
+	trmixed := g.Assert(0, float64(0), "0")
+	if len(g.Dataset) != l+3 {
+		t.Fatalf("graph dataset length want %d, got %d", l+3, len(g.Dataset))
 	}
 	for _, v := range g.Values() {
 		t.Logf("%T: %[1]v", v)
+	}
+	if g.CountValues() != c+3 {
+		t.Errorf("want %d distinct values, got %d", c+3, g.CountValues())
 	}
 	int0 := tr0.O.Value(g)
 	if int0 != int(0) {
