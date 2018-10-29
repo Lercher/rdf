@@ -3,3 +3,7 @@
 
 # linux binary
 /rdf
+
+# windows binaries
+*.exe
+
