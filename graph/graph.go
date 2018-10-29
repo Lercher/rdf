@@ -7,15 +7,16 @@ import (
 
 // Graph forms an RDF graph including several hidden indices
 type Graph struct {
-	Dataset  []*Triple
-	valuemap map[Virtual]Value
-	sindex   map[Virtual][]*Triple
-	pindex   map[Virtual][]*Triple
-	oindex   map[Virtual][]*Triple
-	spindex  map[Virtual2][]*Triple
-	soindex  map[Virtual2][]*Triple
-	poindex  map[Virtual2][]*Triple
-	spoindex map[Triple]bool
+	Dataset   []*Triple
+	valuemap  map[Virtual]Value
+	valuesize int
+	sindex    map[Virtual][]*Triple
+	pindex    map[Virtual][]*Triple
+	oindex    map[Virtual][]*Triple
+	spindex   map[Virtual2][]*Triple
+	soindex   map[Virtual2][]*Triple
+	poindex   map[Virtual2][]*Triple
+	spoindex  map[Triple]bool
 }
 
 // CountValues counts all distinct values in s/p/o position of the Graph
@@ -37,6 +38,7 @@ func New() *Graph {
 	return &Graph{
 		nil,
 		make(map[Virtual]Value),
+		0,
 		make(map[Virtual][]*Triple),
 		make(map[Virtual][]*Triple),
 		make(map[Virtual][]*Triple),
@@ -52,6 +54,7 @@ func (g *Graph) AddValue(primitive interface{}) VirtualValue {
 	vv := g.VirtualValue(primitive)
 	if !vv.Known {
 		g.valuemap[vv.Virtual] = vv.Value
+		g.valuesize += vv.Size
 	}
 	return vv
 }
@@ -314,4 +317,35 @@ func (g *Graph) DistinctP() []Virtual {
 // DistinctO returns all distinct P values in the Graph
 func (g *Graph) DistinctO() []Virtual {
 	return distinct(g.oindex)
+}
+
+// ByteSizes returns estimated sizes of Dataset, Values and Index
+func (g *Graph) ByteSizes() (int, int, int) {
+	ds := (3*16 + 8) * len(g.Dataset)
+
+	idx := (3*16 + 8) * len(g.Dataset)
+	idx += calcsize1(g.sindex)
+	idx += calcsize1(g.pindex)
+	idx += calcsize1(g.oindex)
+	idx += calcsize2(g.spindex)
+	idx += calcsize2(g.poindex)
+	idx += calcsize2(g.soindex)
+
+	return ds, g.valuesize, idx
+}
+
+func calcsize1(index map[Virtual][]*Triple) int {
+	l := len(index)
+	for _, list := range index {
+		l += len(list)
+	}
+	return l * 8
+}
+
+func calcsize2(index map[Virtual2][]*Triple) int {
+	l := len(index)
+	for _, list := range index {
+		l += len(list)
+	}
+	return l * 8
 }

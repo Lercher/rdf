@@ -172,6 +172,11 @@ func TestLoadLargeCSVFile(t *testing.T) {
 
 	g.RebuildIndex()
 	PrintMemUsage(t, "reindexed")
+
+	ds, val, idx := g.ByteSizes()
+	t.Logf("Dataset %v MiB", bToMb(uint64(ds)))
+	t.Logf("Values  %v MiB", bToMb(uint64(val)))
+	t.Logf("Indices %v MiB", bToMb(uint64(idx)))
 }
 
 // PrintMemUsage outputs the current, total and OS memory being used. As well as the number
@@ -185,7 +190,7 @@ func PrintMemUsage(t *testing.T, kind string) {
 	t.Logf("Alloc %v MiB, %s", bToMb(m.Alloc), kind)
 	t.Logf("\tTotalAlloc %v MiB", bToMb(m.TotalAlloc))
 	t.Logf("\tSys        %v MiB", bToMb(m.Sys))
-	t.Logf("\tNumGC      %v\n", m.NumGC)
+	t.Logf("\tNumGC      %v", m.NumGC)
 }
 
 func bToMb(b uint64) uint64 {

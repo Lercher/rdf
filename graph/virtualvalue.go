@@ -9,6 +9,7 @@ import (
 type VirtualValue struct {
 	Virtual
 	Value
+	Size  int
 	Known bool
 }
 
@@ -51,12 +52,13 @@ func vvalue(g *Graph, seed byte, bytes []byte, v interface{}) VirtualValue {
 	h := hash(seed, bytes)
 	val, ok := g.valuemap[h]
 	if !ok {
-		 val = v
+		val = v
 	}
 	return VirtualValue{
 		Virtual: h,
 		Value:   val,
-		Known: ok,
+		Known:   ok,
+		Size:    len(bytes),
 	}
 }
 
@@ -67,6 +69,6 @@ func (vv VirtualValue) Pattern() *Pattern {
 
 const (
 	valueTypeString = byte('S')
-	valueTypeInt= byte('I')
-	valueTypeFloat = byte('F')
+	valueTypeInt    = byte('I')
+	valueTypeFloat  = byte('F')
 )
