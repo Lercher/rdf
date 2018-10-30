@@ -1,17 +1,21 @@
 package csv
 
 import (
-	"time"
 	"compress/gzip"
 	"os"
+	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 
 	"github.com/lercher/rdf/graph"
 )
 
 // comes with git reop
-const smallpath = `edubasealldata20181029_20.csv`
+const (
+	smallpath   = `edubasealldata20181029_20.csv`
+	largegzfile = `edubasealldata20181029.csv.gz` // Download from https://get-information-schools.service.gov.uk/Downloads and gzip it
+)
 
 const (
 	nsEst    = `http://education.data.gov.uk/def/school/establishment/`
@@ -138,6 +142,7 @@ func TestLoadLargeCSVFile(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Not testing in short mode")
 	}
+	path := filepath.Join(os.Getenv("HOME"), "Downloads", largegzfile)
 	f, err := os.Open(path)
 	if err != nil {
 		t.Skip(err)
@@ -167,14 +172,12 @@ func TestLoadLargeCSVFile(t *testing.T) {
 
 	g.RebuildIndex()
 	PrintMemUsage(t, "reindexed")
-	t.Log(time.Now().Sub(ti),"reindexed")
+	t.Log(time.Now().Sub(ti), "reindexed")
 
 	ds, val, idx := g.ByteSizes()
 	t.Logf("Dataset %v MiB", bToMb(uint64(ds)))
 	t.Logf("Values  %v MiB", bToMb(uint64(val)))
 	t.Logf("Indices %v MiB", bToMb(uint64(idx)))
-
-
 
 	vv := g.VirtualValue(nsEst + `129216`)
 	if !vv.Known {
