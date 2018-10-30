@@ -855,6 +855,12 @@ type IBaseDeclContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetIri returns the iri token.
+	GetIri() antlr.Token
+
+	// SetIri sets the iri token.
+	SetIri(antlr.Token)
+
 	// IsBaseDeclContext differentiates from other interfaces.
 	IsBaseDeclContext()
 }
@@ -862,6 +868,7 @@ type IBaseDeclContext interface {
 type BaseDeclContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	iri    antlr.Token
 }
 
 func NewEmptyBaseDeclContext() *BaseDeclContext {
@@ -885,6 +892,10 @@ func NewBaseDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 }
 
 func (s *BaseDeclContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *BaseDeclContext) GetIri() antlr.Token { return s.iri }
+
+func (s *BaseDeclContext) SetIri(v antlr.Token) { s.iri = v }
 
 func (s *BaseDeclContext) IRI_REF() antlr.TerminalNode {
 	return s.GetToken(SparqlParserIRI_REF, 0)
@@ -937,7 +948,10 @@ func (p *SparqlParser) BaseDecl() (localctx IBaseDeclContext) {
 	}
 	{
 		p.SetState(157)
-		p.Match(SparqlParserIRI_REF)
+
+		var _m = p.Match(SparqlParserIRI_REF)
+
+		localctx.(*BaseDeclContext).iri = _m
 	}
 
 	return localctx

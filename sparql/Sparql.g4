@@ -12,7 +12,7 @@ prologue
     ;
 
 baseDecl
-    : 'BASE' IRI_REF
+    : 'BASE' iri=IRI_REF
     ;
 
 prefixDecl
