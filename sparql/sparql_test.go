@@ -62,6 +62,7 @@ func TestSparqlParserSimple(t *testing.T) {
 		w(t, "prefix0", ast.PrefixedIRIs[0], `sch-ont:<http://education.data.gov.uk/def/school/>`)
 		w(t, "prefix1", ast.PrefixedIRIs[1], `ont:<http://ontology/>`)
 	}
+	w(t, "type", str(ast.QueryType), "select")
 }
 
 func w(t *testing.T, what string, ser stringer, want string) {
@@ -73,3 +74,7 @@ func w(t *testing.T, what string, ser stringer, want string) {
 }
 
 type stringer interface{ String() string }
+
+type str string
+
+func (s str) String() string { return string(s) }

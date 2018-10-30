@@ -26,3 +26,19 @@ func (w *walker) EnterPrefixDecl(ctx *parser.PrefixDeclContext) {
 	pi := &graph.PrefixedIRI{Prefix: p, IRI: i}
 	w.ast.PrefixedIRIs = append(w.ast.PrefixedIRIs, pi)
 }
+
+func (w *walker) EnterSelectQuery(ctx *parser.SelectQueryContext) {
+	w.ast.QueryType = "select"
+}
+
+func (w *walker) EnterConstructQuery(ctx *parser.ConstructQueryContext) {
+	w.ast.QueryType = "construct"
+}
+
+func (w *walker) EnterDescribeQuery(ctx *parser.DescribeQueryContext) {
+	w.ast.QueryType = "describe"
+}
+
+func (w *walker) EnterAskQuery(ctx *parser.AskQueryContext) {
+	w.ast.QueryType = "ask"
+}

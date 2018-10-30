@@ -6,4 +6,5 @@ import "github.com/lercher/rdf/graph"
 type AST struct {
 	Base         graph.IRI
 	PrefixedIRIs []*graph.PrefixedIRI
+	QueryType    string
 }
