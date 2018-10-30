@@ -12,6 +12,7 @@ const (
 	simpleQuery = `
 BASE <http://xyz>
 PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
+PREFIX ont:   <http://ontology/>
 SELECT ?name WHERE {
   ?school a sch-ont:School.
   ?school sch-ont:establishmentName ?name.
