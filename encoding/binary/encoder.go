@@ -24,11 +24,11 @@ func NewEncoder(w io.Writer) *Encoder {
 
 // Encode writes a Graph to the initialized writer
 func (e *Encoder) Encode(g *graph.Graph) error {
-	err := e.encodeDataset(g.DatasetMap())
+	err := e.encodeValues(g.Values())
 	if err != nil {
 		return err
 	}
-	return e.encodeValues(g.Values())
+	return e.encodeDataset(g.DatasetMap())
 }
 
 func (e *Encoder) encodeDataset(triples map[graph.Triple]*graph.Triple) error {
@@ -36,7 +36,7 @@ func (e *Encoder) encodeDataset(triples map[graph.Triple]*graph.Triple) error {
 	if err != nil {
 		return err
 	}
-	err = write64(e.w, len(triples))
+	err = write32(e.w, len(triples))
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (e *Encoder) encodeValues(values []graph.Value) error {
 	if err != nil {
 		return err
 	}
-	err = write64(e.w, len(values))
+	err = write32(e.w, len(values))
 	if err != nil {
 		return err
 	}
@@ -75,9 +75,9 @@ func (e *Encoder) encodeValues(values []graph.Value) error {
 	return nil
 }
 
-func write64(w io.Writer, u int) error {
-	b := make([]byte, 8)
-	stdbinary.LittleEndian.PutUint64(b, uint64(u))
+func write32(w io.Writer, u int) error {
+	b := make([]byte, 4)
+	stdbinary.LittleEndian.PutUint32(b, uint32(u))
 	_, err := w.Write(b)
 	return err
 }

@@ -21,11 +21,11 @@ func NewDecoder(r io.Reader) *Decoder {
 // Decode deserializes a graph.Graph
 func (d *Decoder) Decode() (*graph.Graph, error) {
 	g := graph.New()
-	err := d.decodeDataset(g)
+	err := d.decodeValues(g)
 	if err != nil {
 		return nil, err
 	}
-	err = d.decodeValues(g)
+	err = d.decodeDataset(g)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (d *Decoder) decodeDataset(g *graph.Graph) error {
 	if err != nil {
 		return err
 	}
-	l, err := readUint64AsInt(d.r)
+	l, err := readUint32AsInt(d.r)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (d *Decoder) decodeValues(g *graph.Graph) error {
 	if err != nil {
 		return err
 	}
-	l, err := readUint64AsInt(d.r)
+	l, err := readUint32AsInt(d.r)
 	if err != nil {
 		return err
 	}
@@ -98,8 +98,8 @@ func checkHeader(r io.Reader, s string) error {
 	return nil
 }
 
-func readUint64AsInt(r io.Reader) (int, error) {
-	b := make([]byte, 8)
+func readUint32AsInt(r io.Reader) (int, error) {
+	b := make([]byte, 4)
 	n, err := io.ReadFull(r, b)
 	if err != nil {
 		return 0, err
@@ -107,6 +107,6 @@ func readUint64AsInt(r io.Reader) (int, error) {
 	if n != len(b) {
 		return 0, fmt.Errorf("wanted to read %d bytes int, got only %d", len(b), n)
 	}
-	ui := stdbinary.LittleEndian.Uint64(b)
+	ui := stdbinary.LittleEndian.Uint32(b)
 	return int(ui), nil
 }

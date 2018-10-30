@@ -1,11 +1,11 @@
 package csv
 
 import (
-	"time"
 	"compress/gzip"
 	"os"
 	"runtime"
 	"testing"
+	"time"
 
 	"github.com/lercher/rdf/graph"
 )
@@ -40,6 +40,12 @@ func TestLoadSmallCSVFile(t *testing.T) {
 	if g.CountTriples() != 2640 {
 		t.Errorf("want %d triples, got %d", 2640, g.CountTriples())
 	}
+
+	dsiz, val, idx := g.ByteSizes()
+	t.Logf("Dataset %v MiB", bToMb(uint64(dsiz)))
+	t.Logf("Values  %v MiB", bToMb(uint64(val)))
+	t.Logf("Indices %v MiB", bToMb(uint64(idx)))
+	t.Logf("Total   %v MiB", bToMb(uint64(dsiz+val+idx)))
 
 	ds := g.DistinctS()
 	if len(ds) != 20 {
@@ -167,15 +173,15 @@ func TestLoadLargeCSVFile(t *testing.T) {
 
 	g.RebuildIndex()
 	PrintMemUsage(t, "reindexed")
-	t.Log(time.Now().Sub(ti),"reindexed")
+	t.Log(time.Now().Sub(ti), "reindexed")
 
-	ds, val, idx := g.ByteSizes()
-	t.Logf("Dataset %v MiB", bToMb(uint64(ds)))
+	dsiz, val, idx := g.ByteSizes()
+	t.Logf("Dataset %v MiB", bToMb(uint64(dsiz)))
 	t.Logf("Values  %v MiB", bToMb(uint64(val)))
 	t.Logf("Indices %v MiB", bToMb(uint64(idx)))
+	t.Logf("Total   %v MiB", bToMb(uint64(dsiz+val+idx)))
 
-
-
+	
 	vv := g.VirtualValue(nsEst + `129216`)
 	if !vv.Known {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)

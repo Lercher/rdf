@@ -7,36 +7,24 @@ import (
 
 // Graph forms an RDF graph including several hidden indices
 type Graph struct {
-	dataset   map[Triple]*Triple
-	valuemap  map[Virtual]Value
-	valuesize int
-	sindex    map[Virtual][]*Triple
-	pindex    map[Virtual][]*Triple
-	oindex    map[Virtual][]*Triple
-	spindex   map[Virtual2][]*Triple
-	soindex   map[Virtual2][]*Triple
-	poindex   map[Virtual2][]*Triple
-}
-
-// CountValues counts all distinct values in s/p/o position of the Graph
-func (g *Graph) CountValues() int {
-	return len(g.valuemap)
-}
-
-// Values returns an unsorted list of all distinct valus in the Graph
-func (g *Graph) Values() []Value {
-	list := make([]Value, 0, g.CountValues())
-	for _, v := range g.valuemap {
-		list = append(list, v)
-	}
-	return list
+	dataset          map[Triple]*Triple
+	vhash2indexPlus1 map[vhash]Virtual
+	valuelist        []Value
+	valuesize        int
+	sindex           map[Virtual][]*Triple
+	pindex           map[Virtual][]*Triple
+	oindex           map[Virtual][]*Triple
+	spindex          map[Virtual2][]*Triple
+	soindex          map[Virtual2][]*Triple
+	poindex          map[Virtual2][]*Triple
 }
 
 // New creates a new Graph
 func New() *Graph {
 	return &Graph{
 		make(map[Triple]*Triple),
-		make(map[Virtual]Value),
+		make(map[vhash]Virtual),
+		nil,
 		0,
 		make(map[Virtual][]*Triple),
 		make(map[Virtual][]*Triple),
@@ -47,14 +35,14 @@ func New() *Graph {
 	}
 }
 
-// AddValue adds an unknown primitive to the graph's values. Returns either this new VirtualValue or the known one.
-func (g *Graph) AddValue(primitive interface{}) VirtualValue {
-	vv := g.VirtualValue(primitive)
-	if !vv.Known {
-		g.valuemap[vv.Virtual] = vv.Value
-		g.valuesize += vv.Size
-	}
-	return vv
+// CountValues counts all distinct values in s/p/o position of the Graph
+func (g *Graph) CountValues() int {
+	return len(g.valuelist)
+}
+
+// Values returns an unsorted list of all distinct valus in the Graph
+func (g *Graph) Values() []Value {
+	return g.valuelist
 }
 
 // Assert appends a new Triple to the Graph, unless it is already present
@@ -134,10 +122,11 @@ func (g *Graph) CountTriples() int {
 
 // PrepareValueSpace reserves memory for the given count of distinct values, it panics if the Graph is not empty
 func (g *Graph) PrepareValueSpace(size int) {
-	if len(g.valuemap) != 0 {
+	if len(g.valuelist) != 0 {
 		panic(errors.New("value space can only prepared if the graph is empty"))
 	}
-	g.valuemap = make(map[Virtual]Value, size)
+	g.valuelist = make([]Value, 0, size)
+	g.vhash2indexPlus1 = make(map[vhash]Virtual, size)
 }
 
 // PrepareVirtualSpace reserves memory for 3 times size hashes of 16 bytes, it panics if tha Graph is not empty
@@ -146,6 +135,18 @@ func (g *Graph) PrepareVirtualSpace(size int) {
 		panic(errors.New("virtual space can only prepared if the graph is empty"))
 	}
 	g.dataset = make(map[Triple]*Triple, size)
+}
+
+// AddValue adds an unknown primitive to the graph's values. Returns either this new VirtualValue or the known one.
+func (g *Graph) AddValue(primitive interface{}) VirtualValue {
+	vv := g.VirtualValue(primitive)
+	if !vv.Known {
+		g.valuelist = append(g.valuelist, vv.Value)
+		vv.Virtual = Virtual(len(g.valuelist))
+		g.vhash2indexPlus1[vv.vhash] = vv.Virtual
+		g.valuesize += vv.Size + 8 + 16 + 4
+	}
+	return vv
 }
 
 // VirtualValue retrieves a primitive keyed by its hash from the graph or creates a new VirtualValue
@@ -329,7 +330,7 @@ func (g *Graph) DistinctO() []Virtual {
 
 // ByteSizes returns estimated sizes of Dataset, Values and Index
 func (g *Graph) ByteSizes() (int, int, int) {
-	ds := (3*16 + 8) * len(g.dataset)
+	ds := (3*4 + 8) * len(g.dataset)
 
 	idx := 0
 	idx += calcsize1(g.sindex)
@@ -343,17 +344,17 @@ func (g *Graph) ByteSizes() (int, int, int) {
 }
 
 func calcsize1(index map[Virtual][]*Triple) int {
-	l := len(index)
+	l := (3 * 4) * len(index)
 	for _, list := range index {
-		l += len(list)
+		l += 8 * len(list)
 	}
-	return l * 8
+	return l
 }
 
 func calcsize2(index map[Virtual2][]*Triple) int {
-	l := len(index)
+	l := (3 * 4) * len(index)
 	for _, list := range index {
-		l += len(list)
+		l += 8 * len(list)
 	}
-	return l * 8
+	return l
 }

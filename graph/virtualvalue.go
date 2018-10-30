@@ -7,6 +7,7 @@ import (
 
 // VirtualValue pairs a Virtual (i.e. the hash value) with its real Value
 type VirtualValue struct {
+	vhash
 	Virtual
 	Value
 	Size  int
@@ -49,13 +50,15 @@ func virtualValueFloat(g *Graph, f float64) VirtualValue {
 }
 
 func vvalue(g *Graph, seed byte, bytes []byte, v interface{}) VirtualValue {
+	val := v
 	h := hash(seed, bytes)
-	val, ok := g.valuemap[h]
-	if !ok {
-		val = v
+	idx1, ok := g.vhash2indexPlus1[h]
+	if ok {
+		val = g.valuelist[idx1-1]
 	}
 	return VirtualValue{
-		Virtual: h,
+		vhash:   h,
+		Virtual: idx1,
 		Value:   val,
 		Known:   ok,
 		Size:    len(bytes),

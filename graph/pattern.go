@@ -30,7 +30,7 @@ func (p *Pattern) IsAnonymous() bool {
 // It is recommended to test IsVariable/IsAnonymous before using this method.
 func (p *Pattern) Virtual() Virtual {
 	if p.IsVariable() {
-		return Virtual{}
+		return 0
 	}
 	return p.virtual
 }

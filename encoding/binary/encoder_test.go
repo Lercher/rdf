@@ -33,7 +33,7 @@ func TestWriteString(t *testing.T) {
 	}
 	bytes := buf.Bytes()
 	t.Logf("%q", bytes)
-	if len(bytes) != 272 {
+	if len(bytes) != 156 {
 		t.Errorf("want %d bytes written, got %d", 272, len(bytes))
 	}
 }
