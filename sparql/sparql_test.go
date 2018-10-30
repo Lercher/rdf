@@ -36,8 +36,8 @@ func parse(t *testing.T, q string) (*AST, error) {
 
 func TestSparqlParserEmpty(t *testing.T) {
 	_, err := parse(t, emptyQuery)
-	if err != nil {
-		t.Error("empty should not err, but", err)
+	if err == nil {
+		t.Error("empty should err")
 	}
 }
 
