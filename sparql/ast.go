@@ -6,5 +6,6 @@ import "github.com/lercher/rdf/graph"
 type AST struct {
 	Base         graph.IRI
 	PrefixedIRIs []*graph.PrefixedIRI
-	QueryType    string
+	QueryType    string // select|ask|construct|describe
+	Modifier     string // nil|distinct|reduced
 }

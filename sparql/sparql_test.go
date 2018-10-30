@@ -10,15 +10,15 @@ const (
 	emptyQuery = `   `
 
 	simpleQuery = `
-BASE <http://xyz>
+base <http://xyz>
 PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
-PREFIX ont:   <http://ontology/>
-SELECT ?name WHERE {
+prefix ont:   <http://ontology/ÄÖÜßäöü/>
+SELECT distinct ?name Where {
   ?school a sch-ont:School.
   ?school sch-ont:establishmentName ?name.
   ?school sch-ont:districtAdministrative <http://statistics.data.gov.uk/id/local-authority-district/00AA>.
 }
-ORDER BY ?name
+ORDER by ?name
 `
 
 	badQuery = `
@@ -52,7 +52,7 @@ func TestSparqlParserBad(t *testing.T) {
 func TestSparqlParserSimple(t *testing.T) {
 	ast, err := parse(t, simpleQuery)
 	if err != nil {
-		t.Error("simple should not err, but", err)
+		t.Fatal("simple should not err, but", err)
 	}
 
 	w(t, "base", ast.Base, `<http://xyz>`)
@@ -60,9 +60,10 @@ func TestSparqlParserSimple(t *testing.T) {
 		t.Errorf("length prefix: want %d, got %d", 2, len(ast.PrefixedIRIs))
 	} else {
 		w(t, "prefix0", ast.PrefixedIRIs[0], `sch-ont:<http://education.data.gov.uk/def/school/>`)
-		w(t, "prefix1", ast.PrefixedIRIs[1], `ont:<http://ontology/>`)
+		w(t, "prefix1", ast.PrefixedIRIs[1], `ont:<http://ontology/ÄÖÜßäöü/>`)
 	}
 	w(t, "type", str(ast.QueryType), "select")
+	w(t, "modifier", str(ast.Modifier), "distinct")
 }
 
 func w(t *testing.T, what string, ser stringer, want string) {

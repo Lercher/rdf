@@ -1,6 +1,7 @@
 package sparql
 
 import (
+	"strings"
 	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/sparql/parser"
 )
@@ -28,6 +29,10 @@ func (w *walker) EnterPrefixDecl(ctx *parser.PrefixDeclContext) {
 }
 
 func (w *walker) EnterSelectQuery(ctx *parser.SelectQueryContext) {
+	mod := ctx.GetMod()
+	if mod != nil {
+		w.ast.Modifier = strings.ToLower(mod.GetText())
+	}
 	w.ast.QueryType = "select"
 }
 
