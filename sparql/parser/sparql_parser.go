@@ -305,10 +305,10 @@ var literalNames = []string{
 	"'CONSTRUCT'", "'DESCRIBE'", "'ASK'", "'FROM'", "'NAMED'", "'WHERE'", "'ORDER'",
 	"'BY'", "'ASC'", "'DESC'", "'LIMIT'", "'OFFSET'", "'{'", "'.'", "'}'",
 	"'OPTIONAL'", "'GRAPH'", "'UNION'", "'FILTER'", "'('", "','", "')'", "';'",
-	"'a'", "'['", "']'", "'||'", "'&&'", "'='", "'!='", "'<'", "'>'", "'<='",
+	"'A'", "'['", "']'", "'||'", "'&&'", "'='", "'!='", "'<'", "'>'", "'<='",
 	"'>='", "'+'", "'-'", "'/'", "'!'", "'STR'", "'LANG'", "'LANGMATCHES'",
-	"'DATATYPE'", "'BOUND'", "'sameTerm'", "'isIRI'", "'isURI'", "'isBLANK'",
-	"'isLITERAL'", "'REGEX'", "'^^'", "'true'", "'false'",
+	"'DATATYPE'", "'BOUND'", "'SAMETERM'", "'ISIRI'", "'ISURI'", "'ISBLANK'",
+	"'ISLITERAL'", "'REGEX'", "'^^'", "'true'", "'false'",
 }
 var symbolicNames = []string{
 	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
@@ -1095,6 +1095,12 @@ type ISelectQueryContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetMod returns the mod token.
+	GetMod() antlr.Token
+
+	// SetMod sets the mod token.
+	SetMod(antlr.Token)
+
 	// IsSelectQueryContext differentiates from other interfaces.
 	IsSelectQueryContext()
 }
@@ -1102,6 +1108,7 @@ type ISelectQueryContext interface {
 type SelectQueryContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	mod    antlr.Token
 }
 
 func NewEmptySelectQueryContext() *SelectQueryContext {
@@ -1125,6 +1132,10 @@ func NewSelectQueryContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 }
 
 func (s *SelectQueryContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *SelectQueryContext) GetMod() antlr.Token { return s.mod }
+
+func (s *SelectQueryContext) SetMod(v antlr.Token) { s.mod = v }
 
 func (s *SelectQueryContext) WhereClause() IWhereClauseContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IWhereClauseContext)(nil)).Elem(), 0)
@@ -1245,10 +1256,17 @@ func (p *SparqlParser) SelectQuery() (localctx ISelectQueryContext) {
 	if _la == SparqlParserT__3 || _la == SparqlParserT__4 {
 		{
 			p.SetState(164)
+
+			var _lt = p.GetTokenStream().LT(1)
+
+			localctx.(*SelectQueryContext).mod = _lt
+
 			_la = p.GetTokenStream().LA(1)
 
 			if !(_la == SparqlParserT__3 || _la == SparqlParserT__4) {
-				p.GetErrorHandler().RecoverInline(p)
+				var _ri = p.GetErrorHandler().RecoverInline(p)
+
+				localctx.(*SelectQueryContext).mod = _ri
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
 				p.Consume()

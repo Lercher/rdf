@@ -9,7 +9,8 @@ import (
 
 // Parse parses a SPARQL query to an abstract syntax tree
 func Parse(stream antlr.CharStream) (*AST, error) {
-	lexer := parser.NewSparqlLexer(stream)
+	upperstream := NewCaseChangingStream(stream, true)
+	lexer := parser.NewSparqlLexer(upperstream)
 	tstream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSparqlParser(tstream)
 
