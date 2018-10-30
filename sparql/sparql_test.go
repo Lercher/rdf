@@ -45,7 +45,7 @@ func TestSparqlParserEmpty(t *testing.T) {
 func TestSparqlParserBad(t *testing.T) {
 	_, err := parse(t, badQuery)
 	if err == nil {
-		t.Error("bad should err, but it dosn't")
+		t.Error("bad should err, but it doesn't")
 	}
 }
 
@@ -55,9 +55,21 @@ func TestSparqlParserSimple(t *testing.T) {
 		t.Error("simple should not err, but", err)
 	}
 
-	want := `http://xyz`
-	if ast.Base.URI() != want {
-		t.Errorf("base: want %s, got %s", want, ast.Base)
+	w(t, "base", ast.Base, `<http://xyz>`)
+	if len(ast.PrefixedIRIs) != 2 {
+		t.Errorf("length prefix: want %d, got %d", 2, len(ast.PrefixedIRIs))
+	} else {
+		w(t, "prefix0", ast.PrefixedIRIs[0], `sch-ont:<http://education.data.gov.uk/def/school/>`)
+		w(t, "prefix1", ast.PrefixedIRIs[1], `ont:<http://ontology/>`)
 	}
 }
 
+func w(t *testing.T, what string, ser stringer, want string) {
+	t.Helper()
+	got := ser.String()
+	if got != want {
+		t.Errorf("%s: want %q, got %q", what, want, got)
+	}
+}
+
+type stringer interface{ String() string }

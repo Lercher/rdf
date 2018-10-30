@@ -964,6 +964,18 @@ type IPrefixDeclContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetPrefix returns the prefix token.
+	GetPrefix() antlr.Token
+
+	// GetIri returns the iri token.
+	GetIri() antlr.Token
+
+	// SetPrefix sets the prefix token.
+	SetPrefix(antlr.Token)
+
+	// SetIri sets the iri token.
+	SetIri(antlr.Token)
+
 	// IsPrefixDeclContext differentiates from other interfaces.
 	IsPrefixDeclContext()
 }
@@ -971,6 +983,8 @@ type IPrefixDeclContext interface {
 type PrefixDeclContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	prefix antlr.Token
+	iri    antlr.Token
 }
 
 func NewEmptyPrefixDeclContext() *PrefixDeclContext {
@@ -994,6 +1008,14 @@ func NewPrefixDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 }
 
 func (s *PrefixDeclContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *PrefixDeclContext) GetPrefix() antlr.Token { return s.prefix }
+
+func (s *PrefixDeclContext) GetIri() antlr.Token { return s.iri }
+
+func (s *PrefixDeclContext) SetPrefix(v antlr.Token) { s.prefix = v }
+
+func (s *PrefixDeclContext) SetIri(v antlr.Token) { s.iri = v }
 
 func (s *PrefixDeclContext) PNAME_NS() antlr.TerminalNode {
 	return s.GetToken(SparqlParserPNAME_NS, 0)
@@ -1050,11 +1072,17 @@ func (p *SparqlParser) PrefixDecl() (localctx IPrefixDeclContext) {
 	}
 	{
 		p.SetState(160)
-		p.Match(SparqlParserPNAME_NS)
+
+		var _m = p.Match(SparqlParserPNAME_NS)
+
+		localctx.(*PrefixDeclContext).prefix = _m
 	}
 	{
 		p.SetState(161)
-		p.Match(SparqlParserIRI_REF)
+
+		var _m = p.Match(SparqlParserIRI_REF)
+
+		localctx.(*PrefixDeclContext).iri = _m
 	}
 
 	return localctx

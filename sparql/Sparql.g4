@@ -16,7 +16,7 @@ baseDecl
     ;
 
 prefixDecl
-    : 'PREFIX' PNAME_NS IRI_REF
+    : 'PREFIX' prefix=PNAME_NS iri=IRI_REF
     ;
 
 selectQuery
