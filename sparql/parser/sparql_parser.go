@@ -305,10 +305,10 @@ var literalNames = []string{
 	"'CONSTRUCT'", "'DESCRIBE'", "'ASK'", "'FROM'", "'NAMED'", "'WHERE'", "'ORDER'",
 	"'BY'", "'ASC'", "'DESC'", "'LIMIT'", "'OFFSET'", "'{'", "'.'", "'}'",
 	"'OPTIONAL'", "'GRAPH'", "'UNION'", "'FILTER'", "'('", "','", "')'", "';'",
-	"'a'", "'['", "']'", "'||'", "'&&'", "'='", "'!='", "'<'", "'>'", "'<='",
+	"'A'", "'['", "']'", "'||'", "'&&'", "'='", "'!='", "'<'", "'>'", "'<='",
 	"'>='", "'+'", "'-'", "'/'", "'!'", "'STR'", "'LANG'", "'LANGMATCHES'",
-	"'DATATYPE'", "'BOUND'", "'sameTerm'", "'isIRI'", "'isURI'", "'isBLANK'",
-	"'isLITERAL'", "'REGEX'", "'^^'", "'true'", "'false'",
+	"'DATATYPE'", "'BOUND'", "'SAMETERM'", "'ISIRI'", "'ISURI'", "'ISBLANK'",
+	"'ISLITERAL'", "'REGEX'", "'^^'", "'true'", "'false'",
 }
 var symbolicNames = []string{
 	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
@@ -855,6 +855,12 @@ type IBaseDeclContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetIri returns the iri token.
+	GetIri() antlr.Token
+
+	// SetIri sets the iri token.
+	SetIri(antlr.Token)
+
 	// IsBaseDeclContext differentiates from other interfaces.
 	IsBaseDeclContext()
 }
@@ -862,6 +868,7 @@ type IBaseDeclContext interface {
 type BaseDeclContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	iri    antlr.Token
 }
 
 func NewEmptyBaseDeclContext() *BaseDeclContext {
@@ -885,6 +892,10 @@ func NewBaseDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 }
 
 func (s *BaseDeclContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *BaseDeclContext) GetIri() antlr.Token { return s.iri }
+
+func (s *BaseDeclContext) SetIri(v antlr.Token) { s.iri = v }
 
 func (s *BaseDeclContext) IRI_REF() antlr.TerminalNode {
 	return s.GetToken(SparqlParserIRI_REF, 0)
@@ -937,7 +948,10 @@ func (p *SparqlParser) BaseDecl() (localctx IBaseDeclContext) {
 	}
 	{
 		p.SetState(157)
-		p.Match(SparqlParserIRI_REF)
+
+		var _m = p.Match(SparqlParserIRI_REF)
+
+		localctx.(*BaseDeclContext).iri = _m
 	}
 
 	return localctx
@@ -950,6 +964,18 @@ type IPrefixDeclContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetPrefix returns the prefix token.
+	GetPrefix() antlr.Token
+
+	// GetIri returns the iri token.
+	GetIri() antlr.Token
+
+	// SetPrefix sets the prefix token.
+	SetPrefix(antlr.Token)
+
+	// SetIri sets the iri token.
+	SetIri(antlr.Token)
+
 	// IsPrefixDeclContext differentiates from other interfaces.
 	IsPrefixDeclContext()
 }
@@ -957,6 +983,8 @@ type IPrefixDeclContext interface {
 type PrefixDeclContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	prefix antlr.Token
+	iri    antlr.Token
 }
 
 func NewEmptyPrefixDeclContext() *PrefixDeclContext {
@@ -980,6 +1008,14 @@ func NewPrefixDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 }
 
 func (s *PrefixDeclContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *PrefixDeclContext) GetPrefix() antlr.Token { return s.prefix }
+
+func (s *PrefixDeclContext) GetIri() antlr.Token { return s.iri }
+
+func (s *PrefixDeclContext) SetPrefix(v antlr.Token) { s.prefix = v }
+
+func (s *PrefixDeclContext) SetIri(v antlr.Token) { s.iri = v }
 
 func (s *PrefixDeclContext) PNAME_NS() antlr.TerminalNode {
 	return s.GetToken(SparqlParserPNAME_NS, 0)
@@ -1036,11 +1072,17 @@ func (p *SparqlParser) PrefixDecl() (localctx IPrefixDeclContext) {
 	}
 	{
 		p.SetState(160)
-		p.Match(SparqlParserPNAME_NS)
+
+		var _m = p.Match(SparqlParserPNAME_NS)
+
+		localctx.(*PrefixDeclContext).prefix = _m
 	}
 	{
 		p.SetState(161)
-		p.Match(SparqlParserIRI_REF)
+
+		var _m = p.Match(SparqlParserIRI_REF)
+
+		localctx.(*PrefixDeclContext).iri = _m
 	}
 
 	return localctx
@@ -1053,6 +1095,12 @@ type ISelectQueryContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetMod returns the mod token.
+	GetMod() antlr.Token
+
+	// SetMod sets the mod token.
+	SetMod(antlr.Token)
+
 	// IsSelectQueryContext differentiates from other interfaces.
 	IsSelectQueryContext()
 }
@@ -1060,6 +1108,7 @@ type ISelectQueryContext interface {
 type SelectQueryContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	mod    antlr.Token
 }
 
 func NewEmptySelectQueryContext() *SelectQueryContext {
@@ -1083,6 +1132,10 @@ func NewSelectQueryContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 }
 
 func (s *SelectQueryContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *SelectQueryContext) GetMod() antlr.Token { return s.mod }
+
+func (s *SelectQueryContext) SetMod(v antlr.Token) { s.mod = v }
 
 func (s *SelectQueryContext) WhereClause() IWhereClauseContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IWhereClauseContext)(nil)).Elem(), 0)
@@ -1203,10 +1256,17 @@ func (p *SparqlParser) SelectQuery() (localctx ISelectQueryContext) {
 	if _la == SparqlParserT__3 || _la == SparqlParserT__4 {
 		{
 			p.SetState(164)
+
+			var _lt = p.GetTokenStream().LT(1)
+
+			localctx.(*SelectQueryContext).mod = _lt
+
 			_la = p.GetTokenStream().LA(1)
 
 			if !(_la == SparqlParserT__3 || _la == SparqlParserT__4) {
-				p.GetErrorHandler().RecoverInline(p)
+				var _ri = p.GetErrorHandler().RecoverInline(p)
+
+				localctx.(*SelectQueryContext).mod = _ri
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
 				p.Consume()

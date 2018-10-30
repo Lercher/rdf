@@ -13,8 +13,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	sparql.Parse(input)
+	ast, err := sparql.Parse(input)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	log.Println("base", ast.Base)
 }

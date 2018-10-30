@@ -1,5 +1,7 @@
 /* Copyright 2007 the original author or authors. See readme.md for details. 
- * File adapted for golang. var->varx, string->rdfstring */
+ * File adapted for golang. var->varx, string->rdfstring 
+ * uppercased all keywords to support case insensitve lexing, i.e. 'a' and all in builtInCall
+ */
 
 grammar Sparql;
 
@@ -12,15 +14,15 @@ prologue
     ;
 
 baseDecl
-    : 'BASE' IRI_REF
+    : 'BASE' iri=IRI_REF
     ;
 
 prefixDecl
-    : 'PREFIX' PNAME_NS IRI_REF
+    : 'PREFIX' prefix=PNAME_NS iri=IRI_REF
     ;
 
 selectQuery
-    : 'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( varx+ | '*' ) datasetClause* whereClause solutionModifier
+    : 'SELECT' mod=( 'DISTINCT' | 'REDUCED' )? ( varx+ | '*' ) datasetClause* whereClause solutionModifier
     ;
 
 constructQuery
@@ -150,7 +152,7 @@ object
 
 verb
     : varOrIRIref
-    | 'a'
+    | 'A'
     ;
 
 triplesNode
@@ -246,11 +248,11 @@ builtInCall
     | 'LANGMATCHES' '(' expression ',' expression ')'
     | 'DATATYPE' '(' expression ')'
     | 'BOUND' '(' varx ')'
-    | 'sameTerm' '(' expression ',' expression ')'
-    | 'isIRI' '(' expression ')'
-    | 'isURI' '(' expression ')'
-    | 'isBLANK' '(' expression ')'
-    | 'isLITERAL' '(' expression ')'
+    | 'SAMETERM' '(' expression ',' expression ')'
+    | 'ISIRI' '(' expression ')'
+    | 'ISURI' '(' expression ')'
+    | 'ISBLANK' '(' expression ')'
+    | 'ISLITERAL' '(' expression ')'
     | regexExpression
     ;
 

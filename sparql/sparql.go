@@ -1,18 +1,31 @@
 package sparql
 
 import (
+	"fmt"
+
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/lercher/rdf/sparql/parser"
 )
 
-
-func Parse(stream antlr.CharStream) error {
-	lexer := parser.NewSparqlLexer(stream)
+// Parse parses a SPARQL query to an abstract syntax tree
+func Parse(stream antlr.CharStream) (*AST, error) {
+	upperstream := NewCaseChangingStream(stream, true)
+	lexer := parser.NewSparqlLexer(upperstream)
 	tstream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSparqlParser(tstream)
-	p.AddErrorListener(antlr.NewDiagnosticErrorListener(true))
+
+	el := &ErrorListener{DiagnosticErrorListener: antlr.NewDiagnosticErrorListener(true), errors: new(errors)}
+	p.AddErrorListener(el)
+
 	p.BuildParseTrees = true
 	tree := p.Query()
-	antlr.ParseTreeWalkerDefault.Walk(new(walker), tree)
-	return nil
+	w := &walker{}
+	if el.errors.ErrorCount > 0 {
+		return nil, fmt.Errorf("%d syntax error(s)", el.errors.ErrorCount)
+	}
+	antlr.ParseTreeWalkerDefault.Walk(w, tree)
+	if el.errors.ErrorCount > 0 || el.errors.WarningCount > 0 {
+		return &w.ast, fmt.Errorf("%d semantic error(s) and %d warning(s)", el.errors.ErrorCount, el.errors.WarningCount)
+	}
+	return &w.ast, nil
 }
