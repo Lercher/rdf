@@ -1,6 +1,7 @@
 package sparql
 
 import (
+	"github.com/lercher/rdf/graph"
 	"log"
 
 	"github.com/lercher/rdf/sparql/parser"
@@ -19,5 +20,5 @@ type walker struct {
 func (w *walker) EnterBaseDecl(ctx *parser.BaseDeclContext) {
 	log.Println("EnterBaseDecl")
 	iri := ctx.GetIri()
-	w.ast.Base = iri.GetText()
+	w.ast.Base = graph.IRIParse(iri.GetText())
 }

@@ -54,8 +54,8 @@ func TestSparqlParserSimple(t *testing.T) {
 		t.Error("simple should not err, but", err)
 	}
 
-	want := `<http://xyz>`
-	if ast.Base != want {
+	want := `http://xyz`
+	if ast.Base.URI() != want {
 		t.Errorf("base: want %s, got %s", want, ast.Base)
 	}
 }
