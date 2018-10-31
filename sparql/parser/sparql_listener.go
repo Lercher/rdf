@@ -1,4 +1,4 @@
-// Code generated from /home/lercher/go/src/github.com/lercher/rdf/sparql/Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from d:\Daten\Go\src\github.com\lercher\rdf\sparql\Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
 
 package parser // Sparql
 

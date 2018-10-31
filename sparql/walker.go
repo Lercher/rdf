@@ -9,7 +9,7 @@ import (
 // Walker represents the AST of a Query
 type walker struct {
 	*parser.BaseSparqlListener
-	ast AST
+	ast *AST
 }
 
 //func (w *walker) EnterEveryRule(ctx antlr.ParserRuleContext) {
@@ -34,6 +34,16 @@ func (w *walker) EnterSelectQuery(ctx *parser.SelectQueryContext) {
 		w.ast.Modifier = strings.ToLower(mod.GetText())
 	}
 	w.ast.QueryType = "select"
+	if ctx.GetVarstar() != nil {
+		w.ast.Projection.All = true
+	} else {
+		w.ast.Projection.All = false
+		for _, vtctx := range ctx.GetVars() {
+			vt := vtctx.GetText();
+			v := w.ast.Variables.Register(vt)
+			w.ast.Projection.Variables = append(w.ast.Projection.Variables, v)
+		}
+	}
 }
 
 func (w *walker) EnterConstructQuery(ctx *parser.ConstructQueryContext) {

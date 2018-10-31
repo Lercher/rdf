@@ -62,16 +62,22 @@ func TestSparqlParserSimple(t *testing.T) {
 		w(t, "prefix0", ast.PrefixedIRIs[0], `sch-ont:<http://education.data.gov.uk/def/school/>`)
 		w(t, "prefix1", ast.PrefixedIRIs[1], `ont:<http://ontology/ÄÖÜßäöü/>`)
 	}
-	w(t, "type", str(ast.QueryType), "select")
-	w(t, "modifier", str(ast.Modifier), "distinct")
+	ws(t, "type", ast.QueryType, "select")
+	ws(t, "modifier", ast.Modifier, "distinct")
+	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
+	w(t, "variables", ast.Variables, "map[name:0 school:1]")
+}
+
+func ws(t *testing.T, what string, got string, want string) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s: want %q, got %q", what, want, got)
+	}
 }
 
 func w(t *testing.T, what string, ser stringer, want string) {
 	t.Helper()
-	got := ser.String()
-	if got != want {
-		t.Errorf("%s: want %q, got %q", what, want, got)
-	}
+	ws(t, what, ser.String(), want)
 }
 
 type stringer interface{ String() string }

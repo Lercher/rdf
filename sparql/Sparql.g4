@@ -22,7 +22,7 @@ prefixDecl
     ;
 
 selectQuery
-    : 'SELECT' mod=( 'DISTINCT' | 'REDUCED' )? ( varx+ | '*' ) datasetClause* whereClause solutionModifier
+    : 'SELECT' mod=( 'DISTINCT' | 'REDUCED' )? ( vars+=varx+ | varstar='*' ) datasetClause* whereClause solutionModifier
     ;
 
 constructQuery

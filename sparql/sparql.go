@@ -19,13 +19,13 @@ func Parse(stream antlr.CharStream) (*AST, error) {
 
 	p.BuildParseTrees = true
 	tree := p.Query()
-	w := &walker{}
+	w := &walker{ast: NewAST()}
 	if el.errors.ErrorCount > 0 {
 		return nil, fmt.Errorf("%d syntax error(s)", el.errors.ErrorCount)
 	}
 	antlr.ParseTreeWalkerDefault.Walk(w, tree)
 	if el.errors.ErrorCount > 0 || el.errors.WarningCount > 0 {
-		return &w.ast, fmt.Errorf("%d semantic error(s) and %d warning(s)", el.errors.ErrorCount, el.errors.WarningCount)
+		return w.ast, fmt.Errorf("%d semantic error(s) and %d warning(s)", el.errors.ErrorCount, el.errors.WarningCount)
 	}
-	return &w.ast, nil
+	return w.ast, nil
 }

@@ -1,4 +1,4 @@
-// Code generated from /home/lercher/go/src/github.com/lercher/rdf/sparql/Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from d:\Daten\Go\src\github.com\lercher\rdf\sparql\Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
 
 package parser // Sparql
 
@@ -1098,8 +1098,26 @@ type ISelectQueryContext interface {
 	// GetMod returns the mod token.
 	GetMod() antlr.Token
 
+	// GetVarstar returns the varstar token.
+	GetVarstar() antlr.Token
+
 	// SetMod sets the mod token.
 	SetMod(antlr.Token)
+
+	// SetVarstar sets the varstar token.
+	SetVarstar(antlr.Token)
+
+	// Get_varx returns the _varx rule contexts.
+	Get_varx() IVarxContext
+
+	// Set_varx sets the _varx rule contexts.
+	Set_varx(IVarxContext)
+
+	// GetVars returns the vars rule context list.
+	GetVars() []IVarxContext
+
+	// SetVars sets the vars rule context list.
+	SetVars([]IVarxContext)
 
 	// IsSelectQueryContext differentiates from other interfaces.
 	IsSelectQueryContext()
@@ -1107,8 +1125,11 @@ type ISelectQueryContext interface {
 
 type SelectQueryContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-	mod    antlr.Token
+	parser  antlr.Parser
+	mod     antlr.Token
+	_varx   IVarxContext
+	vars    []IVarxContext
+	varstar antlr.Token
 }
 
 func NewEmptySelectQueryContext() *SelectQueryContext {
@@ -1135,7 +1156,19 @@ func (s *SelectQueryContext) GetParser() antlr.Parser { return s.parser }
 
 func (s *SelectQueryContext) GetMod() antlr.Token { return s.mod }
 
+func (s *SelectQueryContext) GetVarstar() antlr.Token { return s.varstar }
+
 func (s *SelectQueryContext) SetMod(v antlr.Token) { s.mod = v }
+
+func (s *SelectQueryContext) SetVarstar(v antlr.Token) { s.varstar = v }
+
+func (s *SelectQueryContext) Get_varx() IVarxContext { return s._varx }
+
+func (s *SelectQueryContext) Set_varx(v IVarxContext) { s._varx = v }
+
+func (s *SelectQueryContext) GetVars() []IVarxContext { return s.vars }
+
+func (s *SelectQueryContext) SetVars(v []IVarxContext) { s.vars = v }
 
 func (s *SelectQueryContext) WhereClause() IWhereClauseContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IWhereClauseContext)(nil)).Elem(), 0)
@@ -1286,8 +1319,12 @@ func (p *SparqlParser) SelectQuery() (localctx ISelectQueryContext) {
 		for ok := true; ok; ok = _la == SparqlParserVAR1 || _la == SparqlParserVAR2 {
 			{
 				p.SetState(167)
-				p.Varx()
+
+				var _x = p.Varx()
+
+				localctx.(*SelectQueryContext)._varx = _x
 			}
+			localctx.(*SelectQueryContext).vars = append(localctx.(*SelectQueryContext).vars, localctx.(*SelectQueryContext)._varx)
 
 			p.SetState(170)
 			p.GetErrorHandler().Sync(p)
@@ -1297,7 +1334,10 @@ func (p *SparqlParser) SelectQuery() (localctx ISelectQueryContext) {
 	case SparqlParserT__5:
 		{
 			p.SetState(172)
-			p.Match(SparqlParserT__5)
+
+			var _m = p.Match(SparqlParserT__5)
+
+			localctx.(*SelectQueryContext).varstar = _m
 		}
 
 	default:
