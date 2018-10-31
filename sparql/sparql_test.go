@@ -24,8 +24,10 @@ ORDER by ?name
 	badQuery = `
 BASE <http://xyz>
 PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
-SELECT ?name WHERE { ?s ?p
+SELECT ?name FROM <http://unsupported> WHERE { ?s ?p
 `
+
+	unsupportedQuery = `SELECT ?name FROM <http://unsupported> WHERE { ?s ?s ?s.}`
 )
 
 func parse(t *testing.T, q string) (*AST, error) {
@@ -45,8 +47,19 @@ func TestSparqlParserEmpty(t *testing.T) {
 func TestSparqlParserBad(t *testing.T) {
 	_, err := parse(t, badQuery)
 	if err == nil {
-		t.Error("bad should err, but it doesn't")
+		t.Fatal("bad should err, but it doesn't")
 	}
+	got := err.Error()
+	ws(t, "bad error message", got, "1 syntax error(s)")
+}
+
+func TestSparqlParserUnsupported(t *testing.T) {
+	_, err := parse(t, unsupportedQuery)
+	if err == nil {
+		t.Fatal("unsupported should err, but it doesn't")
+	}
+	got := err.Error()
+	ws(t, "unsupported error message", got, "1 semantic error(s) and 0 warning(s)")
 }
 
 func TestSparqlParserSimple(t *testing.T) {

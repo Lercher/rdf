@@ -25,6 +25,14 @@ func (e *errors) SemErr(
 	e.SemanticError(line, column, id, msg)
 }
 
+// SemanticErrorAt logs a semantic error at a scanned Token
+func (e *errors) SemanticErrorAt(t antlr.Token, id int, msg string) {
+	if t == nil {
+		e.SemanticErrorGlobal(id, msg)
+	}
+	e.SemanticError(t.GetLine(), t.GetColumn(), id, msg+" at "+t.GetText())
+}
+
 // SemanticError logs a semantic error
 func (e *errors) SemanticError(
 	line, column int,

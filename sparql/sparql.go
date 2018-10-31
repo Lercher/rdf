@@ -19,7 +19,7 @@ func Parse(stream antlr.CharStream) (*AST, error) {
 
 	p.BuildParseTrees = true
 	tree := p.Query()
-	w := &walker{ast: NewAST()}
+	w := &walker{ast: NewAST(), ErrorListener: el}
 	if el.errors.ErrorCount > 0 {
 		return nil, fmt.Errorf("%d syntax error(s)", el.errors.ErrorCount)
 	}

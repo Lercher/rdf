@@ -9,6 +9,7 @@ import (
 // Walker represents the AST of a Query
 type walker struct {
 	*parser.BaseSparqlListener
+	*ErrorListener
 	ast *AST
 }
 
@@ -56,4 +57,8 @@ func (w *walker) EnterDescribeQuery(ctx *parser.DescribeQueryContext) {
 
 func (w *walker) EnterAskQuery(ctx *parser.AskQueryContext) {
 	w.ast.QueryType = "ask"
+}
+
+func (w * walker) ExitWhereClause(ctx *parser.WhereClauseContext) {
+	w.ast.Where = w.ast.temporary.groupGraphPattern
 }
