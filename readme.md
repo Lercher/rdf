@@ -85,3 +85,7 @@ Engine to execute an algebra instance on a graph
 ### package sparql
 
 Parsing SPARQL syntax to form an algebra instance
+
+## Ressources
+
+* [SPARQL By Example - A Tutorial](https://www.w3.org/2009/Talks/0615-qbe/)
