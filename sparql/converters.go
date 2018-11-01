@@ -2,6 +2,8 @@ package sparql
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/lercher/rdf/algebra"
 	"github.com/lercher/rdf/graph"
@@ -87,6 +89,43 @@ func convertVarOrTermContext(ctx *parser.VarOrTermContext, symbols *symbols) (al
 			return nil, err
 		}
 		return lit, nil
+	}
+
+	// numericLiteral
+	if gtC.GetNum() != nil {
+		num := gtC.GetNum().GetText()
+		if strings.Contains(num, ".") || strings.Contains(num, "e") || strings.Contains(num, "E") {
+			f, err := strconv.ParseFloat(num, 64)
+			if err != nil {
+				return nil, err
+			}
+			return graph.Float(f), nil
+		}
+		i, err := strconv.Atoi(num)
+		if err != nil {
+			return nil, err
+		}
+		return graph.Int(i), nil
+	}
+
+	// booleanLiteral
+	if gtC.GetBol() != nil {
+		bol := gtC.GetBol().GetText()
+		bol = strings.ToLower(bol)
+		if bol == "true" {
+			return graph.Bool(true), nil
+		}
+		return graph.Bool(false), nil
+	}
+
+	// blankNode
+	if gtC.GetBlk() != nil {
+		return algebra.BlankVariable, nil
+	}
+
+	// NIL
+	if gtC.GetEmp() != nil {
+		return graph.NIL, nil
 	}
 
 	return nil, fmt.Errorf("not implemnted: %v", gtC.GetText())

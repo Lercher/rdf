@@ -1,6 +1,7 @@
 package sparql
 
 import (
+	"github.com/lercher/rdf/algebra"
 	"log"
 	"strings"
 
@@ -77,7 +78,7 @@ func (w *walker) EnterVerb(ctx *parser.VerbContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2001, err.Error())
 		return
 	}
-	log.Printf("Verb %s", verb)
+	log.Println("Verb ", algebra.DescribeVerb(verb))
 }
 
 func (w *walker) EnterVarOrTerm(ctx *parser.VarOrTermContext) {
@@ -86,7 +87,7 @@ func (w *walker) EnterVarOrTerm(ctx *parser.VarOrTermContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2002, err.Error())
 		return
 	}
-	log.Printf("VarOrTerm %s", vot)
+	log.Println("VarOrTerm ", algebra.DescribeVerb(vot))
 }
 
 func (w *walker) EnterRdfLiteral(ctx *parser.RdfLiteralContext) {
@@ -95,5 +96,5 @@ func (w *walker) EnterRdfLiteral(ctx *parser.RdfLiteralContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2003, err.Error())
 		return
 	}
-	log.Println("RdfLiteral", lit)
+	log.Println("RdfLiteral", algebra.DescribeVerb(lit))
 }

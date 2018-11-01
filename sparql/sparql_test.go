@@ -28,6 +28,7 @@ SELECT distinct ?name Where {
 	a "double school"@EN-U5V5-Z7A7
    .
    ?name a ont:xyz.
+   _:x a [].
 }
 ORDER by ?name
 `
