@@ -22,19 +22,33 @@ prefixDecl
     ;
 
 selectQuery
-    : 'SELECT' mod=( 'DISTINCT' | 'REDUCED' )? ( vars+=varx+ | varstar='*' ) datasetClause* whereClause solutionModifier
+    : 'SELECT' mod=( 'DISTINCT' | 'REDUCED' )? 
+    ( vars+=varx+ | varstar='*' ) 
+    datasetClause* 
+    whereClause 
+    solutionModifier
     ;
 
 constructQuery
-    : 'CONSTRUCT' constructTemplate datasetClause* whereClause solutionModifier
+    : 'CONSTRUCT' 
+    constructTemplate 
+    datasetClause* 
+    whereClause 
+    solutionModifier
     ;
 
 describeQuery
-    : 'DESCRIBE' ( varOrIRIref+ | '*' ) datasetClause* whereClause? solutionModifier
+    : 'DESCRIBE' 
+    ( varOrIRIref+ | '*' ) 
+    datasetClause* 
+    whereClause? 
+    solutionModifier
     ;
 
 askQuery
-    : 'ASK' datasetClause* whereClause
+    : 'ASK' 
+    datasetClause* 
+    whereClause
     ;
 
 datasetClause
@@ -91,7 +105,9 @@ triplesBlock
     ;
 
 graphPatternNotTriples
-    : optionalGraphPattern | groupOrUnionGraphPattern | graphGraphPattern
+    : optionalGraphPattern 
+    | groupOrUnionGraphPattern 
+    | graphGraphPattern
     ;
 
 optionalGraphPattern
@@ -135,7 +151,10 @@ triplesSameSubject
     ;
 
 propertyListNotEmpty
-    : verb objectList ( ';' ( verb objectList )? )*
+    :    verb objectList 
+    ( ';' 
+       ( verb objectList )? 
+    )*
     ;
 
 propertyList
