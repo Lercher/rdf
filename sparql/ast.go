@@ -24,9 +24,22 @@ type temporary struct {
 }
 
 func newAST() *AST {
-	return &AST{
+	 ast :=&AST{
 		symbols: symbols{
 			Variables: algebra.NewVariables(),
 		},
 	}
+	ast.symbols.AddPrefix("rdf", RDF)
+	ast.symbols.AddPrefix("rdfs", RDFS)
+	ast.symbols.AddPrefix("xs", XS)
+	return ast
+}
+
+func (s *symbols) AddPrefix(p string, iri graph.IRI) *graph.PrefixedIRI {
+	pi := &graph.PrefixedIRI{
+		Prefix: graph.PrefixParse(p),
+		IRI: iri,
+	}
+	s.PrefixedIRIs = append(s.PrefixedIRIs, pi)
+	return pi
 }

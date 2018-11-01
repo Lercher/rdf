@@ -1,6 +1,7 @@
 package sparql
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
@@ -17,6 +18,16 @@ SELECT distinct ?name Where {
   ?school a sch-ont:School.
   ?school sch-ont:establishmentName ?name.
   ?school sch-ont:districtAdministrative <http://statistics.data.gov.uk/id/local-authority-district/00AA>.
+  ?name 
+    a 5.5;
+  	a true;
+	a false;
+	a ();
+	a 12345;
+	a 'school'^^xs:string;
+	a "double school"@EN-U5V5-Z7A7
+   .
+   ?name a ont:xyz.
 }
 ORDER by ?name
 `
@@ -63,7 +74,9 @@ func TestSparqlParserUnsupported(t *testing.T) {
 }
 
 func TestSparqlParserSimple(t *testing.T) {
-	t.Log(simpleQuery)
+	for i, q := range strings.Split(simpleQuery, "\n") {
+		t.Log(i+1, q)
+	}
 	ast, err := parse(t, simpleQuery)
 	if err != nil {
 		t.Fatal("simple should not err, but", err)
@@ -80,6 +93,7 @@ func TestSparqlParserSimple(t *testing.T) {
 	ws(t, "modifier", ast.Modifier, "distinct")
 	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
 	w(t, "variables", ast.Variables, "map[name:0 school:1]")
+	t.Error("TODO")
 }
 
 func ws(t *testing.T, what string, got string, want string) {

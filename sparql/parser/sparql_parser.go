@@ -308,7 +308,7 @@ var literalNames = []string{
 	"'A'", "'['", "']'", "'||'", "'&&'", "'='", "'!='", "'<'", "'>'", "'<='",
 	"'>='", "'+'", "'-'", "'/'", "'!'", "'STR'", "'LANG'", "'LANGMATCHES'",
 	"'DATATYPE'", "'BOUND'", "'SAMETERM'", "'ISIRI'", "'ISURI'", "'ISBLANK'",
-	"'ISLITERAL'", "'REGEX'", "'^^'", "'true'", "'false'",
+	"'ISLITERAL'", "'REGEX'", "'^^'", "'TRUE'", "'FALSE'",
 }
 var symbolicNames = []string{
 	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
@@ -6438,6 +6438,42 @@ type IGraphTermContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetEmp returns the emp token.
+	GetEmp() antlr.Token
+
+	// SetEmp sets the emp token.
+	SetEmp(antlr.Token)
+
+	// GetIri returns the iri rule contexts.
+	GetIri() IIriRefContext
+
+	// GetLit returns the lit rule contexts.
+	GetLit() IRdfLiteralContext
+
+	// GetNum returns the num rule contexts.
+	GetNum() INumericLiteralContext
+
+	// GetBol returns the bol rule contexts.
+	GetBol() IBooleanLiteralContext
+
+	// GetBlk returns the blk rule contexts.
+	GetBlk() IBlankNodeContext
+
+	// SetIri sets the iri rule contexts.
+	SetIri(IIriRefContext)
+
+	// SetLit sets the lit rule contexts.
+	SetLit(IRdfLiteralContext)
+
+	// SetNum sets the num rule contexts.
+	SetNum(INumericLiteralContext)
+
+	// SetBol sets the bol rule contexts.
+	SetBol(IBooleanLiteralContext)
+
+	// SetBlk sets the blk rule contexts.
+	SetBlk(IBlankNodeContext)
+
 	// IsGraphTermContext differentiates from other interfaces.
 	IsGraphTermContext()
 }
@@ -6445,6 +6481,12 @@ type IGraphTermContext interface {
 type GraphTermContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	iri    IIriRefContext
+	lit    IRdfLiteralContext
+	num    INumericLiteralContext
+	bol    IBooleanLiteralContext
+	blk    IBlankNodeContext
+	emp    antlr.Token
 }
 
 func NewEmptyGraphTermContext() *GraphTermContext {
@@ -6468,6 +6510,30 @@ func NewGraphTermContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 }
 
 func (s *GraphTermContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *GraphTermContext) GetEmp() antlr.Token { return s.emp }
+
+func (s *GraphTermContext) SetEmp(v antlr.Token) { s.emp = v }
+
+func (s *GraphTermContext) GetIri() IIriRefContext { return s.iri }
+
+func (s *GraphTermContext) GetLit() IRdfLiteralContext { return s.lit }
+
+func (s *GraphTermContext) GetNum() INumericLiteralContext { return s.num }
+
+func (s *GraphTermContext) GetBol() IBooleanLiteralContext { return s.bol }
+
+func (s *GraphTermContext) GetBlk() IBlankNodeContext { return s.blk }
+
+func (s *GraphTermContext) SetIri(v IIriRefContext) { s.iri = v }
+
+func (s *GraphTermContext) SetLit(v IRdfLiteralContext) { s.lit = v }
+
+func (s *GraphTermContext) SetNum(v INumericLiteralContext) { s.num = v }
+
+func (s *GraphTermContext) SetBol(v IBooleanLiteralContext) { s.bol = v }
+
+func (s *GraphTermContext) SetBlk(v IBlankNodeContext) { s.blk = v }
 
 func (s *GraphTermContext) IriRef() IIriRefContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IIriRefContext)(nil)).Elem(), 0)
@@ -6571,42 +6637,60 @@ func (p *SparqlParser) GraphTerm() (localctx IGraphTermContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(432)
-			p.IriRef()
+
+			var _x = p.IriRef()
+
+			localctx.(*GraphTermContext).iri = _x
 		}
 
 	case SparqlParserSTRING_LITERAL1, SparqlParserSTRING_LITERAL2:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(433)
-			p.RdfLiteral()
+
+			var _x = p.RdfLiteral()
+
+			localctx.(*GraphTermContext).lit = _x
 		}
 
 	case SparqlParserINTEGER, SparqlParserDECIMAL, SparqlParserDOUBLE, SparqlParserINTEGER_POSITIVE, SparqlParserDECIMAL_POSITIVE, SparqlParserDOUBLE_POSITIVE, SparqlParserINTEGER_NEGATIVE, SparqlParserDECIMAL_NEGATIVE, SparqlParserDOUBLE_NEGATIVE:
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(434)
-			p.NumericLiteral()
+
+			var _x = p.NumericLiteral()
+
+			localctx.(*GraphTermContext).num = _x
 		}
 
 	case SparqlParserT__56, SparqlParserT__57:
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(435)
-			p.BooleanLiteral()
+
+			var _x = p.BooleanLiteral()
+
+			localctx.(*GraphTermContext).bol = _x
 		}
 
 	case SparqlParserBLANK_NODE_LABEL, SparqlParserANON:
 		p.EnterOuterAlt(localctx, 5)
 		{
 			p.SetState(436)
-			p.BlankNode()
+
+			var _x = p.BlankNode()
+
+			localctx.(*GraphTermContext).blk = _x
 		}
 
 	case SparqlParserNIL:
 		p.EnterOuterAlt(localctx, 6)
 		{
 			p.SetState(437)
-			p.Match(SparqlParserNIL)
+
+			var _m = p.Match(SparqlParserNIL)
+
+			localctx.(*GraphTermContext).emp = _m
 		}
 
 	default:
@@ -8766,6 +8850,24 @@ type IRdfLiteralContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetLang returns the lang token.
+	GetLang() antlr.Token
+
+	// SetLang sets the lang token.
+	SetLang(antlr.Token)
+
+	// GetStr returns the str rule contexts.
+	GetStr() IRdfstringContext
+
+	// GetIri returns the iri rule contexts.
+	GetIri() IIriRefContext
+
+	// SetStr sets the str rule contexts.
+	SetStr(IRdfstringContext)
+
+	// SetIri sets the iri rule contexts.
+	SetIri(IIriRefContext)
+
 	// IsRdfLiteralContext differentiates from other interfaces.
 	IsRdfLiteralContext()
 }
@@ -8773,6 +8875,9 @@ type IRdfLiteralContext interface {
 type RdfLiteralContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	str    IRdfstringContext
+	lang   antlr.Token
+	iri    IIriRefContext
 }
 
 func NewEmptyRdfLiteralContext() *RdfLiteralContext {
@@ -8796,6 +8901,18 @@ func NewRdfLiteralContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 }
 
 func (s *RdfLiteralContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *RdfLiteralContext) GetLang() antlr.Token { return s.lang }
+
+func (s *RdfLiteralContext) SetLang(v antlr.Token) { s.lang = v }
+
+func (s *RdfLiteralContext) GetStr() IRdfstringContext { return s.str }
+
+func (s *RdfLiteralContext) GetIri() IIriRefContext { return s.iri }
+
+func (s *RdfLiteralContext) SetStr(v IRdfstringContext) { s.str = v }
+
+func (s *RdfLiteralContext) SetIri(v IIriRefContext) { s.iri = v }
 
 func (s *RdfLiteralContext) Rdfstring() IRdfstringContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IRdfstringContext)(nil)).Elem(), 0)
@@ -8864,7 +8981,10 @@ func (p *SparqlParser) RdfLiteral() (localctx IRdfLiteralContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(593)
-		p.Rdfstring()
+
+		var _x = p.Rdfstring()
+
+		localctx.(*RdfLiteralContext).str = _x
 	}
 	p.SetState(597)
 	p.GetErrorHandler().Sync(p)
@@ -8873,7 +8993,10 @@ func (p *SparqlParser) RdfLiteral() (localctx IRdfLiteralContext) {
 	case SparqlParserLANGTAG:
 		{
 			p.SetState(594)
-			p.Match(SparqlParserLANGTAG)
+
+			var _m = p.Match(SparqlParserLANGTAG)
+
+			localctx.(*RdfLiteralContext).lang = _m
 		}
 
 	case SparqlParserT__55:
@@ -8883,7 +9006,10 @@ func (p *SparqlParser) RdfLiteral() (localctx IRdfLiteralContext) {
 		}
 		{
 			p.SetState(596)
-			p.IriRef()
+
+			var _x = p.IriRef()
+
+			localctx.(*RdfLiteralContext).iri = _x
 		}
 
 	case SparqlParserT__5, SparqlParserT__18, SparqlParserT__19, SparqlParserT__20, SparqlParserT__21, SparqlParserT__22, SparqlParserT__24, SparqlParserT__25, SparqlParserT__26, SparqlParserT__27, SparqlParserT__28, SparqlParserT__29, SparqlParserT__30, SparqlParserT__31, SparqlParserT__32, SparqlParserT__33, SparqlParserT__34, SparqlParserT__35, SparqlParserT__36, SparqlParserT__37, SparqlParserT__38, SparqlParserT__39, SparqlParserT__40, SparqlParserT__41, SparqlParserT__42, SparqlParserT__56, SparqlParserT__57, SparqlParserIRI_REF, SparqlParserPNAME_NS, SparqlParserPNAME_LN, SparqlParserBLANK_NODE_LABEL, SparqlParserVAR1, SparqlParserVAR2, SparqlParserINTEGER, SparqlParserDECIMAL, SparqlParserDOUBLE, SparqlParserINTEGER_POSITIVE, SparqlParserDECIMAL_POSITIVE, SparqlParserDOUBLE_POSITIVE, SparqlParserINTEGER_NEGATIVE, SparqlParserDECIMAL_NEGATIVE, SparqlParserDOUBLE_NEGATIVE, SparqlParserSTRING_LITERAL1, SparqlParserSTRING_LITERAL2, SparqlParserNIL, SparqlParserANON:

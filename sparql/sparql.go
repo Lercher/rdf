@@ -15,8 +15,8 @@ const (
 	// RDFS is the rdfs: namespace, rdf schema
 	RDFS = graph.IRI(`http://www.w3.org/2000/01/rdf-schema#`)
 
-	// XSD is the xsd: namespace, XML schema
-	XSD  = graph.IRI(`http://www.w3.org/2001/XMLSchema#`)
+	// XS is the xs: namespace, XML schema
+	XS  = graph.IRI(`http://www.w3.org/2001/XMLSchema#`)
 	
 	// FOAF is the foaf: namespace, friend of a friend found in many rdf examples
 	FOAF = graph.IRI(`http://xmlns.com/foaf/0.1/`)

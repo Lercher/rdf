@@ -141,5 +141,5 @@ WS=87
 'ISLITERAL'=54
 'REGEX'=55
 '^^'=56
-'true'=57
-'false'=58
+'TRUE'=57
+'FALSE'=58

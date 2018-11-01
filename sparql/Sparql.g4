@@ -188,12 +188,12 @@ varx
     ;
 
 graphTerm
-    : iriRef
-    | rdfLiteral
-    | numericLiteral
-    | booleanLiteral
-    | blankNode
-    | NIL
+    : iri = iriRef
+    | lit = rdfLiteral
+    | num = numericLiteral
+    | bol = booleanLiteral
+    | blk = blankNode
+    | emp = NIL
     ;
 
 expression
@@ -266,7 +266,10 @@ iriRefOrFunction
     ;
 
 rdfLiteral
-    : rdfstring ( LANGTAG | ( '^^' iriRef ) )?
+    : str=rdfstring 
+    ( lang=LANGTAG 
+    | ( '^^' iri=iriRef ) 
+    )?
     ;
 
 numericLiteral
@@ -292,8 +295,8 @@ numericLiteralNegative
     ;
 
 booleanLiteral
-    : 'true'
-    | 'false'
+    : 'TRUE'
+    | 'FALSE'
     ;
 
 rdfstring
