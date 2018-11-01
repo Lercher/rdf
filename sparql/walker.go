@@ -78,7 +78,7 @@ func (w *walker) EnterVerb(ctx *parser.VerbContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2001, err.Error())
 		return
 	}
-	log.Println("Verb ", algebra.DescribeVerb(verb))
+	log.Println("Verb ", algebra.DescribeTerm(verb))
 }
 
 func (w *walker) EnterVarOrTerm(ctx *parser.VarOrTermContext) {
@@ -87,7 +87,7 @@ func (w *walker) EnterVarOrTerm(ctx *parser.VarOrTermContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2002, err.Error())
 		return
 	}
-	log.Println("VarOrTerm ", algebra.DescribeVerb(vot))
+	log.Println("VarOrTerm ", algebra.DescribeTerm(vot))
 }
 
 func (w *walker) EnterRdfLiteral(ctx *parser.RdfLiteralContext) {
@@ -96,5 +96,5 @@ func (w *walker) EnterRdfLiteral(ctx *parser.RdfLiteralContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2003, err.Error())
 		return
 	}
-	log.Println("RdfLiteral", algebra.DescribeVerb(lit))
+	log.Println("RdfLiteral", algebra.DescribeTerm(lit))
 }

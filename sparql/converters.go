@@ -44,7 +44,7 @@ func convertLiteral(lC parser.IRdfLiteralContext, symbols *symbols) (*graph.Lite
 	return graph.LiteralFrom(tx, "", graph.NotAnIRI), nil
 }
 
-func convertVerbContext(ctx *parser.VerbContext, symbols *symbols) (algebra.Verb, error) {
+func convertVerbContext(ctx *parser.VerbContext, symbols *symbols) (algebra.Term, error) {
 	aC := ctx.GetA()
 	if aC != nil {
 		return A, nil
@@ -63,7 +63,7 @@ func convertVerbContext(ctx *parser.VerbContext, symbols *symbols) (algebra.Verb
 	return iri, nil
 }
 
-func convertVarOrTermContext(ctx *parser.VarOrTermContext, symbols *symbols) (algebra.Verb, error) {
+func convertVarOrTermContext(ctx *parser.VarOrTermContext, symbols *symbols) (algebra.Term, error) {
 	vC := ctx.GetVariable()
 	if vC != nil {
 		v := symbols.Variables.Register(vC.GetText())
