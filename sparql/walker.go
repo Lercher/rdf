@@ -1,8 +1,6 @@
 package sparql
 
 import (
-	"github.com/lercher/rdf/algebra"
-	"log"
 	"strings"
 
 	"github.com/lercher/rdf/graph"
@@ -20,6 +18,9 @@ const (
 	e2001 = 2001 + iota
 	e2002
 	e2003
+	e2004
+	e2005
+	e2006
 )
 
 //func (w *walker) EnterEveryRule(ctx antlr.ParserRuleContext) {
@@ -68,33 +69,42 @@ func (w *walker) EnterAskQuery(ctx *parser.AskQueryContext) {
 	w.ast.QueryType = "ask"
 }
 
-func (w *walker) ExitWhereClause(ctx *parser.WhereClauseContext) {
-	w.ast.Where = w.ast.temporary.groupGraphPattern
-}
-
-func (w *walker) EnterVerb(ctx *parser.VerbContext) {
-	verb, err := convertVerbContext(ctx, &w.ast.symbols)
-	if err != nil {
-		w.SemanticErrorAt(ctx.GetStart(), e2001, err.Error())
-		return
+func (w *walker) EnterTriplesSameSubject(ctx *parser.TriplesSameSubjectContext) {
+	subjectC := ctx.GetSubject()
+	if subjectC != nil {
+		subject, err := convertVarOrTermContext(subjectC, &w.ast.symbols)
+		if err != nil {
+			w.SemanticErrorAt(subjectC.GetStart(), e2004, err.Error())
+		}
+		propertiesC := ctx.GetProperties()
+		verbs := propertiesC.GetVerbs()
+		for i, v := range verbs {
+			predicate, err := convertVerbContext(v, &w.ast.symbols)
+			if err != nil {
+				w.SemanticErrorAt(v.GetStart(), e2005, err.Error())
+			}
+			// https://www.w3.org/TR/rdf-sparql-query/#objLists
+			objectlistC := propertiesC.GetOl()[i]
+			for _, objC := range objectlistC.GetOb() {
+				graphNodeC := objC.GetGn()
+				vtC := graphNodeC.GetVt()
+				if vtC != nil {
+					object, err := convertVarOrTermContext(vtC, &w.ast.symbols)
+					if err != nil {
+						w.SemanticErrorAt(vtC.GetStart(), e2006, err.Error())
+					}
+					block := &Block{
+						Mode:      "BGP",
+						Subject:   subject,
+						Predicate: predicate,
+						Object:    object,
+					}
+					w.ast.Where = append(w.ast.Where, block)
+				} else {
+					tnC := graphNodeC.GetTn() // triplesNode
+					w.SemanticErrorAt(tnC.GetStart(), e1003, "triplesNode as object not yet supported")
+				}
+			}
+		}
 	}
-	log.Println("Verb ", algebra.DescribeTerm(verb))
-}
-
-func (w *walker) EnterVarOrTerm(ctx *parser.VarOrTermContext) {
-	vot, err := convertVarOrTermContext(ctx, &w.ast.symbols)
-	if err != nil {
-		w.SemanticErrorAt(ctx.GetStart(), e2002, err.Error())
-		return
-	}
-	log.Println("VarOrTerm ", algebra.DescribeTerm(vot))
-}
-
-func (w *walker) EnterRdfLiteral(ctx *parser.RdfLiteralContext) {
-	lit, err := convertLiteral(ctx, &w.ast.symbols)
-	if err != nil {
-		w.SemanticErrorAt(ctx.GetStart(), e2003, err.Error())
-		return
-	}
-	log.Println("RdfLiteral", algebra.DescribeTerm(lit))
 }

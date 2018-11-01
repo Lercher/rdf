@@ -20,7 +20,6 @@ type symbols struct {
 }
 
 type temporary struct {
-	groupGraphPattern []*Block
 }
 
 func newAST() *AST {

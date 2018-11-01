@@ -97,7 +97,11 @@ offsetClause
     ;
 
 groupGraphPattern
-    : '{' triplesBlock? ( ( graphPatternNotTriples | filter ) '.'? triplesBlock? )* '}'
+    : 
+    '{' 
+    triplesBlock? 
+    ( ( graphPatternNotTriples | filter ) '.'? triplesBlock? )*
+    '}'
     ;
 
 triplesBlock
@@ -147,13 +151,14 @@ constructTriples
     ;
 
 triplesSameSubject
-    : varOrTerm propertyListNotEmpty | triplesNode propertyList
+    : subject=varOrTerm properties=propertyListNotEmpty 
+    | triplesNode propertyList
     ;
 
 propertyListNotEmpty
-    :    verb objectList 
+    :    verbs+=verb ol+=objectList 
     ( ';' 
-       ( verb objectList )? 
+       ( verbs+=verb ol+=objectList )? 
     )*
     ;
 
@@ -162,11 +167,11 @@ propertyList
     ;
 
 objectList
-    : object ( ',' object )*
+    : ob+=object ( ',' ob+=object )*
     ;
 
 object
-    : graphNode
+    : gn=graphNode
     ;
 
 verb
@@ -188,7 +193,7 @@ collection
     ;
 
 graphNode
-    : varOrTerm | triplesNode
+    : vt=varOrTerm | tn=triplesNode
     ;
 
 varOrTerm

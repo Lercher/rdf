@@ -14,5 +14,5 @@ func DescribeTerm(t Term) string {
 	if t == nil {
 		return "nil-term"
 	}
-	return fmt.Sprintf("%T %s", t, t.String())
+	return fmt.Sprintf("(%T %s)", t, t.String())
 }

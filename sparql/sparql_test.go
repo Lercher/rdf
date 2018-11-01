@@ -16,15 +16,11 @@ PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
 prefix ont:   <http://ontology/ÄÖÜßäöü/>
 SELECT distinct ?name Where {
   ?school a sch-ont:School.
+  ?school ?what 5.5, true, false, 12345 .
   ?school sch-ont:establishmentName ?name.
   ?school sch-ont:districtAdministrative <http://statistics.data.gov.uk/id/local-authority-district/00AA>.
   ?name 
-    a 5.5;
-  	a true;
-	a false;
-	a ();
-	a 12345;
-	a 'school'^^xs:string;
+  	a 'school'^^xs:string;
 	a "double school"@EN-U5V5-Z7A7
    .
    ?name a ont:xyz.
@@ -84,16 +80,26 @@ func TestSparqlParserSimple(t *testing.T) {
 	}
 
 	w(t, "base", ast.Base, `<http://xyz>`)
-	if len(ast.PrefixedIRIs) != 2 {
-		t.Errorf("length prefix: want %d, got %d", 2, len(ast.PrefixedIRIs))
+	if len(ast.PrefixedIRIs) != 2+3 {
+		t.Errorf("length prefix: want %d, got %d", 2+3, len(ast.PrefixedIRIs))
 	} else {
-		w(t, "prefix0", ast.PrefixedIRIs[0], `sch-ont:<http://education.data.gov.uk/def/school/>`)
-		w(t, "prefix1", ast.PrefixedIRIs[1], `ont:<http://ontology/ÄÖÜßäöü/>`)
+		w(t, "prefix3", ast.PrefixedIRIs[3], `sch-ont:<http://education.data.gov.uk/def/school/>`)
+		w(t, "prefix4", ast.PrefixedIRIs[4], `ont:<http://ontology/ÄÖÜßäöü/>`)
 	}
 	ws(t, "type", ast.QueryType, "select")
 	ws(t, "modifier", ast.Modifier, "distinct")
 	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
 	w(t, "variables", ast.Variables, "map[name:0 school:1]")
+	if len(ast.Where) != 11 {
+		for i, b := range ast.Where {
+			t.Log("where", i, b.String())
+		}
+		t.Fatalf("want %d where blocks, got %d", 11, len(ast.Where))
+	}
+	w(t, "where0", ast.Where[0], `{BGP: (algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
+	w(t, "where1", ast.Where[1], `{BGP: (algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
+	w(t, "where2", ast.Where[2], `{BGP: (algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
+
 	t.Error("TODO")
 }
 

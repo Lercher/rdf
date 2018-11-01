@@ -4763,13 +4763,27 @@ type ITriplesSameSubjectContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetSubject returns the subject rule contexts.
+	GetSubject() IVarOrTermContext
+
+	// GetProperties returns the properties rule contexts.
+	GetProperties() IPropertyListNotEmptyContext
+
+	// SetSubject sets the subject rule contexts.
+	SetSubject(IVarOrTermContext)
+
+	// SetProperties sets the properties rule contexts.
+	SetProperties(IPropertyListNotEmptyContext)
+
 	// IsTriplesSameSubjectContext differentiates from other interfaces.
 	IsTriplesSameSubjectContext()
 }
 
 type TriplesSameSubjectContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser     antlr.Parser
+	subject    IVarOrTermContext
+	properties IPropertyListNotEmptyContext
 }
 
 func NewEmptyTriplesSameSubjectContext() *TriplesSameSubjectContext {
@@ -4793,6 +4807,14 @@ func NewTriplesSameSubjectContext(parser antlr.Parser, parent antlr.ParserRuleCo
 }
 
 func (s *TriplesSameSubjectContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *TriplesSameSubjectContext) GetSubject() IVarOrTermContext { return s.subject }
+
+func (s *TriplesSameSubjectContext) GetProperties() IPropertyListNotEmptyContext { return s.properties }
+
+func (s *TriplesSameSubjectContext) SetSubject(v IVarOrTermContext) { s.subject = v }
+
+func (s *TriplesSameSubjectContext) SetProperties(v IPropertyListNotEmptyContext) { s.properties = v }
 
 func (s *TriplesSameSubjectContext) VarOrTerm() IVarOrTermContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarOrTermContext)(nil)).Elem(), 0)
@@ -4882,11 +4904,17 @@ func (p *SparqlParser) TriplesSameSubject() (localctx ITriplesSameSubjectContext
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(364)
-			p.VarOrTerm()
+
+			var _x = p.VarOrTerm()
+
+			localctx.(*TriplesSameSubjectContext).subject = _x
 		}
 		{
 			p.SetState(365)
-			p.PropertyListNotEmpty()
+
+			var _x = p.PropertyListNotEmpty()
+
+			localctx.(*TriplesSameSubjectContext).properties = _x
 		}
 
 	case SparqlParserT__25, SparqlParserT__30:
@@ -4914,13 +4942,41 @@ type IPropertyListNotEmptyContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// Get_verb returns the _verb rule contexts.
+	Get_verb() IVerbContext
+
+	// Get_objectList returns the _objectList rule contexts.
+	Get_objectList() IObjectListContext
+
+	// Set_verb sets the _verb rule contexts.
+	Set_verb(IVerbContext)
+
+	// Set_objectList sets the _objectList rule contexts.
+	Set_objectList(IObjectListContext)
+
+	// GetVerbs returns the verbs rule context list.
+	GetVerbs() []IVerbContext
+
+	// GetOl returns the ol rule context list.
+	GetOl() []IObjectListContext
+
+	// SetVerbs sets the verbs rule context list.
+	SetVerbs([]IVerbContext)
+
+	// SetOl sets the ol rule context list.
+	SetOl([]IObjectListContext)
+
 	// IsPropertyListNotEmptyContext differentiates from other interfaces.
 	IsPropertyListNotEmptyContext()
 }
 
 type PropertyListNotEmptyContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser      antlr.Parser
+	_verb       IVerbContext
+	verbs       []IVerbContext
+	_objectList IObjectListContext
+	ol          []IObjectListContext
 }
 
 func NewEmptyPropertyListNotEmptyContext() *PropertyListNotEmptyContext {
@@ -4944,6 +5000,22 @@ func NewPropertyListNotEmptyContext(parser antlr.Parser, parent antlr.ParserRule
 }
 
 func (s *PropertyListNotEmptyContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *PropertyListNotEmptyContext) Get_verb() IVerbContext { return s._verb }
+
+func (s *PropertyListNotEmptyContext) Get_objectList() IObjectListContext { return s._objectList }
+
+func (s *PropertyListNotEmptyContext) Set_verb(v IVerbContext) { s._verb = v }
+
+func (s *PropertyListNotEmptyContext) Set_objectList(v IObjectListContext) { s._objectList = v }
+
+func (s *PropertyListNotEmptyContext) GetVerbs() []IVerbContext { return s.verbs }
+
+func (s *PropertyListNotEmptyContext) GetOl() []IObjectListContext { return s.ol }
+
+func (s *PropertyListNotEmptyContext) SetVerbs(v []IVerbContext) { s.verbs = v }
+
+func (s *PropertyListNotEmptyContext) SetOl(v []IObjectListContext) { s.ol = v }
 
 func (s *PropertyListNotEmptyContext) AllVerb() []IVerbContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IVerbContext)(nil)).Elem())
@@ -5035,12 +5107,20 @@ func (p *SparqlParser) PropertyListNotEmpty() (localctx IPropertyListNotEmptyCon
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(372)
-		p.Verb()
+
+		var _x = p.Verb()
+
+		localctx.(*PropertyListNotEmptyContext)._verb = _x
 	}
+	localctx.(*PropertyListNotEmptyContext).verbs = append(localctx.(*PropertyListNotEmptyContext).verbs, localctx.(*PropertyListNotEmptyContext)._verb)
 	{
 		p.SetState(373)
-		p.ObjectList()
+
+		var _x = p.ObjectList()
+
+		localctx.(*PropertyListNotEmptyContext)._objectList = _x
 	}
+	localctx.(*PropertyListNotEmptyContext).ol = append(localctx.(*PropertyListNotEmptyContext).ol, localctx.(*PropertyListNotEmptyContext)._objectList)
 	p.SetState(382)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
@@ -5057,12 +5137,20 @@ func (p *SparqlParser) PropertyListNotEmpty() (localctx IPropertyListNotEmptyCon
 		if _la == SparqlParserT__29 || (((_la-59)&-(0x1f+1)) == 0 && ((1<<uint((_la-59)))&((1<<(SparqlParserIRI_REF-59))|(1<<(SparqlParserPNAME_NS-59))|(1<<(SparqlParserPNAME_LN-59))|(1<<(SparqlParserVAR1-59))|(1<<(SparqlParserVAR2-59)))) != 0) {
 			{
 				p.SetState(375)
-				p.Verb()
+
+				var _x = p.Verb()
+
+				localctx.(*PropertyListNotEmptyContext)._verb = _x
 			}
+			localctx.(*PropertyListNotEmptyContext).verbs = append(localctx.(*PropertyListNotEmptyContext).verbs, localctx.(*PropertyListNotEmptyContext)._verb)
 			{
 				p.SetState(376)
-				p.ObjectList()
+
+				var _x = p.ObjectList()
+
+				localctx.(*PropertyListNotEmptyContext)._objectList = _x
 			}
+			localctx.(*PropertyListNotEmptyContext).ol = append(localctx.(*PropertyListNotEmptyContext).ol, localctx.(*PropertyListNotEmptyContext)._objectList)
 
 		}
 
@@ -5186,13 +5274,27 @@ type IObjectListContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// Get_object returns the _object rule contexts.
+	Get_object() IObjectContext
+
+	// Set_object sets the _object rule contexts.
+	Set_object(IObjectContext)
+
+	// GetOb returns the ob rule context list.
+	GetOb() []IObjectContext
+
+	// SetOb sets the ob rule context list.
+	SetOb([]IObjectContext)
+
 	// IsObjectListContext differentiates from other interfaces.
 	IsObjectListContext()
 }
 
 type ObjectListContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser  antlr.Parser
+	_object IObjectContext
+	ob      []IObjectContext
 }
 
 func NewEmptyObjectListContext() *ObjectListContext {
@@ -5216,6 +5318,14 @@ func NewObjectListContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 }
 
 func (s *ObjectListContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ObjectListContext) Get_object() IObjectContext { return s._object }
+
+func (s *ObjectListContext) Set_object(v IObjectContext) { s._object = v }
+
+func (s *ObjectListContext) GetOb() []IObjectContext { return s.ob }
+
+func (s *ObjectListContext) SetOb(v []IObjectContext) { s.ob = v }
 
 func (s *ObjectListContext) AllObject() []IObjectContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IObjectContext)(nil)).Elem())
@@ -5284,8 +5394,12 @@ func (p *SparqlParser) ObjectList() (localctx IObjectListContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(388)
-		p.Object()
+
+		var _x = p.Object()
+
+		localctx.(*ObjectListContext)._object = _x
 	}
+	localctx.(*ObjectListContext).ob = append(localctx.(*ObjectListContext).ob, localctx.(*ObjectListContext)._object)
 	p.SetState(393)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
@@ -5297,8 +5411,12 @@ func (p *SparqlParser) ObjectList() (localctx IObjectListContext) {
 		}
 		{
 			p.SetState(390)
-			p.Object()
+
+			var _x = p.Object()
+
+			localctx.(*ObjectListContext)._object = _x
 		}
+		localctx.(*ObjectListContext).ob = append(localctx.(*ObjectListContext).ob, localctx.(*ObjectListContext)._object)
 
 		p.SetState(395)
 		p.GetErrorHandler().Sync(p)
@@ -5315,6 +5433,12 @@ type IObjectContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetGn returns the gn rule contexts.
+	GetGn() IGraphNodeContext
+
+	// SetGn sets the gn rule contexts.
+	SetGn(IGraphNodeContext)
+
 	// IsObjectContext differentiates from other interfaces.
 	IsObjectContext()
 }
@@ -5322,6 +5446,7 @@ type IObjectContext interface {
 type ObjectContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	gn     IGraphNodeContext
 }
 
 func NewEmptyObjectContext() *ObjectContext {
@@ -5345,6 +5470,10 @@ func NewObjectContext(parser antlr.Parser, parent antlr.ParserRuleContext, invok
 }
 
 func (s *ObjectContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ObjectContext) GetGn() IGraphNodeContext { return s.gn }
+
+func (s *ObjectContext) SetGn(v IGraphNodeContext) { s.gn = v }
 
 func (s *ObjectContext) GraphNode() IGraphNodeContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IGraphNodeContext)(nil)).Elem(), 0)
@@ -5399,7 +5528,10 @@ func (p *SparqlParser) Object() (localctx IObjectContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(396)
-		p.GraphNode()
+
+		var _x = p.GraphNode()
+
+		localctx.(*ObjectContext).gn = _x
 	}
 
 	return localctx
@@ -5910,6 +6042,18 @@ type IGraphNodeContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetVt returns the vt rule contexts.
+	GetVt() IVarOrTermContext
+
+	// GetTn returns the tn rule contexts.
+	GetTn() ITriplesNodeContext
+
+	// SetVt sets the vt rule contexts.
+	SetVt(IVarOrTermContext)
+
+	// SetTn sets the tn rule contexts.
+	SetTn(ITriplesNodeContext)
+
 	// IsGraphNodeContext differentiates from other interfaces.
 	IsGraphNodeContext()
 }
@@ -5917,6 +6061,8 @@ type IGraphNodeContext interface {
 type GraphNodeContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	vt     IVarOrTermContext
+	tn     ITriplesNodeContext
 }
 
 func NewEmptyGraphNodeContext() *GraphNodeContext {
@@ -5940,6 +6086,14 @@ func NewGraphNodeContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 }
 
 func (s *GraphNodeContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *GraphNodeContext) GetVt() IVarOrTermContext { return s.vt }
+
+func (s *GraphNodeContext) GetTn() ITriplesNodeContext { return s.tn }
+
+func (s *GraphNodeContext) SetVt(v IVarOrTermContext) { s.vt = v }
+
+func (s *GraphNodeContext) SetTn(v ITriplesNodeContext) { s.tn = v }
 
 func (s *GraphNodeContext) VarOrTerm() IVarOrTermContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarOrTermContext)(nil)).Elem(), 0)
@@ -6009,14 +6163,20 @@ func (p *SparqlParser) GraphNode() (localctx IGraphNodeContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(418)
-			p.VarOrTerm()
+
+			var _x = p.VarOrTerm()
+
+			localctx.(*GraphNodeContext).vt = _x
 		}
 
 	case SparqlParserT__25, SparqlParserT__30:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(419)
-			p.TriplesNode()
+
+			var _x = p.TriplesNode()
+
+			localctx.(*GraphNodeContext).tn = _x
 		}
 
 	default:
