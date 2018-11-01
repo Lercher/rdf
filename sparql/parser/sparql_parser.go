@@ -6033,13 +6033,27 @@ type IVarOrTermContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetVariable returns the variable rule contexts.
+	GetVariable() IVarxContext
+
+	// GetGt returns the gt rule contexts.
+	GetGt() IGraphTermContext
+
+	// SetVariable sets the variable rule contexts.
+	SetVariable(IVarxContext)
+
+	// SetGt sets the gt rule contexts.
+	SetGt(IGraphTermContext)
+
 	// IsVarOrTermContext differentiates from other interfaces.
 	IsVarOrTermContext()
 }
 
 type VarOrTermContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser   antlr.Parser
+	variable IVarxContext
+	gt       IGraphTermContext
 }
 
 func NewEmptyVarOrTermContext() *VarOrTermContext {
@@ -6063,6 +6077,14 @@ func NewVarOrTermContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 }
 
 func (s *VarOrTermContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *VarOrTermContext) GetVariable() IVarxContext { return s.variable }
+
+func (s *VarOrTermContext) GetGt() IGraphTermContext { return s.gt }
+
+func (s *VarOrTermContext) SetVariable(v IVarxContext) { s.variable = v }
+
+func (s *VarOrTermContext) SetGt(v IGraphTermContext) { s.gt = v }
 
 func (s *VarOrTermContext) Varx() IVarxContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarxContext)(nil)).Elem(), 0)
@@ -6132,14 +6154,20 @@ func (p *SparqlParser) VarOrTerm() (localctx IVarOrTermContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(422)
-			p.Varx()
+
+			var _x = p.Varx()
+
+			localctx.(*VarOrTermContext).variable = _x
 		}
 
 	case SparqlParserT__56, SparqlParserT__57, SparqlParserIRI_REF, SparqlParserPNAME_NS, SparqlParserPNAME_LN, SparqlParserBLANK_NODE_LABEL, SparqlParserINTEGER, SparqlParserDECIMAL, SparqlParserDOUBLE, SparqlParserINTEGER_POSITIVE, SparqlParserDECIMAL_POSITIVE, SparqlParserDOUBLE_POSITIVE, SparqlParserINTEGER_NEGATIVE, SparqlParserDECIMAL_NEGATIVE, SparqlParserDOUBLE_NEGATIVE, SparqlParserSTRING_LITERAL1, SparqlParserSTRING_LITERAL2, SparqlParserNIL, SparqlParserANON:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(423)
-			p.GraphTerm()
+
+			var _x = p.GraphTerm()
+
+			localctx.(*VarOrTermContext).gt = _x
 		}
 
 	default:

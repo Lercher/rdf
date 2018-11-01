@@ -1,8 +1,10 @@
 package sparql
 
 import (
-	"github.com/lercher/rdf/graph"
+	"fmt"
+
 	"github.com/lercher/rdf/algebra"
+	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/sparql/parser"
 )
 
@@ -13,7 +15,7 @@ func convertVerbContext(ctx *parser.VerbContext, symbols *symbols) (*algebra.Ver
 	aC := ctx.GetA()
 	if aC != nil {
 		return algebra.VerbLiteral(A), nil
-	}	
+	}
 	viC := ctx.GetVi()
 	vC := viC.GetVariable()
 	if vC != nil {
@@ -32,4 +34,16 @@ func convertVerbContext(ctx *parser.VerbContext, symbols *symbols) (*algebra.Ver
 		return nil, err
 	}
 	return algebra.VerbLiteral(literal), err
+}
+
+func convertVarOrTermContext(ctx *parser.VarOrTermContext, symbols *symbols) (*algebra.Verb, error) {
+	vC := ctx.GetVariable()
+	if vC != nil {
+		v := symbols.Variables.Register(vC.GetText())
+		return algebra.VerbVariable(v), nil
+	}
+
+	// graphTerm : iriRef|rdfLiteral|numericLiteral|booleanLiteral|blankNode|NIL;
+	gtC := ctx.GetGt()
+	return nil, fmt.Errorf("not implemnted: %v", gtC)
 }

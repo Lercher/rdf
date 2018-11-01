@@ -173,12 +173,13 @@ graphNode
     ;
 
 varOrTerm
-    : varx
-    | graphTerm
+    : variable=varx
+    | gt=graphTerm
     ;
 
 varOrIRIref
-    : variable=varx | iri=iriRef
+    : variable=varx 
+    | iri=iriRef
     ;
 
 varx

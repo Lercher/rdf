@@ -17,6 +17,7 @@ type walker struct {
 
 const (
 	e2001 = 2001 + iota
+	e2002
 )
 
 //func (w *walker) EnterEveryRule(ctx antlr.ParserRuleContext) {
@@ -75,4 +76,13 @@ func (w *walker) EnterVerb(ctx *parser.VerbContext) {
 		w.SemanticErrorAt(ctx.GetStart(), e2001, err.Error())
 	}
 	log.Printf("Verb %s", verb)
+}
+
+func (w *walker) EnterVarOrTerm(ctx *parser.VarOrTermContext) {
+	vot, err := convertVarOrTermContext(ctx, &w.ast.symbols)
+	if err != nil {
+		w.SemanticErrorAt(ctx.GetStart(), e2002, err.Error())
+	}
+	log.Printf("VarOrTerm %s", vot)
+
 }
