@@ -6,6 +6,8 @@ import (
 	"github.com/lercher/rdf/algebra"
 )
 
+// Block is a mode tagged triple of Terms.
+// A list of Blocks forms a where-clause.
 type Block struct {
 	Mode      string
 	Subject   algebra.Term
