@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// Projection stores the list of variables selected
 type Projection struct {
 	All bool
 	Variables []Variable

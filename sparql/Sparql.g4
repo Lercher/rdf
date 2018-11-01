@@ -151,8 +151,8 @@ object
     ;
 
 verb
-    : varOrIRIref
-    | 'A'
+    : vi = varOrIRIref
+    | a  = 'A'
     ;
 
 triplesNode
@@ -178,7 +178,7 @@ varOrTerm
     ;
 
 varOrIRIref
-    : varx | iriRef
+    : variable=varx | iri=iriRef
     ;
 
 varx
@@ -302,8 +302,8 @@ rdfstring
     ;
 
 iriRef
-    : IRI_REF
-    | prefixedName
+    : literal=IRI_REF
+    | prefixed=prefixedName
     ;
 
 prefixedName

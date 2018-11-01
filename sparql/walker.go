@@ -1,7 +1,9 @@
 package sparql
 
 import (
+	"log"
 	"strings"
+
 	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/sparql/parser"
 )
@@ -12,6 +14,10 @@ type walker struct {
 	*ErrorListener
 	ast *AST
 }
+
+const (
+	e2001 = 2001 + iota
+)
 
 //func (w *walker) EnterEveryRule(ctx antlr.ParserRuleContext) {
 //	fmt.Println(ctx.GetText())
@@ -40,7 +46,7 @@ func (w *walker) EnterSelectQuery(ctx *parser.SelectQueryContext) {
 	} else {
 		w.ast.Projection.All = false
 		for _, vtctx := range ctx.GetVars() {
-			vt := vtctx.GetText();
+			vt := vtctx.GetText()
 			v := w.ast.Variables.Register(vt)
 			w.ast.Projection.Variables = append(w.ast.Projection.Variables, v)
 		}
@@ -59,6 +65,14 @@ func (w *walker) EnterAskQuery(ctx *parser.AskQueryContext) {
 	w.ast.QueryType = "ask"
 }
 
-func (w * walker) ExitWhereClause(ctx *parser.WhereClauseContext) {
+func (w *walker) ExitWhereClause(ctx *parser.WhereClauseContext) {
 	w.ast.Where = w.ast.temporary.groupGraphPattern
+}
+
+func (w *walker) EnterVerb(ctx *parser.VerbContext) {
+	verb, err := convertVerbContext(ctx, &w.ast.symbols)
+	if err != nil {
+		w.SemanticErrorAt(ctx.GetStart(), e2001, err.Error())
+	}
+	log.Printf("Verb %s", verb)
 }

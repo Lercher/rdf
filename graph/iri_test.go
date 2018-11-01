@@ -26,3 +26,32 @@ func TestIRI(t *testing.T) {
 		t.Errorf("i0 URI: want %q, got %q", uri, i0.URI())
 	}
 }
+
+func TestPrefixedIRI(t *testing.T) {
+	pis := []*PrefixedIRI{
+		&PrefixedIRI{"o", "http://ontology#"},
+		&PrefixedIRI{"s", "http://subjects/"},
+	}
+	color, err := IRIPrefixed("o:color", pis)
+	if err != nil {
+		t.Errorf("want no error for o:color, got %v", err)
+	} else if color.String() != "<http://ontology#color>" {
+		t.Errorf("want <http://ontology#color> for o:color, got %v", color)
+	}
+
+	s5, err := IRIPrefixed("s:5", pis)
+	if err != nil {
+		t.Errorf("want no error for s:5, got %v", err)
+	} else if s5.String() != "<http://subjects/5>" {
+		t.Errorf("want <http://subjects/5> for s:5, got %v", s5)
+	}
+
+	_, err = IRIPrefixed("illegal/iri", pis)
+	if err == nil {
+		t.Errorf("want error for illegal/iri")
+	}
+	_, err = IRIPrefixed("unknown:iri", pis)
+	if err == nil {
+		t.Errorf("want error for unknown:iri")
+	}
+}

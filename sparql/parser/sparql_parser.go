@@ -1,4 +1,4 @@
-// Code generated from d:\Daten\Go\src\github.com\lercher\rdf\sparql\Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from /home/lercher/go/src/github.com/lercher/rdf/sparql/Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
 
 package parser // Sparql
 
@@ -5412,6 +5412,18 @@ type IVerbContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetA returns the a token.
+	GetA() antlr.Token
+
+	// SetA sets the a token.
+	SetA(antlr.Token)
+
+	// GetVi returns the vi rule contexts.
+	GetVi() IVarOrIRIrefContext
+
+	// SetVi sets the vi rule contexts.
+	SetVi(IVarOrIRIrefContext)
+
 	// IsVerbContext differentiates from other interfaces.
 	IsVerbContext()
 }
@@ -5419,6 +5431,8 @@ type IVerbContext interface {
 type VerbContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	vi     IVarOrIRIrefContext
+	a      antlr.Token
 }
 
 func NewEmptyVerbContext() *VerbContext {
@@ -5442,6 +5456,14 @@ func NewVerbContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokin
 }
 
 func (s *VerbContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *VerbContext) GetA() antlr.Token { return s.a }
+
+func (s *VerbContext) SetA(v antlr.Token) { s.a = v }
+
+func (s *VerbContext) GetVi() IVarOrIRIrefContext { return s.vi }
+
+func (s *VerbContext) SetVi(v IVarOrIRIrefContext) { s.vi = v }
 
 func (s *VerbContext) VarOrIRIref() IVarOrIRIrefContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarOrIRIrefContext)(nil)).Elem(), 0)
@@ -5501,14 +5523,20 @@ func (p *SparqlParser) Verb() (localctx IVerbContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(398)
-			p.VarOrIRIref()
+
+			var _x = p.VarOrIRIref()
+
+			localctx.(*VerbContext).vi = _x
 		}
 
 	case SparqlParserT__29:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(399)
-			p.Match(SparqlParserT__29)
+
+			var _m = p.Match(SparqlParserT__29)
+
+			localctx.(*VerbContext).a = _m
 		}
 
 	default:
@@ -6128,13 +6156,27 @@ type IVarOrIRIrefContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetVariable returns the variable rule contexts.
+	GetVariable() IVarxContext
+
+	// GetIri returns the iri rule contexts.
+	GetIri() IIriRefContext
+
+	// SetVariable sets the variable rule contexts.
+	SetVariable(IVarxContext)
+
+	// SetIri sets the iri rule contexts.
+	SetIri(IIriRefContext)
+
 	// IsVarOrIRIrefContext differentiates from other interfaces.
 	IsVarOrIRIrefContext()
 }
 
 type VarOrIRIrefContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser   antlr.Parser
+	variable IVarxContext
+	iri      IIriRefContext
 }
 
 func NewEmptyVarOrIRIrefContext() *VarOrIRIrefContext {
@@ -6158,6 +6200,14 @@ func NewVarOrIRIrefContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 }
 
 func (s *VarOrIRIrefContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *VarOrIRIrefContext) GetVariable() IVarxContext { return s.variable }
+
+func (s *VarOrIRIrefContext) GetIri() IIriRefContext { return s.iri }
+
+func (s *VarOrIRIrefContext) SetVariable(v IVarxContext) { s.variable = v }
+
+func (s *VarOrIRIrefContext) SetIri(v IIriRefContext) { s.iri = v }
 
 func (s *VarOrIRIrefContext) Varx() IVarxContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarxContext)(nil)).Elem(), 0)
@@ -6227,14 +6277,20 @@ func (p *SparqlParser) VarOrIRIref() (localctx IVarOrIRIrefContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(426)
-			p.Varx()
+
+			var _x = p.Varx()
+
+			localctx.(*VarOrIRIrefContext).variable = _x
 		}
 
 	case SparqlParserIRI_REF, SparqlParserPNAME_NS, SparqlParserPNAME_LN:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(427)
-			p.IriRef()
+
+			var _x = p.IriRef()
+
+			localctx.(*VarOrIRIrefContext).iri = _x
 		}
 
 	default:
@@ -9475,13 +9531,27 @@ type IIriRefContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetLiteral returns the literal token.
+	GetLiteral() antlr.Token
+
+	// SetLiteral sets the literal token.
+	SetLiteral(antlr.Token)
+
+	// GetPrefixed returns the prefixed rule contexts.
+	GetPrefixed() IPrefixedNameContext
+
+	// SetPrefixed sets the prefixed rule contexts.
+	SetPrefixed(IPrefixedNameContext)
+
 	// IsIriRefContext differentiates from other interfaces.
 	IsIriRefContext()
 }
 
 type IriRefContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser   antlr.Parser
+	literal  antlr.Token
+	prefixed IPrefixedNameContext
 }
 
 func NewEmptyIriRefContext() *IriRefContext {
@@ -9505,6 +9575,14 @@ func NewIriRefContext(parser antlr.Parser, parent antlr.ParserRuleContext, invok
 }
 
 func (s *IriRefContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *IriRefContext) GetLiteral() antlr.Token { return s.literal }
+
+func (s *IriRefContext) SetLiteral(v antlr.Token) { s.literal = v }
+
+func (s *IriRefContext) GetPrefixed() IPrefixedNameContext { return s.prefixed }
+
+func (s *IriRefContext) SetPrefixed(v IPrefixedNameContext) { s.prefixed = v }
 
 func (s *IriRefContext) IRI_REF() antlr.TerminalNode {
 	return s.GetToken(SparqlParserIRI_REF, 0)
@@ -9568,14 +9646,20 @@ func (p *SparqlParser) IriRef() (localctx IIriRefContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(614)
-			p.Match(SparqlParserIRI_REF)
+
+			var _m = p.Match(SparqlParserIRI_REF)
+
+			localctx.(*IriRefContext).literal = _m
 		}
 
 	case SparqlParserPNAME_NS, SparqlParserPNAME_LN:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(615)
-			p.PrefixedName()
+
+			var _x = p.PrefixedName()
+
+			localctx.(*IriRefContext).prefixed = _x
 		}
 
 	default:

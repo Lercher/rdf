@@ -63,6 +63,7 @@ func TestSparqlParserUnsupported(t *testing.T) {
 }
 
 func TestSparqlParserSimple(t *testing.T) {
+	t.Log(simpleQuery)
 	ast, err := parse(t, simpleQuery)
 	if err != nil {
 		t.Fatal("simple should not err, but", err)
