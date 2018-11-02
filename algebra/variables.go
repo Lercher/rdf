@@ -40,5 +40,9 @@ func (vs *Variables) NameOf(v Variable) Variablename {
 }
 
 func (vs *Variables) String() string {	
-	return fmt.Sprint(vs.m)
+	var list []string
+	for i, vn := range vs.n {
+		list = append(list, fmt.Sprintf("%s:$%d", vn, i))
+	}
+	return fmt.Sprint(list)
 }
