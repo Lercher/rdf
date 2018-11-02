@@ -1,11 +1,25 @@
-package graph
+package processor
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/lercher/rdf/algebra"
+	"github.com/lercher/rdf/graph"
+)
+
+func gr() (*graph.Graph, *graph.Triple, *graph.Triple, *graph.Triple) {
+	g := graph.New()
+	t0 := g.Assert("martin", "telefon", "+49897482400")
+	t1 := g.Assert("andreas", "telefon", "+49897482400")
+	t2 := g.Assert("martin", "boss", "justus")
+	g.Assert("martin", "telefon", "+49897482400")
+	return g, t0, t1, t2
+}
 
 func TestPatterns0Criteria(t *testing.T) {
 	g, _, _, _ := gr()
 
-	all := g.Match(&TriplePattern{})
+	all := Match(g, &algebra.TriplePattern{})
 	if len(all) != g.CountTriples() {
 		t.Error("want full length", g.CountTriples(), "got", len(all))
 	}
@@ -16,9 +30,9 @@ func TestPatterns1Criteria(t *testing.T) {
 	g, t0, _, _ := gr()
 
 	s0 := t0.S
-	allS := &TriplePattern{S: PatternLiteral(s0)}
+	allS := &algebra.TriplePattern{S: algebra.PatternLiteral(s0)}
 	t.Log("match", allS.String(g))
-	ms := g.Match(allS)
+	ms := Match(g, allS)
 	for _, tr := range ms {
 		t.Log(tr.String(g))
 	}
@@ -28,9 +42,9 @@ func TestPatterns1Criteria(t *testing.T) {
 	t.Log()
 
 	p0 := t0.P
-	allP := &TriplePattern{P: PatternLiteral(p0)}
+	allP := &algebra.TriplePattern{P: algebra.PatternLiteral(p0)}
 	t.Log("match", allP.String(g))
-	mp := g.Match(allP)
+	mp := Match(g, allP)
 	for _, tr := range mp {
 		t.Log(tr.String(g))
 	}
@@ -40,9 +54,9 @@ func TestPatterns1Criteria(t *testing.T) {
 	t.Log()
 
 	o0 := t0.O
-	allO := &TriplePattern{O: PatternLiteral(o0)}
+	allO := &algebra.TriplePattern{O: algebra.PatternLiteral(o0)}
 	t.Log("match", allO.String(g))
-	mo := g.Match(allO)
+	mo := Match(g, allO)
 	for _, tr := range mo {
 		t.Log(tr.String(g))
 	}
@@ -59,9 +73,9 @@ func TestPatterns2Criteria(t *testing.T) {
 	p0 := t0.P
 	o0 := t0.O
 
-	allSP := &TriplePattern{S: PatternLiteral(s0), P: PatternLiteral(p0), O: PatternVariable("$o")}
+	allSP := &algebra.TriplePattern{S: algebra.PatternLiteral(s0), P: algebra.PatternLiteral(p0)}
 	t.Log("match", allSP.String(g))
-	msp := g.Match(allSP)
+	msp := Match(g, allSP)
 	for _, tr := range msp {
 		t.Log(tr.String(g))
 	}
@@ -70,9 +84,9 @@ func TestPatterns2Criteria(t *testing.T) {
 	}
 	t.Log()
 
-	allSO := &TriplePattern{S: PatternLiteral(s0), P: PatternVariable("$p"), O: PatternLiteral(o0)}
+	allSO := &algebra.TriplePattern{S: algebra.PatternLiteral(s0), O: algebra.PatternLiteral(o0)}
 	t.Log("match", allSO.String(g))
-	mso := g.Match(allSO)
+	mso := Match(g, allSO)
 	for _, tr := range mso {
 		t.Log(tr.String(g))
 	}
@@ -81,9 +95,9 @@ func TestPatterns2Criteria(t *testing.T) {
 	}
 	t.Log()
 
-	allPO := &TriplePattern{S: PatternVariable("$s"), P: PatternLiteral(p0), O: PatternLiteral(o0)}
+	allPO := &algebra.TriplePattern{P: algebra.PatternLiteral(p0), O: algebra.PatternLiteral(o0)}
 	t.Log("match", allPO.String(g))
-	mpo := g.Match(allPO)
+	mpo := Match(g, allPO)
 	for _, tr := range mpo {
 		t.Log(tr.String(g))
 	}
@@ -96,12 +110,9 @@ func TestPatterns2Criteria(t *testing.T) {
 func TestPatterns3Criteria(t *testing.T) {
 	g, t0, _, _ := gr()
 
-	s0 := t0.S
-	p0 := t0.P
-	o0 := t0.O
-	allSPO := &TriplePattern{S: s0.Pattern(), P: p0.Pattern(), O: o0.Pattern()}
+	allSPO := &algebra.TriplePattern{S: algebra.PatternLiteral(t0.S), P: algebra.PatternLiteral(t0.P), O: algebra.PatternLiteral(t0.O)}
 	t.Log("match", allSPO.String(g))
-	mspo := g.Match(allSPO)
+	mspo := Match(g, allSPO)
 	for _, tr := range mspo {
 		t.Log(tr.String(g))
 	}

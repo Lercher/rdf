@@ -6,17 +6,35 @@ import (
 
 // Projection stores the list of variables selected
 type Projection struct {
-	All bool
+	All       bool
 	Variables []Variable
 }
 
-func (p Projection) String(vs *Variables) string {
+// Names returns a list of Variablenames
+func (p Projection) Names(vs *Variables) []Variablename {
+	var list []Variablename
+	if p.All {
+		list = append(list, Variablename("*"))
+	} else {
+		for _, v := range p.Variables {
+			list = append(list, vs.NameOf(v))
+		}
+	}
+	return list
+}
+
+// StringNames returns a list of names as a string
+func (p Projection) StringNames(vs *Variables) string {
+	return fmt.Sprint(p.Names(vs))
+}
+
+func (p Projection) String() string {
 	if p.All {
 		return "*"
 	}
-	var list []Variablename
+	var list []string
 	for _, v := range p.Variables {
-		list = append(list, vs.NameOf(v))
+		list = append(list, v.String())
 	}
 	return fmt.Sprint(list)
 }

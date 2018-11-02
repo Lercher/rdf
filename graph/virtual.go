@@ -6,8 +6,14 @@ import (
 	"io"
 )
 
-// Virtual is the datatype for virtualizing values inside a Graph.
+// Virtual is the datatype for virtualizing values inside a Graph. It's the index+1 into a slice ov Values, so 0 is Nil
 type Virtual int32
+
+// WontMatchVirtual represents a Virtual that won't match, because it is no member of the graph
+const WontMatchVirtual = Virtual(-1)
+
+// NotAVirtual is a Virtual Value that doesn't represent a Virtual
+const NotAVirtual = Virtual(0)
 
 // Virtual2 is a pair of Virtuals
 type Virtual2 struct {
@@ -17,6 +23,11 @@ type Virtual2 struct {
 // IsNil holds true, if the underlying datatype is zero, i.e. 4 zero bytes
 func (v Virtual) IsNil() bool {
 	return v == 0
+}
+
+// WontMatch holds true, if the Virtual Represents something that is not a member of a graphs Values
+func (v Virtual) WontMatch() bool {
+	return v == -1
 }
 
 func (v Virtual) String(g *Graph) string {
@@ -62,9 +73,4 @@ func VirtualDecode(r io.Reader) (Virtual, error) {
 func VirtualFrom(b []byte) Virtual {
 	lower := binary.LittleEndian.Uint32(b)
 	return Virtual(lower)
-}
-
-// Pattern creates a literal Pattern from this Virtual
-func (v Virtual) Pattern() *Pattern {
-	return PatternLiteral(v)
 }

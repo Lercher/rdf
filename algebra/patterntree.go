@@ -13,6 +13,15 @@ type PatternTree struct {
 	Blocks   []*Block
 }
 
+// WrapIn wraps this tree in a new PatternTree with the given mode
+func (tree *PatternTree) WrapIn(mode string) *PatternTree {
+	t := &PatternTree{
+		Mode:     mode,
+		Children: []*PatternTree{tree},
+	}
+	return t
+}
+
 func (tree *PatternTree) String() string {
 	buf := new(bytes.Buffer)
 	tree.stringIndent(buf, 0)

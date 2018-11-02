@@ -8,7 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lercher/rdf/algebra"
 	"github.com/lercher/rdf/graph"
+	"github.com/lercher/rdf/processor"
 )
 
 // comes with git reop
@@ -84,8 +86,8 @@ func TestSmallSPattern(t *testing.T) {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)
 	}
 
-	tp := &graph.TriplePattern{S: vv.Pattern()}
-	ms := g.Match(tp)
+	tp := &algebra.TriplePattern{S: algebra.PatternLiteral(vv.Virtual)}
+	ms := processor.Match(g, tp)
 	if len(ms) != 132 {
 		t.Log(tp.String(g))
 		for _, tr := range ms {
@@ -125,8 +127,8 @@ func TestSmallSPPattern(t *testing.T) {
 		t.Errorf("%q is not known in the loaded graph", vv2.Value)
 	}
 
-	tp := &graph.TriplePattern{S: vv.Pattern(), P: vv2.Pattern()}
-	ms := g.Match(tp)
+	tp := &algebra.TriplePattern{S: algebra.PatternLiteral(vv.Virtual), P: algebra.PatternLiteral(vv2.Virtual)}
+	ms := processor.Match(g, tp)
 	if len(ms) != 1 {
 		t.Log(tp.String(g))
 		for _, tr := range ms {
@@ -196,8 +198,8 @@ func TestLoadLargeCSVFile(t *testing.T) {
 		t.Errorf("%q is not known in the loaded graph", vv2.Value)
 	}
 
-	tp := &graph.TriplePattern{S: vv.Pattern(), P: vv2.Pattern()}
-	ms := g.Match(tp)
+	tp := &algebra.TriplePattern{S: algebra.PatternLiteral(vv.Virtual), P: algebra.PatternLiteral(vv2.Virtual)}
+	ms := processor.Match(g, tp)
 	if len(ms) != 1 {
 		t.Log(tp.String(g))
 		for _, tr := range ms {

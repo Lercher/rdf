@@ -64,7 +64,7 @@ func TestSparqlParserSimple(t *testing.T) {
 	}
 	ws(t, "type", ast.QueryType, "select")
 	ws(t, "modifier", ast.Modifier, "distinct")
-	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
+	ws(t, "projection", ast.Projection.StringNames(ast.Variables), "[name]")
 	w(t, "variables", ast.Variables, "[name:$0 school:$1 what:$2 num:$3]")
 	ws(t, "where pattern mode", ast.Where.Mode, "GGP")
 	if len(ast.Where.Blocks) != 11 {

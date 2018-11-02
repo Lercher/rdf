@@ -46,3 +46,8 @@ func (vs *Variables) String() string {
 	}
 	return fmt.Sprint(list)
 }
+
+// Count returns the number of variables
+func (vs *Variables) Count() int {
+	return len(vs.n)
+}

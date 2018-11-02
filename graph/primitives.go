@@ -16,9 +16,10 @@ type String string
 // Bool is a Verb'able boolean
 type Bool bool
 
-// Bool is a Verb'able nil
+// Nil is a Verb'able nil
 type Nil struct{}
 
+// NIL is the only plausible instance of Nil
 var NIL = Nil{}
 
 func (i Int) String() string {

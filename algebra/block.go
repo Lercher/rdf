@@ -4,7 +4,8 @@ import (
 	"fmt"
 )
 
-// Block is a mode tagged triple of Terms. Results from a triplesBlock
+// Block is a triple of Terms. Results from a triplesBlock.
+// A block term can be a Variable or iriRef|rdfLiteral|numericLiteral|booleanLiteral|blankNode|NIL
 type Block struct {
 	Subject   Term
 	Predicate Term

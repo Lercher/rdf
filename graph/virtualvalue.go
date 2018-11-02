@@ -25,7 +25,8 @@ func newVirtualValue(g *Graph, primitive interface{}) VirtualValue {
 	case string:
 		return virtualValueString(g, v)
 	default:
-		panic(fmt.Errorf("unsupported value type %T", primitive))
+		// #TODO: must support iriRef|rdfLiteral|numericLiteral|booleanLiteral|blankNode|NIL
+		panic(fmt.Errorf("unsupported value type %T", primitive)) 
 	}
 }
 
@@ -63,11 +64,6 @@ func vvalue(g *Graph, seed byte, bytes []byte, v interface{}) VirtualValue {
 		Known:   ok,
 		Size:    len(bytes),
 	}
-}
-
-// Pattern returns a constant Pattern from the virtual value
-func (vv VirtualValue) Pattern() *Pattern {
-	return PatternLiteral(vv.Virtual)
 }
 
 const (

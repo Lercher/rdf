@@ -1,10 +1,12 @@
 package graph
 
-import "fmt"
+import (
+	"fmt"
+)
 
-// Triple stores an assertation in a Graph in virtual form, 
+// Triple stores an assertation in a Graph in virtual form,
 // i.e. instead of the values it holds 3x16 bytes of hash values.
-// Therefore a Triple must always be coupled with a graph from witch 
+// Therefore a Triple must always be coupled with a graph from witch
 // it was created. It is undefined behaviour to use a triple with a different Graph.
 type Triple struct {
 	S, P, O Virtual

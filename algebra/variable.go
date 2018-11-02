@@ -1,6 +1,9 @@
 package algebra
 
-import "fmt"
+import (
+	"github.com/lercher/rdf/graph"
+	"fmt"
+)
 
 // Variable is just an index and therefore depends on Variables
 type Variable int
@@ -16,4 +19,12 @@ func (v Variable) String() string {
 		return "_"
 	}
 	return fmt.Sprintf("$%d", int(v))
+}
+
+// I am a binder
+func(v Variable) bind(bs Binding) (Term, graph.Virtual) {
+	if bs.IsUnbound(v) {
+		return v, graph.NotAVirtual
+	}
+	return nil, bs[v]
 }

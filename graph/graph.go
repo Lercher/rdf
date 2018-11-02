@@ -59,47 +59,6 @@ func (g *Graph) Assert(s, p, o interface{}) *Triple {
 	return t
 }
 
-// Match locates a list of Triples that match a given triple of patterns
-func (g *Graph) Match(p *TriplePattern) []*Triple {
-	givens := !p.S.IsVariable()
-	givenp := !p.P.IsVariable()
-	giveno := !p.O.IsVariable()
-	t := p.Triple()
-
-	// 3 crit, no variables
-	if givens && givenp && giveno {
-		if _, ok := g.dataset[t]; ok {
-			return []*Triple{&t}
-		}
-		return nil
-	}
-
-	// 2 crit
-	if givens && givenp {
-		return g.spindex[t.SP()]
-	}
-	if givens && giveno {
-		return g.soindex[t.SO()]
-	}
-	if givenp && giveno {
-		return g.poindex[t.PO()]
-	}
-
-	// 1 crit
-	if givens {
-		return g.sindex[p.S.virtual]
-	}
-	if givenp {
-		return g.pindex[p.P.virtual]
-	}
-	if giveno {
-		return g.oindex[p.O.virtual]
-	}
-
-	// 0 crit, all variables
-	return g.Dataset()
-}
-
 // DatasetMap returns the asserted Triples
 func (g *Graph) DatasetMap() map[Triple]*Triple {
 	return g.dataset
@@ -357,4 +316,40 @@ func calcsize2(index map[Virtual2][]*Triple) int {
 		l += 8 * len(list)
 	}
 	return l
+}
+
+// MatchPrimitive locates a list of Triples that match a given triple of patterns
+func MatchPrimitive(g *Graph, t *Triple, givens, givenp, giveno bool) []*Triple {
+	// 3 crit, no variables
+	if givens && givenp && giveno {
+		if _, ok := g.dataset[*t]; ok {
+			return []*Triple{t}
+		}
+		return nil
+	}
+
+	// 2 crit
+	if givens && givenp {
+		return g.spindex[t.SP()]
+	}
+	if givens && giveno {
+		return g.soindex[t.SO()]
+	}
+	if givenp && giveno {
+		return g.poindex[t.PO()]
+	}
+
+	// 1 crit
+	if givens {
+		return g.sindex[t.S]
+	}
+	if givenp {
+		return g.pindex[t.P]
+	}
+	if giveno {
+		return g.oindex[t.O]
+	}
+
+	// 0 crit, all variables
+	return g.Dataset()
 }

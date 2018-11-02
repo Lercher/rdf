@@ -42,3 +42,28 @@ func (s *symbols) AddPrefix(p string, iri graph.IRI) *graph.PrefixedIRI {
 	s.PrefixedIRIs = append(s.PrefixedIRIs, pi)
 	return pi
 }
+
+// Algebra constructs the query algebra for the parsed SPARQL statement
+func (ast *AST) Algebra() *algebra.Algebra {
+	switch ast.QueryType {
+	default:
+		panic("implementation: unsupported query type" + ast.QueryType)
+	case "select":
+		tree := ast.Where
+
+		tree = tree.WrapIn("PROJECTION")
+		tree.Term = ast.Projection
+
+		switch ast.Modifier {
+		case "distinct":
+			tree = tree.WrapIn("DISTINCT")
+		case "reduced":
+			tree = tree.WrapIn("REDUCED")
+		}
+
+		return &algebra.Algebra{
+			Variables: ast.Variables,
+			PatternTree: tree,
+		}
+	}
+}
