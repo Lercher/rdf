@@ -15,12 +15,12 @@ func projection(ctx *context, tree *algebra.PatternTree, current algebra.Binding
 	if proj.All {
 		return propagate(ctx, tree, current)
 	}
-	projctx := ctx.WithReceiver(func(g *graph.Graph, bs algebra.Binding) (bool, error) {
+	projctx := ctx.WithReceiver(func(g *graph.Graph, vs *algebra.Variables, bs algebra.Binding) (bool, error) {
 		clone := algebra.NewBinding(len(bs))
 		for _, v := range proj.Variables {
 			clone[v] = bs[v]
 		}
-		return ctx.receiver(g, clone)
+		return ctx.receiver(g, vs, clone)
 	})
 	return propagate(projctx, tree, current)
 }

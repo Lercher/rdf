@@ -12,7 +12,7 @@ func gpg(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error
 
 func join(ctx *context, blocks []*algebra.Block, current algebra.Binding) (bool, error) {
 	if len(blocks) == 0 {
-		return ctx.receiver(ctx.g, current)
+		return ctx.receiver(ctx.g, ctx.variables, current)
 	}
 
 	block := blocks[0]
