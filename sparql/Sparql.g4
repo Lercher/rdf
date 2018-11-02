@@ -109,21 +109,21 @@ triplesBlock
     ;
 
 graphPatternNotTriples
-    : optionalGraphPattern 
-    | groupOrUnionGraphPattern 
-    | graphGraphPattern
+    : ogp=optionalGraphPattern 
+    | gup=groupOrUnionGraphPattern 
+    | ggp=graphGraphPattern
     ;
 
 optionalGraphPattern
-    : 'OPTIONAL' groupGraphPattern
+    : 'OPTIONAL' ggp=groupGraphPattern
     ;
 
 graphGraphPattern
-    : 'GRAPH' varOrIRIref groupGraphPattern
+    : 'GRAPH' vi=varOrIRIref ggp=groupGraphPattern
     ;
 
 groupOrUnionGraphPattern
-    : groupGraphPattern ( 'UNION' groupGraphPattern )*
+    : union+=groupGraphPattern ( 'UNION' union+=groupGraphPattern )*
     ;
 
 filter

@@ -71,7 +71,7 @@ func (w *walker) EnterAskQuery(ctx *parser.AskQueryContext) {
 
 func (w *walker) EnterWhereClause(ctx *parser.WhereClauseContext) {
 	ggpC := ctx.GetGgp()
-	tree, err := convertGroupGraphPatternContext(ggpC, &w.ast.symbols)
+	tree, err := convertGroupGraphPatternContext(ggpC, &w.ast.symbols, "GGP") // GGP=GroupGraphPattern
 	if err != nil {
 		w.SemanticErrorAt(ggpC.GetStart(), e2001, err.Error())
 	}

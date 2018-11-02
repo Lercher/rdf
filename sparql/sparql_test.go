@@ -10,6 +10,14 @@ import (
 const (
 	emptyQuery = `   `
 
+	badQuery = `
+BASE <http://xyz>
+PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
+SELECT ?name FROM <http://unsupported> WHERE { ?s ?p
+`
+
+	unsupportedQuery = `SELECT ?name FROM <http://unsupported> WHERE { ?s ?s ?s.}`
+
 	simpleQuery = `
 base <http://xyz>
 PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
@@ -21,6 +29,11 @@ SELECT distinct ?name Where {
   ?school sch-ont:districtAdministrative <http://statistics.data.gov.uk/id/local-authority-district/00AA>.
   OPTIONAL {
 	?school ?what -7, "X", 'Y', -3.55e10, ont:ont .
+	{?school ?num 1}
+	UNION
+	{?school ?num 2 . ?school ?num 3}
+	UNION
+	{?school ?num 4 . ?school ?num 5 . ?school ?num 6}
   }
   ?name 
   	a 'school'^^xs:string;
@@ -31,15 +44,43 @@ SELECT distinct ?name Where {
 }
 ORDER by ?name
 `
-
-	badQuery = `
-BASE <http://xyz>
-PREFIX sch-ont:   <http://education.data.gov.uk/def/school/>
-SELECT ?name FROM <http://unsupported> WHERE { ?s ?p
-`
-
-	unsupportedQuery = `SELECT ?name FROM <http://unsupported> WHERE { ?s ?s ?s.}`
 )
+
+func TestSparqlParserSimple(t *testing.T) {
+	for i, q := range strings.Split(simpleQuery, "\n") {
+		t.Log(i+1, q)
+	}
+	ast, err := parse(t, simpleQuery)
+	if err != nil {
+		t.Fatal("simple should not err, but", err)
+	}
+
+	w(t, "base", ast.Base, `<http://xyz>`)
+	if len(ast.PrefixedIRIs) != 2+3 {
+		t.Errorf("length prefix: want %d, got %d", 2+3, len(ast.PrefixedIRIs))
+	} else {
+		w(t, "prefix3", ast.PrefixedIRIs[3], `sch-ont:<http://education.data.gov.uk/def/school/>`)
+		w(t, "prefix4", ast.PrefixedIRIs[4], `ont:<http://ontology/ÄÖÜßäöü/>`)
+	}
+	ws(t, "type", ast.QueryType, "select")
+	ws(t, "modifier", ast.Modifier, "distinct")
+	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
+	w(t, "variables", ast.Variables, "[name:$0 school:$1 what:$2 num:$3]")
+	ws(t, "where pattern mode", ast.Where.Mode, "GGP")
+	if len(ast.Where.Blocks) != 11 {
+		for i, b := range ast.Where.Blocks {
+			t.Log("where", i, b.String())
+		}
+		t.Fatalf("want %d top level where blocks, got %d", 11, len(ast.Where.Blocks))
+	}
+	w(t, "where0", ast.Where.Blocks[0], `{(algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
+	w(t, "where1", ast.Where.Blocks[1], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
+	w(t, "where2", ast.Where.Blocks[2], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
+
+	t.Log("\n", ast.Where)
+
+	t.Error("TODO")
+}
 
 func parse(t *testing.T, q string) (*AST, error) {
 	t.Helper()
@@ -71,40 +112,6 @@ func TestSparqlParserUnsupported(t *testing.T) {
 	}
 	got := err.Error()
 	ws(t, "unsupported error message", got, "1 semantic error(s) and 0 warning(s)")
-}
-
-func TestSparqlParserSimple(t *testing.T) {
-	for i, q := range strings.Split(simpleQuery, "\n") {
-		t.Log(i+1, q)
-	}
-	ast, err := parse(t, simpleQuery)
-	if err != nil {
-		t.Fatal("simple should not err, but", err)
-	}
-
-	w(t, "base", ast.Base, `<http://xyz>`)
-	if len(ast.PrefixedIRIs) != 2+3 {
-		t.Errorf("length prefix: want %d, got %d", 2+3, len(ast.PrefixedIRIs))
-	} else {
-		w(t, "prefix3", ast.PrefixedIRIs[3], `sch-ont:<http://education.data.gov.uk/def/school/>`)
-		w(t, "prefix4", ast.PrefixedIRIs[4], `ont:<http://ontology/ÄÖÜßäöü/>`)
-	}
-	ws(t, "type", ast.QueryType, "select")
-	ws(t, "modifier", ast.Modifier, "distinct")
-	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
-	w(t, "variables", ast.Variables, "[name:$0 school:$1 what:$2]")
-	ws(t, "where pattern mode", ast.Where.Mode, "GGP")
-	if len(ast.Where.Blocks) != 11 {
-		for i, b := range ast.Where.Blocks {
-			t.Log("where", i, b.String())
-		}
-		t.Fatalf("want %d top level where blocks, got %d", 11, len(ast.Where.Blocks))
-	}
-	w(t, "where0", ast.Where.Blocks[0], `{(algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
-	w(t, "where1", ast.Where.Blocks[1], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
-	w(t, "where2", ast.Where.Blocks[2], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
-
-	t.Error("TODO")
 }
 
 func ws(t *testing.T, what string, got string, want string) {

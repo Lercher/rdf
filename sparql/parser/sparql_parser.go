@@ -3655,6 +3655,24 @@ type IGraphPatternNotTriplesContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetOgp returns the ogp rule contexts.
+	GetOgp() IOptionalGraphPatternContext
+
+	// GetGup returns the gup rule contexts.
+	GetGup() IGroupOrUnionGraphPatternContext
+
+	// GetGgp returns the ggp rule contexts.
+	GetGgp() IGraphGraphPatternContext
+
+	// SetOgp sets the ogp rule contexts.
+	SetOgp(IOptionalGraphPatternContext)
+
+	// SetGup sets the gup rule contexts.
+	SetGup(IGroupOrUnionGraphPatternContext)
+
+	// SetGgp sets the ggp rule contexts.
+	SetGgp(IGraphGraphPatternContext)
+
 	// IsGraphPatternNotTriplesContext differentiates from other interfaces.
 	IsGraphPatternNotTriplesContext()
 }
@@ -3662,6 +3680,9 @@ type IGraphPatternNotTriplesContext interface {
 type GraphPatternNotTriplesContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	ogp    IOptionalGraphPatternContext
+	gup    IGroupOrUnionGraphPatternContext
+	ggp    IGraphGraphPatternContext
 }
 
 func NewEmptyGraphPatternNotTriplesContext() *GraphPatternNotTriplesContext {
@@ -3685,6 +3706,18 @@ func NewGraphPatternNotTriplesContext(parser antlr.Parser, parent antlr.ParserRu
 }
 
 func (s *GraphPatternNotTriplesContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *GraphPatternNotTriplesContext) GetOgp() IOptionalGraphPatternContext { return s.ogp }
+
+func (s *GraphPatternNotTriplesContext) GetGup() IGroupOrUnionGraphPatternContext { return s.gup }
+
+func (s *GraphPatternNotTriplesContext) GetGgp() IGraphGraphPatternContext { return s.ggp }
+
+func (s *GraphPatternNotTriplesContext) SetOgp(v IOptionalGraphPatternContext) { s.ogp = v }
+
+func (s *GraphPatternNotTriplesContext) SetGup(v IGroupOrUnionGraphPatternContext) { s.gup = v }
+
+func (s *GraphPatternNotTriplesContext) SetGgp(v IGraphGraphPatternContext) { s.ggp = v }
 
 func (s *GraphPatternNotTriplesContext) OptionalGraphPattern() IOptionalGraphPatternContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IOptionalGraphPatternContext)(nil)).Elem(), 0)
@@ -3764,21 +3797,30 @@ func (p *SparqlParser) GraphPatternNotTriples() (localctx IGraphPatternNotTriple
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(306)
-			p.OptionalGraphPattern()
+
+			var _x = p.OptionalGraphPattern()
+
+			localctx.(*GraphPatternNotTriplesContext).ogp = _x
 		}
 
 	case SparqlParserT__18:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(307)
-			p.GroupOrUnionGraphPattern()
+
+			var _x = p.GroupOrUnionGraphPattern()
+
+			localctx.(*GraphPatternNotTriplesContext).gup = _x
 		}
 
 	case SparqlParserT__22:
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(308)
-			p.GraphGraphPattern()
+
+			var _x = p.GraphGraphPattern()
+
+			localctx.(*GraphPatternNotTriplesContext).ggp = _x
 		}
 
 	default:
@@ -3795,6 +3837,12 @@ type IOptionalGraphPatternContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetGgp returns the ggp rule contexts.
+	GetGgp() IGroupGraphPatternContext
+
+	// SetGgp sets the ggp rule contexts.
+	SetGgp(IGroupGraphPatternContext)
+
 	// IsOptionalGraphPatternContext differentiates from other interfaces.
 	IsOptionalGraphPatternContext()
 }
@@ -3802,6 +3850,7 @@ type IOptionalGraphPatternContext interface {
 type OptionalGraphPatternContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	ggp    IGroupGraphPatternContext
 }
 
 func NewEmptyOptionalGraphPatternContext() *OptionalGraphPatternContext {
@@ -3825,6 +3874,10 @@ func NewOptionalGraphPatternContext(parser antlr.Parser, parent antlr.ParserRule
 }
 
 func (s *OptionalGraphPatternContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *OptionalGraphPatternContext) GetGgp() IGroupGraphPatternContext { return s.ggp }
+
+func (s *OptionalGraphPatternContext) SetGgp(v IGroupGraphPatternContext) { s.ggp = v }
 
 func (s *OptionalGraphPatternContext) GroupGraphPattern() IGroupGraphPatternContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IGroupGraphPatternContext)(nil)).Elem(), 0)
@@ -3883,7 +3936,10 @@ func (p *SparqlParser) OptionalGraphPattern() (localctx IOptionalGraphPatternCon
 	}
 	{
 		p.SetState(312)
-		p.GroupGraphPattern()
+
+		var _x = p.GroupGraphPattern()
+
+		localctx.(*OptionalGraphPatternContext).ggp = _x
 	}
 
 	return localctx
@@ -3896,6 +3952,18 @@ type IGraphGraphPatternContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetVi returns the vi rule contexts.
+	GetVi() IVarOrIRIrefContext
+
+	// GetGgp returns the ggp rule contexts.
+	GetGgp() IGroupGraphPatternContext
+
+	// SetVi sets the vi rule contexts.
+	SetVi(IVarOrIRIrefContext)
+
+	// SetGgp sets the ggp rule contexts.
+	SetGgp(IGroupGraphPatternContext)
+
 	// IsGraphGraphPatternContext differentiates from other interfaces.
 	IsGraphGraphPatternContext()
 }
@@ -3903,6 +3971,8 @@ type IGraphGraphPatternContext interface {
 type GraphGraphPatternContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	vi     IVarOrIRIrefContext
+	ggp    IGroupGraphPatternContext
 }
 
 func NewEmptyGraphGraphPatternContext() *GraphGraphPatternContext {
@@ -3926,6 +3996,14 @@ func NewGraphGraphPatternContext(parser antlr.Parser, parent antlr.ParserRuleCon
 }
 
 func (s *GraphGraphPatternContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *GraphGraphPatternContext) GetVi() IVarOrIRIrefContext { return s.vi }
+
+func (s *GraphGraphPatternContext) GetGgp() IGroupGraphPatternContext { return s.ggp }
+
+func (s *GraphGraphPatternContext) SetVi(v IVarOrIRIrefContext) { s.vi = v }
+
+func (s *GraphGraphPatternContext) SetGgp(v IGroupGraphPatternContext) { s.ggp = v }
 
 func (s *GraphGraphPatternContext) VarOrIRIref() IVarOrIRIrefContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarOrIRIrefContext)(nil)).Elem(), 0)
@@ -3994,11 +4072,17 @@ func (p *SparqlParser) GraphGraphPattern() (localctx IGraphGraphPatternContext) 
 	}
 	{
 		p.SetState(315)
-		p.VarOrIRIref()
+
+		var _x = p.VarOrIRIref()
+
+		localctx.(*GraphGraphPatternContext).vi = _x
 	}
 	{
 		p.SetState(316)
-		p.GroupGraphPattern()
+
+		var _x = p.GroupGraphPattern()
+
+		localctx.(*GraphGraphPatternContext).ggp = _x
 	}
 
 	return localctx
@@ -4011,13 +4095,27 @@ type IGroupOrUnionGraphPatternContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// Get_groupGraphPattern returns the _groupGraphPattern rule contexts.
+	Get_groupGraphPattern() IGroupGraphPatternContext
+
+	// Set_groupGraphPattern sets the _groupGraphPattern rule contexts.
+	Set_groupGraphPattern(IGroupGraphPatternContext)
+
+	// GetUnion returns the union rule context list.
+	GetUnion() []IGroupGraphPatternContext
+
+	// SetUnion sets the union rule context list.
+	SetUnion([]IGroupGraphPatternContext)
+
 	// IsGroupOrUnionGraphPatternContext differentiates from other interfaces.
 	IsGroupOrUnionGraphPatternContext()
 }
 
 type GroupOrUnionGraphPatternContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser             antlr.Parser
+	_groupGraphPattern IGroupGraphPatternContext
+	union              []IGroupGraphPatternContext
 }
 
 func NewEmptyGroupOrUnionGraphPatternContext() *GroupOrUnionGraphPatternContext {
@@ -4041,6 +4139,18 @@ func NewGroupOrUnionGraphPatternContext(parser antlr.Parser, parent antlr.Parser
 }
 
 func (s *GroupOrUnionGraphPatternContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *GroupOrUnionGraphPatternContext) Get_groupGraphPattern() IGroupGraphPatternContext {
+	return s._groupGraphPattern
+}
+
+func (s *GroupOrUnionGraphPatternContext) Set_groupGraphPattern(v IGroupGraphPatternContext) {
+	s._groupGraphPattern = v
+}
+
+func (s *GroupOrUnionGraphPatternContext) GetUnion() []IGroupGraphPatternContext { return s.union }
+
+func (s *GroupOrUnionGraphPatternContext) SetUnion(v []IGroupGraphPatternContext) { s.union = v }
 
 func (s *GroupOrUnionGraphPatternContext) AllGroupGraphPattern() []IGroupGraphPatternContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IGroupGraphPatternContext)(nil)).Elem())
@@ -4109,8 +4219,12 @@ func (p *SparqlParser) GroupOrUnionGraphPattern() (localctx IGroupOrUnionGraphPa
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(318)
-		p.GroupGraphPattern()
+
+		var _x = p.GroupGraphPattern()
+
+		localctx.(*GroupOrUnionGraphPatternContext)._groupGraphPattern = _x
 	}
+	localctx.(*GroupOrUnionGraphPatternContext).union = append(localctx.(*GroupOrUnionGraphPatternContext).union, localctx.(*GroupOrUnionGraphPatternContext)._groupGraphPattern)
 	p.SetState(323)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
@@ -4122,8 +4236,12 @@ func (p *SparqlParser) GroupOrUnionGraphPattern() (localctx IGroupOrUnionGraphPa
 		}
 		{
 			p.SetState(320)
-			p.GroupGraphPattern()
+
+			var _x = p.GroupGraphPattern()
+
+			localctx.(*GroupOrUnionGraphPatternContext)._groupGraphPattern = _x
 		}
+		localctx.(*GroupOrUnionGraphPatternContext).union = append(localctx.(*GroupOrUnionGraphPatternContext).union, localctx.(*GroupOrUnionGraphPatternContext)._groupGraphPattern)
 
 		p.SetState(325)
 		p.GetErrorHandler().Sync(p)
