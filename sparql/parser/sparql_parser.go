@@ -1,4 +1,4 @@
-// Code generated from /home/lercher/go/src/github.com/lercher/rdf/sparql/Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from d:\Daten\Go\src\github.com\lercher\rdf\sparql\Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
 
 package parser // Sparql
 
@@ -2315,6 +2315,12 @@ type IWhereClauseContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetGgp returns the ggp rule contexts.
+	GetGgp() IGroupGraphPatternContext
+
+	// SetGgp sets the ggp rule contexts.
+	SetGgp(IGroupGraphPatternContext)
+
 	// IsWhereClauseContext differentiates from other interfaces.
 	IsWhereClauseContext()
 }
@@ -2322,6 +2328,7 @@ type IWhereClauseContext interface {
 type WhereClauseContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	ggp    IGroupGraphPatternContext
 }
 
 func NewEmptyWhereClauseContext() *WhereClauseContext {
@@ -2345,6 +2352,10 @@ func NewWhereClauseContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 }
 
 func (s *WhereClauseContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *WhereClauseContext) GetGgp() IGroupGraphPatternContext { return s.ggp }
+
+func (s *WhereClauseContext) SetGgp(v IGroupGraphPatternContext) { s.ggp = v }
 
 func (s *WhereClauseContext) GroupGraphPattern() IGroupGraphPatternContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IGroupGraphPatternContext)(nil)).Elem(), 0)
@@ -2411,7 +2422,10 @@ func (p *SparqlParser) WhereClause() (localctx IWhereClauseContext) {
 	}
 	{
 		p.SetState(239)
-		p.GroupGraphPattern()
+
+		var _x = p.GroupGraphPattern()
+
+		localctx.(*WhereClauseContext).ggp = _x
 	}
 
 	return localctx
@@ -3174,13 +3188,55 @@ type IGroupGraphPatternContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// Get_triplesBlock returns the _triplesBlock rule contexts.
+	Get_triplesBlock() ITriplesBlockContext
+
+	// Get_graphPatternNotTriples returns the _graphPatternNotTriples rule contexts.
+	Get_graphPatternNotTriples() IGraphPatternNotTriplesContext
+
+	// Get_filter returns the _filter rule contexts.
+	Get_filter() IFilterContext
+
+	// Set_triplesBlock sets the _triplesBlock rule contexts.
+	Set_triplesBlock(ITriplesBlockContext)
+
+	// Set_graphPatternNotTriples sets the _graphPatternNotTriples rule contexts.
+	Set_graphPatternNotTriples(IGraphPatternNotTriplesContext)
+
+	// Set_filter sets the _filter rule contexts.
+	Set_filter(IFilterContext)
+
+	// GetTb returns the tb rule context list.
+	GetTb() []ITriplesBlockContext
+
+	// GetGpnt returns the gpnt rule context list.
+	GetGpnt() []IGraphPatternNotTriplesContext
+
+	// GetFlt returns the flt rule context list.
+	GetFlt() []IFilterContext
+
+	// SetTb sets the tb rule context list.
+	SetTb([]ITriplesBlockContext)
+
+	// SetGpnt sets the gpnt rule context list.
+	SetGpnt([]IGraphPatternNotTriplesContext)
+
+	// SetFlt sets the flt rule context list.
+	SetFlt([]IFilterContext)
+
 	// IsGroupGraphPatternContext differentiates from other interfaces.
 	IsGroupGraphPatternContext()
 }
 
 type GroupGraphPatternContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser                  antlr.Parser
+	_triplesBlock           ITriplesBlockContext
+	tb                      []ITriplesBlockContext
+	_graphPatternNotTriples IGraphPatternNotTriplesContext
+	gpnt                    []IGraphPatternNotTriplesContext
+	_filter                 IFilterContext
+	flt                     []IFilterContext
 }
 
 func NewEmptyGroupGraphPatternContext() *GroupGraphPatternContext {
@@ -3204,6 +3260,34 @@ func NewGroupGraphPatternContext(parser antlr.Parser, parent antlr.ParserRuleCon
 }
 
 func (s *GroupGraphPatternContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *GroupGraphPatternContext) Get_triplesBlock() ITriplesBlockContext { return s._triplesBlock }
+
+func (s *GroupGraphPatternContext) Get_graphPatternNotTriples() IGraphPatternNotTriplesContext {
+	return s._graphPatternNotTriples
+}
+
+func (s *GroupGraphPatternContext) Get_filter() IFilterContext { return s._filter }
+
+func (s *GroupGraphPatternContext) Set_triplesBlock(v ITriplesBlockContext) { s._triplesBlock = v }
+
+func (s *GroupGraphPatternContext) Set_graphPatternNotTriples(v IGraphPatternNotTriplesContext) {
+	s._graphPatternNotTriples = v
+}
+
+func (s *GroupGraphPatternContext) Set_filter(v IFilterContext) { s._filter = v }
+
+func (s *GroupGraphPatternContext) GetTb() []ITriplesBlockContext { return s.tb }
+
+func (s *GroupGraphPatternContext) GetGpnt() []IGraphPatternNotTriplesContext { return s.gpnt }
+
+func (s *GroupGraphPatternContext) GetFlt() []IFilterContext { return s.flt }
+
+func (s *GroupGraphPatternContext) SetTb(v []ITriplesBlockContext) { s.tb = v }
+
+func (s *GroupGraphPatternContext) SetGpnt(v []IGraphPatternNotTriplesContext) { s.gpnt = v }
+
+func (s *GroupGraphPatternContext) SetFlt(v []IFilterContext) { s.flt = v }
 
 func (s *GroupGraphPatternContext) AllTriplesBlock() []ITriplesBlockContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ITriplesBlockContext)(nil)).Elem())
@@ -3327,8 +3411,12 @@ func (p *SparqlParser) GroupGraphPattern() (localctx IGroupGraphPatternContext) 
 	if _la == SparqlParserT__25 || _la == SparqlParserT__30 || (((_la-57)&-(0x1f+1)) == 0 && ((1<<uint((_la-57)))&((1<<(SparqlParserT__56-57))|(1<<(SparqlParserT__57-57))|(1<<(SparqlParserIRI_REF-57))|(1<<(SparqlParserPNAME_NS-57))|(1<<(SparqlParserPNAME_LN-57))|(1<<(SparqlParserBLANK_NODE_LABEL-57))|(1<<(SparqlParserVAR1-57))|(1<<(SparqlParserVAR2-57))|(1<<(SparqlParserINTEGER-57))|(1<<(SparqlParserDECIMAL-57))|(1<<(SparqlParserDOUBLE-57))|(1<<(SparqlParserINTEGER_POSITIVE-57))|(1<<(SparqlParserDECIMAL_POSITIVE-57))|(1<<(SparqlParserDOUBLE_POSITIVE-57))|(1<<(SparqlParserINTEGER_NEGATIVE-57))|(1<<(SparqlParserDECIMAL_NEGATIVE-57))|(1<<(SparqlParserDOUBLE_NEGATIVE-57))|(1<<(SparqlParserSTRING_LITERAL1-57))|(1<<(SparqlParserSTRING_LITERAL2-57))|(1<<(SparqlParserNIL-57))|(1<<(SparqlParserANON-57)))) != 0) {
 		{
 			p.SetState(279)
-			p.TriplesBlock()
+
+			var _x = p.TriplesBlock()
+
+			localctx.(*GroupGraphPatternContext)._triplesBlock = _x
 		}
+		localctx.(*GroupGraphPatternContext).tb = append(localctx.(*GroupGraphPatternContext).tb, localctx.(*GroupGraphPatternContext)._triplesBlock)
 
 	}
 	p.SetState(294)
@@ -3343,14 +3431,22 @@ func (p *SparqlParser) GroupGraphPattern() (localctx IGroupGraphPatternContext) 
 		case SparqlParserT__18, SparqlParserT__21, SparqlParserT__22:
 			{
 				p.SetState(282)
-				p.GraphPatternNotTriples()
+
+				var _x = p.GraphPatternNotTriples()
+
+				localctx.(*GroupGraphPatternContext)._graphPatternNotTriples = _x
 			}
+			localctx.(*GroupGraphPatternContext).gpnt = append(localctx.(*GroupGraphPatternContext).gpnt, localctx.(*GroupGraphPatternContext)._graphPatternNotTriples)
 
 		case SparqlParserT__24:
 			{
 				p.SetState(283)
-				p.Filter()
+
+				var _x = p.Filter()
+
+				localctx.(*GroupGraphPatternContext)._filter = _x
 			}
+			localctx.(*GroupGraphPatternContext).flt = append(localctx.(*GroupGraphPatternContext).flt, localctx.(*GroupGraphPatternContext)._filter)
 
 		default:
 			panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
@@ -3373,8 +3469,12 @@ func (p *SparqlParser) GroupGraphPattern() (localctx IGroupGraphPatternContext) 
 		if _la == SparqlParserT__25 || _la == SparqlParserT__30 || (((_la-57)&-(0x1f+1)) == 0 && ((1<<uint((_la-57)))&((1<<(SparqlParserT__56-57))|(1<<(SparqlParserT__57-57))|(1<<(SparqlParserIRI_REF-57))|(1<<(SparqlParserPNAME_NS-57))|(1<<(SparqlParserPNAME_LN-57))|(1<<(SparqlParserBLANK_NODE_LABEL-57))|(1<<(SparqlParserVAR1-57))|(1<<(SparqlParserVAR2-57))|(1<<(SparqlParserINTEGER-57))|(1<<(SparqlParserDECIMAL-57))|(1<<(SparqlParserDOUBLE-57))|(1<<(SparqlParserINTEGER_POSITIVE-57))|(1<<(SparqlParserDECIMAL_POSITIVE-57))|(1<<(SparqlParserDOUBLE_POSITIVE-57))|(1<<(SparqlParserINTEGER_NEGATIVE-57))|(1<<(SparqlParserDECIMAL_NEGATIVE-57))|(1<<(SparqlParserDOUBLE_NEGATIVE-57))|(1<<(SparqlParserSTRING_LITERAL1-57))|(1<<(SparqlParserSTRING_LITERAL2-57))|(1<<(SparqlParserNIL-57))|(1<<(SparqlParserANON-57)))) != 0) {
 			{
 				p.SetState(289)
-				p.TriplesBlock()
+
+				var _x = p.TriplesBlock()
+
+				localctx.(*GroupGraphPatternContext)._triplesBlock = _x
 			}
+			localctx.(*GroupGraphPatternContext).tb = append(localctx.(*GroupGraphPatternContext).tb, localctx.(*GroupGraphPatternContext)._triplesBlock)
 
 		}
 
@@ -3397,6 +3497,18 @@ type ITriplesBlockContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetTss returns the tss rule contexts.
+	GetTss() ITriplesSameSubjectContext
+
+	// GetTb returns the tb rule contexts.
+	GetTb() ITriplesBlockContext
+
+	// SetTss sets the tss rule contexts.
+	SetTss(ITriplesSameSubjectContext)
+
+	// SetTb sets the tb rule contexts.
+	SetTb(ITriplesBlockContext)
+
 	// IsTriplesBlockContext differentiates from other interfaces.
 	IsTriplesBlockContext()
 }
@@ -3404,6 +3516,8 @@ type ITriplesBlockContext interface {
 type TriplesBlockContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	tss    ITriplesSameSubjectContext
+	tb     ITriplesBlockContext
 }
 
 func NewEmptyTriplesBlockContext() *TriplesBlockContext {
@@ -3427,6 +3541,14 @@ func NewTriplesBlockContext(parser antlr.Parser, parent antlr.ParserRuleContext,
 }
 
 func (s *TriplesBlockContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *TriplesBlockContext) GetTss() ITriplesSameSubjectContext { return s.tss }
+
+func (s *TriplesBlockContext) GetTb() ITriplesBlockContext { return s.tb }
+
+func (s *TriplesBlockContext) SetTss(v ITriplesSameSubjectContext) { s.tss = v }
+
+func (s *TriplesBlockContext) SetTb(v ITriplesBlockContext) { s.tb = v }
 
 func (s *TriplesBlockContext) TriplesSameSubject() ITriplesSameSubjectContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITriplesSameSubjectContext)(nil)).Elem(), 0)
@@ -3492,7 +3614,10 @@ func (p *SparqlParser) TriplesBlock() (localctx ITriplesBlockContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(299)
-		p.TriplesSameSubject()
+
+		var _x = p.TriplesSameSubject()
+
+		localctx.(*TriplesBlockContext).tss = _x
 	}
 	p.SetState(304)
 	p.GetErrorHandler().Sync(p)
@@ -3510,7 +3635,10 @@ func (p *SparqlParser) TriplesBlock() (localctx ITriplesBlockContext) {
 		if _la == SparqlParserT__25 || _la == SparqlParserT__30 || (((_la-57)&-(0x1f+1)) == 0 && ((1<<uint((_la-57)))&((1<<(SparqlParserT__56-57))|(1<<(SparqlParserT__57-57))|(1<<(SparqlParserIRI_REF-57))|(1<<(SparqlParserPNAME_NS-57))|(1<<(SparqlParserPNAME_LN-57))|(1<<(SparqlParserBLANK_NODE_LABEL-57))|(1<<(SparqlParserVAR1-57))|(1<<(SparqlParserVAR2-57))|(1<<(SparqlParserINTEGER-57))|(1<<(SparqlParserDECIMAL-57))|(1<<(SparqlParserDOUBLE-57))|(1<<(SparqlParserINTEGER_POSITIVE-57))|(1<<(SparqlParserDECIMAL_POSITIVE-57))|(1<<(SparqlParserDOUBLE_POSITIVE-57))|(1<<(SparqlParserINTEGER_NEGATIVE-57))|(1<<(SparqlParserDECIMAL_NEGATIVE-57))|(1<<(SparqlParserDOUBLE_NEGATIVE-57))|(1<<(SparqlParserSTRING_LITERAL1-57))|(1<<(SparqlParserSTRING_LITERAL2-57))|(1<<(SparqlParserNIL-57))|(1<<(SparqlParserANON-57)))) != 0) {
 			{
 				p.SetState(301)
-				p.TriplesBlock()
+
+				var _x = p.TriplesBlock()
+
+				localctx.(*TriplesBlockContext).tb = _x
 			}
 
 		}

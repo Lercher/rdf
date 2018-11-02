@@ -69,42 +69,11 @@ func (w *walker) EnterAskQuery(ctx *parser.AskQueryContext) {
 	w.ast.QueryType = "ask"
 }
 
-func (w *walker) EnterTriplesSameSubject(ctx *parser.TriplesSameSubjectContext) {
-	subjectC := ctx.GetSubject()
-	if subjectC != nil {
-		subject, err := convertVarOrTermContext(subjectC, &w.ast.symbols)
-		if err != nil {
-			w.SemanticErrorAt(subjectC.GetStart(), e2004, err.Error())
-		}
-		propertiesC := ctx.GetProperties()
-		verbs := propertiesC.GetVerbs()
-		for i, v := range verbs {
-			predicate, err := convertVerbContext(v, &w.ast.symbols)
-			if err != nil {
-				w.SemanticErrorAt(v.GetStart(), e2005, err.Error())
-			}
-			// https://www.w3.org/TR/rdf-sparql-query/#objLists
-			objectlistC := propertiesC.GetOl()[i]
-			for _, objC := range objectlistC.GetOb() {
-				graphNodeC := objC.GetGn()
-				vtC := graphNodeC.GetVt()
-				if vtC != nil {
-					object, err := convertVarOrTermContext(vtC, &w.ast.symbols)
-					if err != nil {
-						w.SemanticErrorAt(vtC.GetStart(), e2006, err.Error())
-					}
-					block := &Block{
-						Mode:      "BGP",
-						Subject:   subject,
-						Predicate: predicate,
-						Object:    object,
-					}
-					w.ast.Where = append(w.ast.Where, block)
-				} else {
-					tnC := graphNodeC.GetTn() // triplesNode
-					w.SemanticErrorAt(tnC.GetStart(), e1003, "triplesNode as object not yet supported")
-				}
-			}
-		}
+func (w *walker) EnterWhereClause(ctx *parser.WhereClauseContext) {
+	ggpC := ctx.GetGgp()
+	tree, err := convertGroupGraphPatternContext(ggpC, &w.ast.symbols)
+	if err != nil {
+		w.SemanticErrorAt(ggpC.GetStart(), e2001, err.Error())
 	}
+	w.ast.Where = tree
 }

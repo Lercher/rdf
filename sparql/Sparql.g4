@@ -68,7 +68,7 @@ sourceSelector
     ;
 
 whereClause
-    : 'WHERE'? groupGraphPattern
+    : 'WHERE'? ggp=groupGraphPattern
     ;
 
 solutionModifier
@@ -99,13 +99,13 @@ offsetClause
 groupGraphPattern
     : 
     '{' 
-    triplesBlock? 
-    ( ( graphPatternNotTriples | filter ) '.'? triplesBlock? )*
+    tb+=triplesBlock? 
+    ( ( gpnt+=graphPatternNotTriples | flt+=filter ) '.'? tb+=triplesBlock? )*
     '}'
     ;
 
 triplesBlock
-    : triplesSameSubject ( '.' triplesBlock? )?
+    : tss=triplesSameSubject ( '.' tb=triplesBlock? )?
     ;
 
 graphPatternNotTriples

@@ -130,3 +130,81 @@ func convertVarOrTermContext(ctx parser.IVarOrTermContext, symbols *symbols) (al
 
 	return nil, fmt.Errorf("not implemnted: %v", gtC.GetText())
 }
+
+func convertGroupGraphPatternContext(ctx parser.IGroupGraphPatternContext, symbols *symbols) (*algebra.PatternTree, error) {
+	tree := &algebra.PatternTree{}
+	tree.Mode = "GGP" // GroupGraphPattern
+	for _, tbC := range ctx.GetTb() {
+		// triplesBlock
+		blocks, err := convertTriplesBlockContext(tbC, symbols)
+		if err != nil {
+			return nil, err
+		}
+		tree.Blocks = append(tree.Blocks, blocks...)
+	}
+	for _, gpntC := range ctx.GetGpnt() {
+		// graphPatternNotTriples
+		return nil, fmt.Errorf("graphPatternNotTriples not yet supported: %v", gpntC.GetStart()) // #TODO
+	}
+	for _, fltC := range ctx.GetFlt() {
+		// Filter
+		return nil, fmt.Errorf("filter not yet supported: %v", fltC.GetStart()) // #TODO
+	}
+	return tree, nil
+}
+
+func convertTriplesBlockContext(ctx parser.ITriplesBlockContext, symbols *symbols) ([]*algebra.Block, error) {
+	var list []*algebra.Block
+	for ctx != nil {
+		tssC := ctx.GetTss()
+		blocks, err := convertTriplesSameSubjectContext(tssC, symbols)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, blocks...)
+
+		ctx = ctx.GetTb() // tail recursion of triplesBlock
+	}
+	return list, nil
+}
+
+func convertTriplesSameSubjectContext(ctx parser.ITriplesSameSubjectContext, symbols *symbols) ([]*algebra.Block, error) {
+	var list []*algebra.Block
+	subjectC := ctx.GetSubject()
+	if subjectC != nil {
+		subject, err := convertVarOrTermContext(subjectC, symbols)
+		if err != nil {
+			return nil, err
+		}
+		propertiesC := ctx.GetProperties()
+		verbs := propertiesC.GetVerbs()
+		for i, v := range verbs {
+			predicate, err := convertVerbContext(v, symbols)
+			if err != nil {
+				return nil, err
+			}
+			// https://www.w3.org/TR/rdf-sparql-query/#objLists
+			objectlistC := propertiesC.GetOl()[i]
+			for _, objC := range objectlistC.GetOb() {
+				graphNodeC := objC.GetGn()
+				vtC := graphNodeC.GetVt()
+				if vtC != nil {
+					object, err := convertVarOrTermContext(vtC, symbols)
+					if err != nil {
+						return nil, err
+					}
+					block := &algebra.Block{
+						Subject:   subject,
+						Predicate: predicate,
+						Object:    object,
+					}
+					list = append(list, block)
+				} else {
+					tnC := graphNodeC.GetTn() // triplesNode
+					return nil, fmt.Errorf("triplesNode as object not yet supported: %v", tnC.GetStart()) // #TODO
+				}
+			}
+		}
+	}
+	return list, nil
+}

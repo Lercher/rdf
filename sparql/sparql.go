@@ -31,6 +31,7 @@ func Parse(stream antlr.CharStream) (*AST, error) {
 	lexer := parser.NewSparqlLexer(upperstream)
 	tstream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSparqlParser(tstream)
+	p.RemoveErrorListeners() // get rid of the "line 1:3 mismatched input '<EOF>' expecting ..." outputs
 
 	el := &ErrorListener{DiagnosticErrorListener: antlr.NewDiagnosticErrorListener(true), errors: new(errors)}
 	p.AddErrorListener(el)

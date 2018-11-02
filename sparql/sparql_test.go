@@ -19,6 +19,9 @@ SELECT distinct ?name Where {
   ?school ?what 5.5, true, false, 12345 .
   ?school sch-ont:establishmentName ?name.
   ?school sch-ont:districtAdministrative <http://statistics.data.gov.uk/id/local-authority-district/00AA>.
+  OPTIONAL {
+	?school ?what -7, "X", 'Y', -3.55e10, ont:ont .
+  }
   ?name 
   	a 'school'^^xs:string;
 	a "double school"@EN-U5V5-Z7A7
@@ -90,15 +93,16 @@ func TestSparqlParserSimple(t *testing.T) {
 	ws(t, "modifier", ast.Modifier, "distinct")
 	ws(t, "projection", ast.Projection.String(ast.Variables), "[name]")
 	w(t, "variables", ast.Variables, "[name:$0 school:$1 what:$2]")
-	if len(ast.Where) != 11 {
-		for i, b := range ast.Where {
+	ws(t, "where pattern mode", ast.Where.Mode, "GGP")
+	if len(ast.Where.Blocks) != 11 {
+		for i, b := range ast.Where.Blocks {
 			t.Log("where", i, b.String())
 		}
-		t.Fatalf("want %d where blocks, got %d", 11, len(ast.Where))
+		t.Fatalf("want %d top level where blocks, got %d", 11, len(ast.Where.Blocks))
 	}
-	w(t, "where0", ast.Where[0], `{BGP: (algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
-	w(t, "where1", ast.Where[1], `{BGP: (algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
-	w(t, "where2", ast.Where[2], `{BGP: (algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
+	w(t, "where0", ast.Where.Blocks[0], `{(algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
+	w(t, "where1", ast.Where.Blocks[1], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
+	w(t, "where2", ast.Where.Blocks[2], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
 
 	t.Error("TODO")
 }

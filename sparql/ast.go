@@ -10,7 +10,7 @@ type AST struct {
 	QueryType  string // select|ask|construct|describe
 	Modifier   string // nil|distinct|reduced
 	Projection algebra.Projection
-	Where      []*Block
+	Where      *algebra.PatternTree
 }
 
 type symbols struct {
@@ -23,7 +23,7 @@ type temporary struct {
 }
 
 func newAST() *AST {
-	 ast :=&AST{
+	ast := &AST{
 		symbols: symbols{
 			Variables: algebra.NewVariables(),
 		},
@@ -37,7 +37,7 @@ func newAST() *AST {
 func (s *symbols) AddPrefix(p string, iri graph.IRI) *graph.PrefixedIRI {
 	pi := &graph.PrefixedIRI{
 		Prefix: graph.PrefixParse(p),
-		IRI: iri,
+		IRI:    iri,
 	}
 	s.PrefixedIRIs = append(s.PrefixedIRIs, pi)
 	return pi
