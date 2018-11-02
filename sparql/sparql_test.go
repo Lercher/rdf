@@ -78,8 +78,6 @@ func TestSparqlParserSimple(t *testing.T) {
 	w(t, "where2", ast.Where.Blocks[2], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
 
 	t.Log("\n", ast.Where)
-
-	t.Error("TODO")
 }
 
 func parse(t *testing.T, q string) (*AST, error) {
