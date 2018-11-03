@@ -10,7 +10,6 @@ type PatternTree struct {
 	Mode     string
 	Term     Term // like the varOrIRIref of a graphGraphPattern
 	Children []*PatternTree
-	Blocks   []*Block
 }
 
 // WrapIn wraps this tree in a new PatternTree with the given mode
@@ -39,14 +38,6 @@ func (tree *PatternTree) stringIndent(sw stringwriter, level int) {
 		sw.WriteString(" ")
 		sw.WriteString(t)
 	}
-
-	for _, b := range tree.Blocks {
-		sw.WriteString("\n")
-		sw.WriteString(pre)
-		sw.WriteString(indent)
-		sw.WriteString(b.String())
-	}
-	sw.WriteString("\n")
 
 	for _, child := range tree.Children {
 		child.stringIndent(sw, level+1)

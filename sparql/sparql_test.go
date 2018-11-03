@@ -66,16 +66,13 @@ func TestSparqlParserSimple(t *testing.T) {
 	ws(t, "modifier", ast.Modifier, "distinct")
 	ws(t, "projection", ast.Projection.StringNames(ast.Variables), "[name]")
 	w(t, "variables", ast.Variables, "[name:$0 school:$1 what:$2 num:$3]")
-	ws(t, "where pattern mode", ast.Where.Mode, "GGP")
-	if len(ast.Where.Blocks) != 11 {
-		for i, b := range ast.Where.Blocks {
-			t.Log("where", i, b.String())
-		}
-		t.Fatalf("want %d top level where blocks, got %d", 11, len(ast.Where.Blocks))
+	ws(t, "where pattern mode", ast.Where.Mode, "JOIN")
+	if len(ast.Where.Children) != 12 {
+		t.Fatalf("want %d top level where blocks, got %d", 12, len(ast.Where.Children))
 	}
-	w(t, "where0", ast.Where.Blocks[0], `{(algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
-	w(t, "where1", ast.Where.Blocks[1], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
-	w(t, "where2", ast.Where.Blocks[2], `{(algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
+	w(t, "where0", ast.Where.Children[0].Term, `{(algebra.Variable $1) (graph.IRI <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) (graph.IRI <http://education.data.gov.uk/def/school/School>)}`)
+	w(t, "where1", ast.Where.Children[1].Term, `{(algebra.Variable $1) (algebra.Variable $2) (graph.Float 5.5)}`)
+	w(t, "where2", ast.Where.Children[2].Term, `{(algebra.Variable $1) (algebra.Variable $2) (graph.Bool true)}`)
 
 	t.Log("\n", ast.Where)
 }

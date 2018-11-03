@@ -23,21 +23,22 @@ func (ctx *context) WithReceiver(r Receiver) *context {
 	}
 }
 
-
 type processingFunction func(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error
 
 var processorMap map[string]processingFunction
 
 func init() {
+	// #TODO: need to replace this map by an interface
 	processorMap = map[string]processingFunction{
 		"PROJECTION": projection,
-		"GGP":        gpg,
 		"DISTINCT":   nil,
 		"REDUCED":    nil,
+		"JOIN":       join,
+		"BGP":        nil,
 		"UNION":      nil,
 		"OPTIONAL":   nil,
 		"GRAPH":      nil,
-		"FILTER":     logAndPropagate,
+		"FILTER":     nil,
 	}
 }
 
@@ -51,7 +52,6 @@ func (ctx *context) process(tree *algebra.PatternTree, current algebra.Binding) 
 	}
 	return proc(ctx, tree, current)
 }
-
 
 func logAndPropagate(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error {
 	log.Println("#TODO just propagating", tree.Mode)
@@ -67,5 +67,3 @@ func propagate(ctx *context, tree *algebra.PatternTree, current algebra.Binding)
 	}
 	return nil
 }
-
-

@@ -141,7 +141,13 @@ func convertGroupGraphPatternContext(ctx parser.IGroupGraphPatternContext, symbo
 		if err != nil {
 			return nil, err
 		}
-		tree.Blocks = append(tree.Blocks, blocks...)
+		for _, bl := range blocks {
+			child := &algebra.PatternTree{
+				Mode: "BGP",
+				Term: bl,
+			}
+			tree.Children = append(tree.Children, child)
+		}
 	}
 	for _, gpntC := range ctx.GetGpnt() {
 		// graphPatternNotTriples
@@ -224,7 +230,7 @@ func convertGraphPatternNotTriplesContext(ctx parser.IGraphPatternNotTriplesCont
 	if ctx.GetGup() != nil {
 		tree := &algebra.PatternTree{Mode: "UNION"}
 		for _, u := range ctx.GetGup().GetUnion() {
-			child, err := convertGroupGraphPatternContext(u, symbols, "GGP")
+			child, err := convertGroupGraphPatternContext(u, symbols, "JOIN")
 			if err != nil {
 				return nil, err
 			}
