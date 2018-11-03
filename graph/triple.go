@@ -41,3 +41,12 @@ func (t *Triple) SO() Virtual2 {
 func (t *Triple) PO() Virtual2 {
 	return Virtual2{t.P, t.O}
 }
+
+func TripleFilter(ts []*Triple, pred func(*Triple) bool) (list []*Triple) {
+	for _, t := range ts {
+		if pred(t) {
+			list = append(list, t)
+		}
+	}
+	return list
+}

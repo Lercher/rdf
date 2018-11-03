@@ -318,8 +318,8 @@ func calcsize2(index map[Virtual2][]*Triple) int {
 	return l
 }
 
-// MatchPrimitive locates a list of Triples that match a given triple of patterns
-func MatchPrimitive(g *Graph, t *Triple, givens, givenp, giveno bool) []*Triple {
+// Indexed locates a list of Triples that match a given triple of patterns
+func Indexed(g *Graph, t *Triple, givens, givenp, giveno, spsame, sosame, posame bool) []*Triple {
 	// 3 crit, no variables
 	if givens && givenp && giveno {
 		if _, ok := g.dataset[*t]; ok {
@@ -341,15 +341,37 @@ func MatchPrimitive(g *Graph, t *Triple, givens, givenp, giveno bool) []*Triple 
 
 	// 1 crit
 	if givens {
-		return g.sindex[t.S]
+		ts := g.sindex[t.S]
+		if posame {
+			ts = TripleFilter(ts, func(t *Triple) bool { return t.P == t.O })
+		}
+		return ts
 	}
 	if givenp {
-		return g.pindex[t.P]
+		ts := g.pindex[t.P]
+		if sosame {
+			ts = TripleFilter(ts, func(t *Triple) bool { return t.S == t.O })
+		}
+		return ts
 	}
 	if giveno {
-		return g.oindex[t.O]
+		ts := g.oindex[t.O]
+		if spsame {
+			ts = TripleFilter(ts, func(t *Triple) bool { return t.S == t.P })
+		}
+		return ts
 	}
 
 	// 0 crit, all variables
-	return g.Dataset()
+	ts := g.Dataset()
+	if spsame {
+		ts = TripleFilter(ts, func(t *Triple) bool { return t.S == t.P })
+	}
+	if sosame {
+		ts = TripleFilter(ts, func(t *Triple) bool { return t.S == t.O })
+	}
+	if posame {
+		ts = TripleFilter(ts, func(t *Triple) bool { return t.P == t.O })
+	}
+	return ts
 }

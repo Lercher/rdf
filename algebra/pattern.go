@@ -18,6 +18,11 @@ func (p *Pattern) String(g *graph.Graph) string {
 	return p.virtual.String(g)
 }
 
+// PatternOfSameVar holds true, if both are Variables and both are not annonymous and have the same vars
+func PatternOfSameVar(p1, p2 *Pattern) bool {
+	return p1 != nil && p2 != nil && p1.Variable() == p2.Variable() && p1.Variable() >= 0
+}
+
 // IsVariable holds true, if there is no Virtual value
 func (p *Pattern) IsVariable() bool {
 	return p == nil || p.virtual.IsNil()
@@ -60,7 +65,7 @@ func PatternWontMatch() *Pattern {
 
 // PatternVariable creates a Variable pattern that either matches anything or if bound, its value
 func PatternVariable(v Variable) *Pattern {
-	return &Pattern{variable: v}
+	return &Pattern{variable: v, virtual: graph.NotAVirtual}
 }
 
 // PatternLiteral creates a constant matching pattern
@@ -68,7 +73,7 @@ func PatternLiteral(v graph.Virtual) *Pattern {
 	if v.IsNil() {
 		panic("a virtual pattern must not be nil")
 	}
-	return &Pattern{virtual: v}
+	return &Pattern{virtual: v, variable: NotAVariable}
 }
 
 // PatternFromTerm returns a Pattern from a Term
