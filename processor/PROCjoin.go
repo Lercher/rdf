@@ -14,7 +14,7 @@ func join(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
 
 func recursiveJoin(ctx *context, children []*algebra.Tree, current algebra.Binding) (bool, error) {
 	if len(children) == 0 {
-		return ctx.receiver(ctx.g, ctx.variables, current)
+		return ctx.receiver(current)
 	}
 
 	child0 := children[0]

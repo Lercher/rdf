@@ -51,8 +51,8 @@ func exec(t *testing.T, sparql string) {
 	ast := parse(t, sparql)
 	a := ast.Algebra()
 	a = a.Optimize()
-	err := processor.Execute(a, g, func(g *graph.Graph, vs *algebra.Variables, bs algebra.Binding) (bool, error) {
-		m := bs.Materialize(g, vs)
+	err := processor.Execute(a, g, func(bs algebra.Binding) (bool, error) {
+		m := bs.Materialize(g, a.Variables)
 		t.Log(m)
 		return true, nil
 	})
