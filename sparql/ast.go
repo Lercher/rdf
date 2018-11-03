@@ -10,7 +10,7 @@ type AST struct {
 	QueryType  string // select|ask|construct|describe
 	Modifier   string // nil|distinct|reduced
 	Projection algebra.Projection
-	Where      *algebra.PatternTree
+	Where      *algebra.Tree
 }
 
 type symbols struct {
@@ -63,7 +63,7 @@ func (ast *AST) Algebra() *algebra.Algebra {
 
 		return &algebra.Algebra{
 			Variables: ast.Variables,
-			PatternTree: tree,
+			Tree:      tree,
 		}
 	}
 }

@@ -7,12 +7,12 @@ import (
 	"github.com/lercher/rdf/graph"
 )
 
-func join(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error {
+func join(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
 	recursiveJoin(ctx, tree.Children, current) // #TODO: children need to be part of join
 	return nil
 }
 
-func recursiveJoin(ctx *context, children []*algebra.PatternTree, current algebra.Binding) (bool, error) {
+func recursiveJoin(ctx *context, children []*algebra.Tree, current algebra.Binding) (bool, error) {
 	if len(children) == 0 {
 		return ctx.receiver(ctx.g, ctx.variables, current)
 	}

@@ -3,7 +3,7 @@ package algebra
 // Algebra is the query algebra for a SPARQL select, ask, construct and describe
 type Algebra struct {
 	*Variables
-	*PatternTree
+	*Tree
 }
 
 // Optimize optimizes the query algebra. It is a NOP, currently.

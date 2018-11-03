@@ -23,7 +23,7 @@ func (ctx *context) WithReceiver(r Receiver) *context {
 	}
 }
 
-type processingFunction func(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error
+type processingFunction func(ctx *context, tree *algebra.Tree, current algebra.Binding) error
 
 var processorMap map[string]processingFunction
 
@@ -42,7 +42,7 @@ func init() {
 	}
 }
 
-func (ctx *context) process(tree *algebra.PatternTree, current algebra.Binding) error {
+func (ctx *context) process(tree *algebra.Tree, current algebra.Binding) error {
 	proc, ok := processorMap[tree.Mode]
 	if !ok {
 		return fmt.Errorf("not a known ProcessingTree mode %q", tree.Mode)
@@ -53,12 +53,12 @@ func (ctx *context) process(tree *algebra.PatternTree, current algebra.Binding) 
 	return proc(ctx, tree, current)
 }
 
-func logAndPropagate(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error {
+func logAndPropagate(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
 	log.Println("#TODO just propagating", tree.Mode)
 	return propagate(ctx, tree, current)
 }
 
-func propagate(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error {
+func propagate(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
 	for _, c := range tree.Children {
 		err := ctx.process(c, current)
 		if err != nil {

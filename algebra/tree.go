@@ -5,29 +5,29 @@ import (
 	"strings"
 )
 
-// PatternTree results from parsing a groupGraphPattern
-type PatternTree struct {
+// Tree results from parsing a groupGraphPattern
+type Tree struct {
 	Mode     string
 	Term     Term // like the varOrIRIref of a graphGraphPattern
-	Children []*PatternTree
+	Children []*Tree
 }
 
-// WrapIn wraps this tree in a new PatternTree with the given mode
-func (tree *PatternTree) WrapIn(mode string) *PatternTree {
-	t := &PatternTree{
+// WrapIn wraps this tree in a new Tree with the given mode
+func (tree *Tree) WrapIn(mode string) *Tree {
+	t := &Tree{
 		Mode:     mode,
-		Children: []*PatternTree{tree},
+		Children: []*Tree{tree},
 	}
 	return t
 }
 
-func (tree *PatternTree) String() string {
+func (tree *Tree) String() string {
 	buf := new(bytes.Buffer)
 	tree.stringIndent(buf, 0)
 	return buf.String()
 }
 
-func (tree *PatternTree) stringIndent(sw stringwriter, level int) {
+func (tree *Tree) stringIndent(sw stringwriter, level int) {
 	const indent = "  "
 	pre := strings.Repeat(indent, level)
 	sw.WriteString(pre)

@@ -7,9 +7,9 @@ import (
 	"github.com/lercher/rdf/graph"
 )
 
-func projection(ctx *context, tree *algebra.PatternTree, current algebra.Binding) error {
-	proj, ok := tree.Term.(algebra.Projection);
-	if  !ok {
+func projection(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
+	proj, ok := tree.Term.(algebra.Projection)
+	if !ok {
 		return fmt.Errorf("malformed %q: term is %T instead of Projection", tree.Mode, tree.Term)
 	}
 	if proj.All {

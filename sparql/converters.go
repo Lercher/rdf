@@ -133,8 +133,8 @@ func convertVarOrTermContext(ctx parser.IVarOrTermContext, symbols *symbols) (al
 	return nil, fmt.Errorf("implementation: unknown graphTerm variant %v", gtC.GetText())
 }
 
-func convertGroupGraphPatternContext(ctx parser.IGroupGraphPatternContext, symbols *symbols, mode string) (*algebra.PatternTree, error) {
-	tree := &algebra.PatternTree{Mode: mode}
+func convertGroupGraphPatternContext(ctx parser.IGroupGraphPatternContext, symbols *symbols, mode string) (*algebra.Tree, error) {
+	tree := &algebra.Tree{Mode: mode}
 	for _, tbC := range ctx.GetTb() {
 		// triplesBlock
 		blocks, err := convertTriplesBlockContext(tbC, symbols)
@@ -142,7 +142,7 @@ func convertGroupGraphPatternContext(ctx parser.IGroupGraphPatternContext, symbo
 			return nil, err
 		}
 		for _, bl := range blocks {
-			child := &algebra.PatternTree{
+			child := &algebra.Tree{
 				Mode: "BGP",
 				Term: bl,
 			}
@@ -220,7 +220,7 @@ func convertTriplesSameSubjectContext(ctx parser.ITriplesSameSubjectContext, sym
 	return list, nil
 }
 
-func convertGraphPatternNotTriplesContext(ctx parser.IGraphPatternNotTriplesContext, symbols *symbols) (*algebra.PatternTree, error) {
+func convertGraphPatternNotTriplesContext(ctx parser.IGraphPatternNotTriplesContext, symbols *symbols) (*algebra.Tree, error) {
 	// optionalGraphPattern
 	if ctx.GetOgp() != nil {
 		return convertGroupGraphPatternContext(ctx.GetOgp().GetGgp(), symbols, "OPTIONAL")
@@ -228,7 +228,7 @@ func convertGraphPatternNotTriplesContext(ctx parser.IGraphPatternNotTriplesCont
 
 	// groupOrUnionGraphPattern
 	if ctx.GetGup() != nil {
-		tree := &algebra.PatternTree{Mode: "UNION"}
+		tree := &algebra.Tree{Mode: "UNION"}
 		for _, u := range ctx.GetGup().GetUnion() {
 			child, err := convertGroupGraphPatternContext(u, symbols, "JOIN")
 			if err != nil {
