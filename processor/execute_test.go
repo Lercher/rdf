@@ -21,6 +21,10 @@ func parse(t *testing.T, q string) *sparql.AST {
 	return ast
 }
 
+func TestExecuteDblProj(t *testing.T) {
+	exec(t, `select $sub $sub where {?sub ?pred ?obj}`)
+}
+
 func TestExecute2Proj(t *testing.T) {
 	exec(t, `select $sub $obj where {?sub ?pred ?obj}`)
 }
@@ -34,7 +38,7 @@ func TestExecuteAll(t *testing.T) {
 }
 
 func TestExecute1Join(t *testing.T) {
-	exec(t, `select ?sub ?sub2 ?pred 
+	exec(t, `select ?sub ?sub2 ?pred
 	where {
 		?sub ?pred ?obj .
 		?sub2 ?pred ?obj .
@@ -51,8 +55,8 @@ func exec(t *testing.T, sparql string) {
 	ast := parse(t, sparql)
 	a := ast.Algebra()
 	a = a.Optimize()
-	err := processor.Execute(a, g, func(bs algebra.Binding) (bool, error) {
-		m := bs.Materialize(g, a.Variables)
+	err := processor.Execute(a, g, func(bs algebra.Binding, vs *algebra.Variables) (bool, error) {
+		m := bs.Materialize(g, vs)
 		t.Log(m)
 		return true, nil
 	})
