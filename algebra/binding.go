@@ -57,11 +57,9 @@ func (bs Binding) BindTriple(tp *TriplePattern, t *graph.Triple) Binding {
 // Materialize retrieves names and values of bound variables
 func (bs Binding) Materialize(g *graph.Graph, variables *Variables) (list []*Materialized) {
 	for i, b := range bs {
-		if !b.IsNil() {
-			vn := variables.NameOf(Variable(i))
-			val := b.Value(g)
-			list = append(list, &Materialized{Name: vn, Value: val})
-		}
+		vn := variables.NameOf(Variable(i))
+		val := b.Value(g)
+		list = append(list, &Materialized{Name: vn, Value: val})
 	}
 	return list
 }

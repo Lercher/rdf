@@ -39,8 +39,12 @@ func (v Virtual) String(g *Graph) string {
 // according to the records of the creating Graph. It is undefined behaviour to
 // retrieve a Virtual's Value from a different Graph
 func (v Virtual) Value(g *Graph) Value {
-	val := g.valuelist[v-1]
-	return val
+	index := int(v)-1
+	if 0 <= index && index < len(g.valuelist) {
+		val := g.valuelist[index]
+		return val
+	}
+	return nil
 }
 
 // Encode writes the binary representation
