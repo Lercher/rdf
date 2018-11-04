@@ -12,9 +12,9 @@ import (
 func TestSimpleAlgebra1(t *testing.T) {
 	at(t, 
 		`select * where {$s ?p ?o}`, `
-(PROJECTION (algebra.Projection *)
+(PROJECTION (Projection:*)
   (JOIN
-    (BGP (*algebra.Block {(algebra.Variable $0) (algebra.Variable $1) (algebra.Variable $2)})
+    (BGP (Block:{(Variable:$0) (Variable:$1) (Variable:$2)})
     )
   )
 )
@@ -24,11 +24,11 @@ func TestSimpleAlgebra1(t *testing.T) {
 func TestSimpleAlgebra2(t *testing.T) {
 	at(t, 
 		`select $s {$s ?p ?o . $o $p $s.}`, `
-(PROJECTION (algebra.Projection [$0])
+(PROJECTION (Projection:[$0])
   (JOIN
-    (BGP (*algebra.Block {(algebra.Variable $0) (algebra.Variable $1) (algebra.Variable $2)})
+    (BGP (Block:{(Variable:$0) (Variable:$1) (Variable:$2)})
     )
-    (BGP (*algebra.Block {(algebra.Variable $2) (algebra.Variable $1) (algebra.Variable $0)})
+    (BGP (Block:{(Variable:$2) (Variable:$1) (Variable:$0)})
     )
   )
 )
