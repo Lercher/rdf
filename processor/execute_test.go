@@ -12,8 +12,7 @@ import (
 )
 
 func TestExecuteDblProj(t *testing.T) {
-	exec(t, `select $sub $sub where {?sub ?pred ?obj}`)
-	t.Error("#TODO")
+	exec1(t, `select $sub $sub where {?sub <boss> ?obj}`, `[sub="martin"]`)
 }
 
 func TestExecute2Proj(t *testing.T) {
@@ -23,7 +22,7 @@ func TestExecute2Proj(t *testing.T) {
 
 func TestExecute1Proj(t *testing.T) {
 	ms := exec(t, `select $obj where {?sub ?pred ?obj} order by $obj`)
-	want := `[[obj=string:+49897482400] [obj=string:+49897482400] [obj=string:justus] [obj=string:martin]]`
+	want := `[[obj="+49897482400"] [obj="+49897482400"] [obj="justus"] [obj="martin"]]`
 	got := fmt.Sprint(ms)
 	if got != want {
 		t.Errorf("want %s, got %s", want, got)
@@ -38,15 +37,7 @@ func TestExecuteAll(t *testing.T) {
 }
 
 func TestExecuteSubEqObj(t *testing.T) {
-	ms := exec(t, `select * where {$sub ?pred ?sub}`)
-	if len(ms) != 1 {
-		t.Errorf("want %d result, got %d", 1, len(ms))
-	}
-	want := `[[sub=string:martin pred=string:name]]`
-	got := fmt.Sprint(ms)
-	if got != want {
-		t.Errorf("want %s, got %s", want, got)
-	}
+	exec1(t, `select * where {$sub ?pred ?sub}`, `[sub="martin" pred=<name>]`)
 }
 
 func TestExecute1Join(t *testing.T) {
@@ -59,14 +50,28 @@ func TestExecute1Join(t *testing.T) {
 }
 
 func TestExecuteSome(t *testing.T) {
-	exec(t, `select * where {?sub ?pred "justus"}`)
-	t.Error("#TODO")
+	exec1(t, `select * where {?sub ?pred "justus"}`, `[sub="martin" pred=<boss>]`)
 }
 
 func TestExecuteOptionalGood(t *testing.T) {
 	exec(t, `select * where {"andreas" ?pred ?andreas. "martin" ?pred $martin}`)
 	exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" ?pred $martin}}`)
 	t.Error("#TODO")
+}
+
+//------------------------ Helpers -------------------------------
+
+func exec1(t *testing.T, sparql, want string) {
+	t.Helper()
+
+	ms := exec(t, sparql)
+	if len(ms) != 1 {
+		t.Errorf("want 1 result line, got %d", len(ms))
+	}
+	got := fmt.Sprint(ms[0])
+	if got != want {
+		t.Errorf("want %s, got %s", want, got)
+	}
 }
 
 func exec(t *testing.T, sparql string) (list [][]*algebra.Materialized) {
@@ -90,10 +95,10 @@ func exec(t *testing.T, sparql string) (list [][]*algebra.Materialized) {
 
 func gr2() (*graph.Graph, *graph.Triple, *graph.Triple, *graph.Triple) {
 	g := graph.New()
-	t0 := g.Assert("martin", "telefon", "+49897482400")
-	t1 := g.Assert("andreas", "telefon", "+49897482400")
-	t2 := g.Assert("martin", "boss", "justus")
-	g.Assert("martin", "name", "martin")
+	t0 := g.AssertLiterally("martin", "telefon", "+49897482400")
+	t1 := g.AssertLiterally("andreas", "telefon", "+49897482400")
+	t2 := g.AssertLiterally("martin", "boss", "justus")
+	g.AssertLiterally("martin", "name", "martin")
 	return g, t0, t1, t2
 }
 

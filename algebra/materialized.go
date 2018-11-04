@@ -13,5 +13,5 @@ type Materialized struct {
 }
 
 func (m *Materialized) String() string {
-	return fmt.Sprintf("%s=%[2]T:%[2]v", m.Name, m.Value)
+	return fmt.Sprintf("%s=%s", m.Name, m.Value)
 }

@@ -10,9 +10,9 @@ import (
 
 func gr() (*graph.Graph, *graph.Triple, *graph.Triple, *graph.Triple) {
 	g := graph.New()
-	t0 := g.Assert("martin", "telefon", "+49897482400")
-	t1 := g.Assert("andreas", "telefon", "+49897482400")
-	t2 := g.Assert("martin", "boss", "justus")
+	t0 := g.AssertLiterally("martin", "telefon", "+49897482400")
+	t1 := g.AssertLiterally("andreas", "telefon", "+49897482400")
+	t2 := g.AssertLiterally("martin", "boss", "justus")
 	return g, t0, t1, t2
 }
 
