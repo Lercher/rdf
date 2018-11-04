@@ -33,9 +33,10 @@ func TestWriteString(t *testing.T) {
 		t.Error(err)
 	}
 	bytes := buf.Bytes()
+	sbytes := []byte(simpleGraph)
 	t.Logf("%q", bytes)
-	if len(bytes) != 890 {
-		t.Errorf("want %d bytes written, got %d", 89, len(bytes))
+	if len(bytes) != len(sbytes) {
+		t.Errorf("want %d bytes written, got %d", len(sbytes), len(bytes))
 	}
 }
 

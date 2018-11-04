@@ -138,7 +138,7 @@ func TestSmallSPPattern(t *testing.T) {
 		t.Errorf("want %d SP-match, got %d", 1, len(ms))
 	} else {
 		tr0 := ms[0].String(g)
-		want0 := `[(values.IRI:<http://education.data.gov.uk/def/school/establishment/100012>) (values.IRI:<http://education.data.gov.uk/def/school/EstablishmentName>) (*values.Literal:"Carlton Primary School")]`
+		want0 := `[(IRI:<http://education.data.gov.uk/def/school/establishment/100012>) (IRI:<http://education.data.gov.uk/def/school/EstablishmentName>) (Literal:"Carlton Primary School")]`
 		if tr0 != want0 {
 			t.Errorf("want %s, got %s", want0, tr0)
 		}

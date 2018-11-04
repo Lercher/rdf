@@ -2,6 +2,7 @@ package algebra
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Term is a variable or any variant of a literal
@@ -14,5 +15,9 @@ func DescribeTerm(t Term) string {
 	if t == nil {
 		return "nil-term"
 	}
-	return fmt.Sprintf("(%T %s)", t, t.String())
+	ty := fmt.Sprintf("%T", t)
+	ty = strings.TrimPrefix(ty, "*")
+	ty = strings.TrimPrefix(ty, "algebra.")
+	ty = strings.TrimPrefix(ty, "values.")
+	return fmt.Sprintf("(%s:%s)", ty, t.String())
 }

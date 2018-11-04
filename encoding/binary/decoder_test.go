@@ -48,7 +48,7 @@ func TestReadSimpleGraph(t *testing.T) {
 		t.Fatalf("want dataset %d len, got %d", 3, g.CountTriples())
 	}
 
-	want := "[(string:martin) (string:telefon) (string:+49897482400)]"
+	want := `[(Literal:"andreas") (IRI:<telefon>) (Literal:"+49897482400")]`
 	for tr := range g.DatasetMap() {
 		t.Log(tr.S, tr.S.String(g))
 		s := tr.String(g)
@@ -79,7 +79,7 @@ func TestReadMixedGraph(t *testing.T) {
 		t.Fatalf("want dataset %d len, got %d", 3, g.CountTriples())
 	}
 
-	want := "[(string:august) (int:0) (float64:-211.7677182)]"
+	want := `[(Literal:"august") (Int:0) (Float:-211.7677182)]`
 	for tr := range g.DatasetMap() {
 		t.Log(tr.S, tr.S.String(g))
 		s := tr.String(g)

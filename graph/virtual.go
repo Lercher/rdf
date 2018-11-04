@@ -2,6 +2,7 @@ package graph
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/lercher/rdf/values"
 )
@@ -32,7 +33,10 @@ func (v Virtual) WontMatch() bool {
 
 func (v Virtual) String(g *Graph) string {
 	val := v.Value(g)
-	return fmt.Sprintf("(%T:%[1]v)", val)
+	ty := fmt.Sprintf("%T", val)
+	ty = strings.TrimPrefix(ty, "*")
+	ty = strings.TrimPrefix(ty, "values.")
+	return fmt.Sprintf("(%s:%v)", ty, val)
 }
 
 // Value returns the real Value of a virtualized Triple part in subject/predicate/object position
