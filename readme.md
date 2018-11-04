@@ -86,6 +86,10 @@ Engine to execute an algebra instance on a graph
 
 Parsing SPARQL syntax to form an algebra instance
 
+### package values
+
+Primitive datatypes to be used in a graph's assertions
+
 ## Using the Packages
 
 To execute a query against a data store, you'll need a `Graph` containing the asserted `Triples`, an `Algebra` representing the SPARQL query and a `processor` method.
@@ -178,3 +182,4 @@ result set is large.
 ## Ressources
 
 * [SPARQL By Example - A Tutorial](https://www.w3.org/2009/Talks/0615-qbe/)
+* [Gossary](https://www.futurelearn.com/courses/linked-data/0/steps/16092)

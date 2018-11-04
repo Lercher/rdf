@@ -3,8 +3,8 @@ package sparql
 import (
 	"strings"
 
-	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/sparql/parser"
+	"github.com/lercher/rdf/values"
 )
 
 // Walker represents the AST of a Query
@@ -29,13 +29,13 @@ const (
 
 func (w *walker) EnterBaseDecl(ctx *parser.BaseDeclContext) {
 	iri := ctx.GetIri()
-	w.ast.Base = graph.IRIParse(iri.GetText())
+	w.ast.Base = values.IRIParse(iri.GetText())
 }
 
 func (w *walker) EnterPrefixDecl(ctx *parser.PrefixDeclContext) {
-	p := graph.PrefixParse(ctx.GetPrefix().GetText())
-	i := graph.IRIParse(ctx.GetIri().GetText())
-	pi := &graph.PrefixedIRI{Prefix: p, IRI: i}
+	p := values.PrefixParse(ctx.GetPrefix().GetText())
+	i := values.IRIParse(ctx.GetIri().GetText())
+	pi := &values.PrefixedIRI{Prefix: p, IRI: i}
 	w.ast.PrefixedIRIs = append(w.ast.PrefixedIRIs, pi)
 }
 

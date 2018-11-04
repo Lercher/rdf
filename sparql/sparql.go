@@ -4,25 +4,7 @@ import (
 	"fmt"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/sparql/parser"
-)
-
-const (
-	// RDF is the rdf: namespace, rdf syntax
-	RDF  = graph.IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#`)
-
-	// RDFS is the rdfs: namespace, rdf schema
-	RDFS = graph.IRI(`http://www.w3.org/2000/01/rdf-schema#`)
-
-	// XS is the xs: namespace, XML schema
-	XS  = graph.IRI(`http://www.w3.org/2001/XMLSchema#`)
-	
-	// FOAF is the foaf: namespace, friend of a friend found in many rdf examples
-	FOAF = graph.IRI(`http://xmlns.com/foaf/0.1/`)
-
-	// A is rdf:type, the semantic of 'a' in a sparql query
-	A    = graph.IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#type`)
 )
 
 // Parse parses a SPARQL query to an abstract syntax tree

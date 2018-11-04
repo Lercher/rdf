@@ -1,4 +1,4 @@
-package graph
+package values
 
 // PrefixedIRI pairs a Prefix with its IRI
 type PrefixedIRI struct {

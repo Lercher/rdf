@@ -6,32 +6,32 @@ import (
 	"strings"
 
 	"github.com/lercher/rdf/algebra"
-	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/sparql/parser"
+	"github.com/lercher/rdf/values"
 )
 
 // the suffix C of a variable denotes a parser context
 // the suffix T of a variable denotes an antlr Token
 
-func convertIriRef(iriC parser.IIriRefContext, symbols *symbols) (graph.IRI, error) {
+func convertIriRef(iriC parser.IIriRefContext, symbols *symbols) (values.IRI, error) {
 	literalT := iriC.GetLiteral()
 	if literalT != nil {
-		literal := graph.IRIParse(literalT.GetText())
+		literal := values.IRIParse(literalT.GetText())
 		return literal, nil
 	}
 	prefixedC := iriC.GetPrefixed()
-	literal, err := graph.IRIPrefixed(prefixedC.GetText(), symbols.PrefixedIRIs)
+	literal, err := values.IRIPrefixed(prefixedC.GetText(), symbols.PrefixedIRIs)
 	if err != nil {
-		return graph.NotAnIRI, err
+		return values.NotAnIRI, err
 	}
 	return literal, nil
 }
 
-func convertLiteral(lC parser.IRdfLiteralContext, symbols *symbols) (*graph.Literal, error) {
+func convertLiteral(lC parser.IRdfLiteralContext, symbols *symbols) (*values.Literal, error) {
 	tx := lC.GetStr().GetText()
 	lang := lC.GetLang()
 	if lang != nil {
-		lit := graph.LiteralFrom(tx, lang.GetText(), graph.NotAnIRI)
+		lit := values.LiteralFrom(tx, lang.GetText(), values.NotAnIRI)
 		return lit, nil
 	}
 	if lC.GetIri() != nil {
@@ -39,15 +39,15 @@ func convertLiteral(lC parser.IRdfLiteralContext, symbols *symbols) (*graph.Lite
 		if err != nil {
 			return nil, err
 		}
-		return graph.LiteralFrom(tx, "", dt), nil
+		return values.LiteralFrom(tx, "", dt), nil
 	}
-	return graph.LiteralFrom(tx, "", graph.NotAnIRI), nil
+	return values.LiteralFrom(tx, "", values.NotAnIRI), nil
 }
 
 func convertVerbContext(ctx parser.IVerbContext, symbols *symbols) (algebra.Term, error) {
 	aC := ctx.GetA()
 	if aC != nil {
-		return A, nil
+		return values.A, nil
 	}
 	viC := ctx.GetVi()
 	vC := viC.GetVariable()
@@ -101,13 +101,13 @@ func convertVarOrTermContext(ctx parser.IVarOrTermContext, symbols *symbols) (al
 			if err != nil {
 				return nil, err
 			}
-			return graph.Float(f), nil
+			return values.Float(f), nil
 		}
 		i, err := strconv.Atoi(num)
 		if err != nil {
 			return nil, err
 		}
-		return graph.Int(i), nil
+		return values.Int(i), nil
 	}
 
 	// booleanLiteral
@@ -115,9 +115,9 @@ func convertVarOrTermContext(ctx parser.IVarOrTermContext, symbols *symbols) (al
 		bol := gtC.GetBol().GetText()
 		bol = strings.ToLower(bol)
 		if bol == "true" {
-			return graph.Bool(true), nil
+			return values.Bool(true), nil
 		}
-		return graph.Bool(false), nil
+		return values.Bool(false), nil
 	}
 
 	// blankNode
@@ -127,7 +127,7 @@ func convertVarOrTermContext(ctx parser.IVarOrTermContext, symbols *symbols) (al
 
 	// NIL
 	if gtC.GetEmp() != nil {
-		return graph.NIL, nil
+		return values.NIL, nil
 	}
 
 	return nil, fmt.Errorf("implementation: unknown graphTerm variant %v", gtC.GetText())

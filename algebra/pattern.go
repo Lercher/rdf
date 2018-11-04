@@ -1,6 +1,11 @@
 package algebra
 
-import "github.com/lercher/rdf/graph"
+import (
+	"fmt"
+
+	"github.com/lercher/rdf/graph"
+	"github.com/lercher/rdf/values"
+)
 
 // Pattern is either a Variable or a Virtual, but not both.
 type Pattern struct {
@@ -81,9 +86,12 @@ func PatternFromTerm(g *graph.Graph, t Term) *Pattern {
 	if variable, ok := t.(Variable); ok {
 		return PatternVariable(variable)
 	}
-	vv := g.VirtualValue(t)
-	if !vv.Known {
-		return PatternWontMatch()
+	if value, ok := t.(values.Value); ok {
+		vv := g.VirtualValue(value)
+		if !vv.Known {
+			return PatternWontMatch()
+		}
+		return PatternLiteral(vv.Virtual)
 	}
-	return PatternLiteral(vv.Virtual)
+	panic(fmt.Sprintf("Term %T:%[1]v is neither Variable nor Value", t))
 }

@@ -2,9 +2,11 @@ package binary
 
 import (
 	stdbinary "encoding/binary"
+	"fmt"
 	"io"
 
 	"github.com/lercher/rdf/graph"
+	"github.com/lercher/rdf/values"
 )
 
 const (
@@ -36,20 +38,20 @@ func (e *Encoder) encodeDataset(triples map[graph.Triple]*graph.Triple) error {
 	if err != nil {
 		return err
 	}
-	err = write32(e.w, len(triples))
+	err = writeVarint(e.w, len(triples))
 	if err != nil {
 		return err
 	}
 	for tr := range triples {
-		err = tr.S.Encode(e.w)
+		err = writeVarint(e.w, int(tr.S))
 		if err != nil {
 			return err
 		}
-		err = tr.P.Encode(e.w)
+		err = writeVarint(e.w, int(tr.P))
 		if err != nil {
 			return err
 		}
-		err = tr.O.Encode(e.w)
+		err = writeVarint(e.w, int(tr.O))
 		if err != nil {
 			return err
 		}
@@ -57,17 +59,18 @@ func (e *Encoder) encodeDataset(triples map[graph.Triple]*graph.Triple) error {
 	return nil
 }
 
-func (e *Encoder) encodeValues(values []graph.Value) error {
+func (e *Encoder) encodeValues(values []values.Value) error {
 	_, err := e.w.Write([]byte(headerValues))
 	if err != nil {
 		return err
 	}
-	err = write32(e.w, len(values))
+	err = writeVarint(e.w, len(values))
 	if err != nil {
 		return err
 	}
 	for _, val := range values {
-		err = graph.ValueEncode(e.w, val)
+		tb, bs := val.Serialize()
+		err = write(e.w, tb, bs)
 		if err != nil {
 			return err
 		}
@@ -75,9 +78,30 @@ func (e *Encoder) encodeValues(values []graph.Value) error {
 	return nil
 }
 
-func write32(w io.Writer, u int) error {
-	b := make([]byte, 4)
-	stdbinary.LittleEndian.PutUint32(b, uint32(u))
-	_, err := w.Write(b)
-	return err
+func write(w io.Writer, tb byte, bs[] byte) error {
+	_, err:= w.Write([]byte{tb})
+	if err != nil {
+		return err
+	}
+	n, err := w.Write(bs)
+	if err != nil {
+		return err
+	}
+	if n != len(bs) {
+		return fmt.Errorf("wanted to write %d content bytes, but only %d were written", len(bs), n)
+	}
+	return nil
+}
+
+func writeVarint(w io.Writer, u int) error {
+	b := make([]byte, 10)
+	n := stdbinary.PutVarint(b, int64(u))
+	nn, err := w.Write(b[:n])
+	if err != nil {
+		return err
+	}
+	if n != nn {
+		return fmt.Errorf("wanted to write %d length bytes, but only %d were written", n, nn)
+	}
+	return nil
 }

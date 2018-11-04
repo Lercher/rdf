@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"github.com/lercher/rdf/values"
 	"fmt"
 )
 
@@ -19,11 +20,11 @@ func (t *Triple) String(g *Graph) string {
 	return fmt.Sprintf("[%s %s %s]", s, p, o)
 }
 
-// NewTriple crates a new Triple of a Graph
-func NewTriple(g *Graph, s, p, o interface{}) *Triple {
-	vs := newVirtualValue(g, s)
-	vp := newVirtualValue(g, p)
-	vo := newVirtualValue(g, o)
+// NewTriple crates a new Triple with Values of a Graph. However, new Values are not added to the graph.
+func NewTriple(g *Graph, s, p, o values.Value) *Triple {
+	vs := g.VirtualValue(s)
+	vp := g.VirtualValue(p)
+	vo := g.VirtualValue(o)
 	return &Triple{vs.Virtual, vp.Virtual, vo.Virtual}
 }
 
@@ -42,6 +43,7 @@ func (t *Triple) PO() Virtual2 {
 	return Virtual2{t.P, t.O}
 }
 
+// TripleFilter filters a slice of Triples by a predicate of Triple
 func TripleFilter(ts []*Triple, pred func(*Triple) bool) (list []*Triple) {
 	for _, t := range ts {
 		if pred(t) {

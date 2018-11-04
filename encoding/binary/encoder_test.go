@@ -5,21 +5,22 @@ import (
 	"testing"
 
 	"github.com/lercher/rdf/graph"
+	"github.com/lercher/rdf/values"
 )
 
 func grString() *graph.Graph {
 	g := graph.New()
-	g.Assert("martin", "telefon", "+49897482400")
-	g.Assert("andreas", "telefon", "+49897482400")
-	g.Assert("martin", "boss", "justus")
+	g.AssertLiterally("martin", "telefon", "+49897482400")
+	g.AssertLiterally("andreas", "telefon", "+49897482400")
+	g.AssertLiterally("martin", "boss", "justus")
 	return g
 }
 
 func grMixed() *graph.Graph {
 	g := graph.New()
-	g.Assert("martin", 123, float64(1.234567))
-	g.Assert("andreas", -321, float64(1237.89012))
-	g.Assert("august", 0, float64(-211.7677182))
+	g.Assert(values.LiteralString("martin"), values.Int(123), values.Float(1.234567))
+	g.Assert(values.LiteralString("andreas"), values.Int(-321), values.Float(1237.89012))
+	g.Assert(values.LiteralString("august"), values.Int(0), values.Float(-211.7677182))
 	return g
 }
 

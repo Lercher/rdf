@@ -3,13 +3,15 @@ package graph
 import (
 	"errors"
 	"sync"
+
+	"github.com/lercher/rdf/values"
 )
 
 // Graph forms an RDF graph including several hidden indices
 type Graph struct {
 	dataset          map[Triple]*Triple
 	vhash2indexPlus1 map[vhash]Virtual
-	valuelist        []Value
+	valuelist        []values.Value
 	valuesize        int
 	sindex           map[Virtual][]*Triple
 	pindex           map[Virtual][]*Triple
@@ -41,12 +43,17 @@ func (g *Graph) CountValues() int {
 }
 
 // Values returns an unsorted list of all distinct valus in the Graph
-func (g *Graph) Values() []Value {
+func (g *Graph) Values() []values.Value {
 	return g.valuelist
 }
 
+// AssertLiterally asserts s and o as Literal and p as IRI
+func (g *Graph) AssertLiterally(s, p, o string) *Triple {
+	return g.Assert(values.LiteralString(s), values.IRIParse(p), values.LiteralString(o))
+}
+
 // Assert appends a new Triple to the Graph, unless it is already present
-func (g *Graph) Assert(s, p, o interface{}) *Triple {
+func (g *Graph) Assert(s, p, o values.Value) *Triple {
 	vs := g.AddValue(s)
 	vp := g.AddValue(p)
 	vo := g.AddValue(o)
@@ -84,7 +91,7 @@ func (g *Graph) PrepareValueSpace(size int) {
 	if len(g.valuelist) != 0 {
 		panic(errors.New("value space can only prepared if the graph is empty"))
 	}
-	g.valuelist = make([]Value, 0, size)
+	g.valuelist = make([]values.Value, 0, size)
 	g.vhash2indexPlus1 = make(map[vhash]Virtual, size)
 }
 
@@ -96,9 +103,19 @@ func (g *Graph) PrepareVirtualSpace(size int) {
 	g.dataset = make(map[Triple]*Triple, size)
 }
 
+// AddValueString adds a string Literal to the Values. See AddValue for Details.
+func (g *Graph) AddValueString(s string) VirtualValue {
+	return g.AddValue(values.LiteralString(s))
+}
+
+// AddValueIRI adds an IRI to the Values. See AddValue for Details.
+func (g *Graph) AddValueIRI(iri string) VirtualValue {
+	return g.AddValue(values.IRIParse(iri))
+}
+
 // AddValue adds an unknown primitive to the graph's values. Returns either this new VirtualValue or the known one.
-func (g *Graph) AddValue(primitive interface{}) VirtualValue {
-	vv := g.VirtualValue(primitive)
+func (g *Graph) AddValue(v values.Value) VirtualValue {
+	vv := g.VirtualValue(v)
 	if !vv.Known {
 		g.valuelist = append(g.valuelist, vv.Value)
 		vv.Virtual = Virtual(len(g.valuelist))
@@ -109,8 +126,9 @@ func (g *Graph) AddValue(primitive interface{}) VirtualValue {
 }
 
 // VirtualValue retrieves a primitive keyed by its hash from the graph or creates a new VirtualValue
-func (g *Graph) VirtualValue(primitive interface{}) VirtualValue {
-	return newVirtualValue(g, primitive)
+func (g *Graph) VirtualValue(v values.Value) VirtualValue {
+	tb, b := v.Serialize()
+	return vvalue(g, tb, b, v)
 }
 
 // BulkAddTriple adds a Triple without checking to the Graph, see Assert instead

@@ -1,7 +1,9 @@
 package sparql
 
-import "github.com/lercher/rdf/graph"
-import "github.com/lercher/rdf/algebra"
+import (
+	"github.com/lercher/rdf/algebra"
+	"github.com/lercher/rdf/values"
+)
 
 // AST is the abstract syntax tree of a query
 type AST struct {
@@ -14,8 +16,8 @@ type AST struct {
 }
 
 type symbols struct {
-	Base         graph.IRI
-	PrefixedIRIs []*graph.PrefixedIRI
+	Base         values.IRI
+	PrefixedIRIs []*values.PrefixedIRI
 	Variables    *algebra.Variables
 }
 
@@ -28,15 +30,15 @@ func newAST() *AST {
 			Variables: algebra.NewVariables(),
 		},
 	}
-	ast.symbols.AddPrefix("rdf", RDF)
-	ast.symbols.AddPrefix("rdfs", RDFS)
-	ast.symbols.AddPrefix("xs", XS)
+	ast.symbols.AddPrefix("rdf", values.RDF)
+	ast.symbols.AddPrefix("rdfs", values.RDFS)
+	ast.symbols.AddPrefix("xs", values.XS)
 	return ast
 }
 
-func (s *symbols) AddPrefix(p string, iri graph.IRI) *graph.PrefixedIRI {
-	pi := &graph.PrefixedIRI{
-		Prefix: graph.PrefixParse(p),
+func (s *symbols) AddPrefix(p string, iri values.IRI) *values.PrefixedIRI {
+	pi := &values.PrefixedIRI{
+		Prefix: values.PrefixParse(p),
 		IRI:    iri,
 	}
 	s.PrefixedIRIs = append(s.PrefixedIRIs, pi)

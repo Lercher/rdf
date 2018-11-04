@@ -50,7 +50,7 @@ func TestReadSimpleGraph(t *testing.T) {
 
 	want := "[(string:martin) (string:telefon) (string:+49897482400)]"
 	for tr := range g.DatasetMap() {
-		t.Log(tr.S.Bytes(), tr.S.String(g))
+		t.Log(tr.S, tr.S.String(g))
 		s := tr.String(g)
 		if s == want {
 			return
@@ -81,7 +81,7 @@ func TestReadMixedGraph(t *testing.T) {
 
 	want := "[(string:august) (int:0) (float64:-211.7677182)]"
 	for tr := range g.DatasetMap() {
-		t.Log(tr.S.Bytes(), tr.S.String(g))
+		t.Log(tr.S, tr.S.String(g))
 		s := tr.String(g)
 		if s == want {
 			return

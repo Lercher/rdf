@@ -3,13 +3,13 @@ package algebra
 import (
 	"fmt"
 
-	"github.com/lercher/rdf/graph"
+	"github.com/lercher/rdf/values"
 )
 
 // Materialized is a Variable that has a Value
 type Materialized struct {
 	Name  Variablename
-	Value graph.Value
+	Value values.Value
 }
 
 func (m *Materialized) String() string {

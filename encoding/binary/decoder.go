@@ -1,6 +1,7 @@
 package binary
 
 import (
+	"github.com/lercher/rdf/values"
 	stdbinary "encoding/binary"
 	"fmt"
 	"io"
@@ -11,11 +12,12 @@ import (
 // Decoder deserializes a binary serialized graph.Graph
 type Decoder struct {
 	r io.Reader
+	br io.ByteReader
 }
 
 // NewDecoder creates a new Decoder for binary serialized graph.Graphs
 func NewDecoder(r io.Reader) *Decoder {
-	return &Decoder{r}
+	return &Decoder{r, toByteReader(r)}
 }
 
 // Decode deserializes a graph.Graph
@@ -37,21 +39,21 @@ func (d *Decoder) decodeDataset(g *graph.Graph) error {
 	if err != nil {
 		return err
 	}
-	l, err := readUint32AsInt(d.r)
+	l, err := readVarint(d.br)
 	if err != nil {
 		return err
 	}
 	g.PrepareVirtualSpace(l)
 	for i := 0; i < l; i++ {
-		s, err := graph.VirtualDecode(d.r)
+		s, err := readVirtual(d.br)
 		if err != nil {
 			return err
 		}
-		p, err := graph.VirtualDecode(d.r)
+		p, err := readVirtual(d.br)
 		if err != nil {
 			return err
 		}
-		o, err := graph.VirtualDecode(d.r)
+		o, err := readVirtual(d.br)
 		if err != nil {
 			return err
 		}
@@ -67,13 +69,13 @@ func (d *Decoder) decodeValues(g *graph.Graph) error {
 	if err != nil {
 		return err
 	}
-	l, err := readUint32AsInt(d.r)
+	l, err := readVarint(d.br)
 	if err != nil {
 		return err
 	}
 	g.PrepareValueSpace(l)
 	for i := 0; i < l; i++ {
-		val, err := graph.ValueDecode(d.r)
+		val, err := values.ConstructNext(d.r)
 		if err != nil {
 			return err
 		}
@@ -98,15 +100,12 @@ func checkHeader(r io.Reader, s string) error {
 	return nil
 }
 
-func readUint32AsInt(r io.Reader) (int, error) {
-	b := make([]byte, 4)
-	n, err := io.ReadFull(r, b)
-	if err != nil {
-		return 0, err
-	}
-	if n != len(b) {
-		return 0, fmt.Errorf("wanted to read %d bytes int, got only %d", len(b), n)
-	}
-	ui := stdbinary.LittleEndian.Uint32(b)
-	return int(ui), nil
+func readVarint(br io.ByteReader) (int, error) {
+	i64, err := stdbinary.ReadVarint(br)
+	return int(i64), err
+}
+
+func readVirtual(br io.ByteReader) (graph.Virtual, error) {
+	i, err := readVarint(br)
+	return graph.Virtual(i), err
 }

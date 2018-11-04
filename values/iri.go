@@ -1,7 +1,8 @@
-package graph
+package values
 
 import (
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -45,3 +46,31 @@ func IRIPrefixed(prefixed string, prefixes []*PrefixedIRI) (IRI, error) {
 	}
 	return "", fmt.Errorf("%q has unknown prefix %q", prefixed, prefix)
 }
+
+// Serialize to a typebyte and byte slice
+func (i IRI) Serialize() (byte, []byte) {
+	return 'I', serializeString(string(i))
+}
+
+func constructIRI(r io.Reader) (Value, error) {
+	s, err := readString(r)
+	return IRI(s), err
+}
+
+
+const (
+	// RDF is the rdf: namespace, rdf syntax
+	RDF  = IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#`)
+
+	// RDFS is the rdfs: namespace, rdf schema
+	RDFS = IRI(`http://www.w3.org/2000/01/rdf-schema#`)
+
+	// XS is the xs: namespace, XML schema
+	XS  = IRI(`http://www.w3.org/2001/XMLSchema#`)
+	
+	// FOAF is the foaf: namespace, friend of a friend found in many rdf examples
+	FOAF = IRI(`http://xmlns.com/foaf/0.1/`)
+
+	// A is rdf:type, the semantic of 'a' in a sparql query
+	A    = IRI(RDF + `type`)
+)

@@ -50,10 +50,10 @@ func (d *Decoder) Decode() (*graph.Graph, error) {
 		if len(line) != len(hdr) {
 			return nil, fmt.Errorf("csv line %d expected %d columns, got %d", n+1, len(hdr), len(line))
 		}
-		s := g.AddValue(d.Entityprefix + url.PathEscape(line[0]))
+		s := g.AddValueIRI(d.Entityprefix + url.PathEscape(line[0]))
 		for col := 1; col < len(line); col++ {
-			p := g.AddValue(d.Propertyprefix + hdr[col])
-			o := g.AddValue(line[col])
+			p := g.AddValueIRI(d.Propertyprefix + hdr[col])
+			o := g.AddValueString(line[col])
 			// log.Println(n, col, p.Value, o.Value)
 			t := &graph.Triple{S: s.Virtual, P: p.Virtual, O: o.Virtual}
 			g.BulkAddTriple(t, false)
