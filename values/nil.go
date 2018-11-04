@@ -20,3 +20,8 @@ func (n Nil) Serialize() (byte, []byte) {
 func constructNil(r io.Reader) (Value, error) {
 	return NIL, nil
 }
+
+// Inner returns the inner primitive of this Value
+func (n Nil) Inner() interface{} {
+	return nil
+}

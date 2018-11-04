@@ -15,8 +15,12 @@ type Literal struct {
 }
 
 // LiteralString constructs a Literal
-func LiteralString(quoted string) *Literal {
-	return LiteralFrom(quoted, "", NotAnIRI)
+func LiteralString(s string) *Literal {
+	return &Literal{
+		s,
+		LanguageTag(""),
+		DatatypeTag(NotAnIRI),
+	}
 }
 
 // LiteralFrom constructs a Literal
@@ -73,4 +77,9 @@ func constructLiteral(r io.Reader) (Value, error) {
 		LanguageTag(lang),
 		DatatypeTag(datatype),
 	}, nil
+}
+
+// Inner returns the inner primitive of this Value
+func (lit *Literal) Inner() interface{} {
+	return lit.Text
 }

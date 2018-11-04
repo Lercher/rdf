@@ -32,7 +32,7 @@ func ConstructNext(r io.Reader) (Value, error) {
 	typebyte := tb[0]
 	cons, ok := readers[typebyte]
 	if !ok {
-		return nil, fmt.Errorf("no registered constructor for type byte %v", typebyte)
+		return nil, fmt.Errorf("no registered constructor for type byte %v %[1]q", typebyte)
 	}
 	return cons(r)
 }

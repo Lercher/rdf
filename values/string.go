@@ -49,3 +49,8 @@ func constructString(r io.Reader) (Value, error) {
 	s, err := readString(r)
 	return String(s), err
 }
+
+// Inner returns the inner primitive of this Value
+func (s String) Inner() interface{} {
+	return string(s)
+}

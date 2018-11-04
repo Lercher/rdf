@@ -4,4 +4,5 @@ package values
 type Value interface {
 	String() string
 	Serialize() (byte, []byte)
+	Inner() interface{}
 }

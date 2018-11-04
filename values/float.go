@@ -26,3 +26,8 @@ func constructFloat(r io.Reader) (Value, error) {
 	ui64, err := binary.ReadUvarint(br)
 	return Float(math.Float64frombits(ui64)), err
 }
+
+// Inner returns the inner primitive of this Value
+func (f Float) Inner() interface{} {
+	return float64(f)
+}

@@ -1,6 +1,7 @@
 package csv
 
 import (
+	"github.com/lercher/rdf/values"
 	"compress/gzip"
 	"os"
 	"path/filepath"
@@ -81,7 +82,7 @@ func TestSmallSPattern(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vv := g.VirtualValue(nsEst + `100012`)
+	vv := g.VirtualValue(values.IRI(nsEst + `100012`))
 	if !vv.Known {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)
 	}
@@ -99,7 +100,7 @@ func TestSmallSPattern(t *testing.T) {
 	found := false
 	want := nsSchool + `EstablishmentName`
 	for i, tr := range ms {
-		got := tr.P.Value(g)
+		got := tr.P.Value(g).Inner()
 		if got == want {
 			found = true
 			break
@@ -117,12 +118,12 @@ func TestSmallSPPattern(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vv := g.VirtualValue(nsEst + `100012`)
+	vv := g.VirtualValue(values.IRI(nsEst + `100012`))
 	if !vv.Known {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)
 	}
 
-	vv2 := g.VirtualValue(nsSchool + `EstablishmentName`)
+	vv2 := g.VirtualValue(values.IRI(nsSchool + `EstablishmentName`))
 	if !vv2.Known {
 		t.Errorf("%q is not known in the loaded graph", vv2.Value)
 	}
@@ -137,7 +138,7 @@ func TestSmallSPPattern(t *testing.T) {
 		t.Errorf("want %d SP-match, got %d", 1, len(ms))
 	} else {
 		tr0 := ms[0].String(g)
-		want0 := `[(string:http://education.data.gov.uk/def/school/establishment/100012) (string:http://education.data.gov.uk/def/school/EstablishmentName) (string:Carlton Primary School)]`
+		want0 := `[(values.IRI:<http://education.data.gov.uk/def/school/establishment/100012>) (values.IRI:<http://education.data.gov.uk/def/school/EstablishmentName>) (*values.Literal:"Carlton Primary School")]`
 		if tr0 != want0 {
 			t.Errorf("want %s, got %s", want0, tr0)
 		}
@@ -188,12 +189,12 @@ func TestLoadLargeCSVFile(t *testing.T) {
 	t.Logf("Indices %v MiB", bToMb(uint64(idx)))
 	t.Logf("Total   %v MiB", bToMb(uint64(dsiz+val+idx)))
 
-	vv := g.VirtualValue(nsEst + `129216`)
+	vv := g.VirtualValue(values.IRI(nsEst + `129216`))
 	if !vv.Known {
 		t.Errorf("%q is not known in the loaded graph", vv.Value)
 	}
 
-	vv2 := g.VirtualValue(nsSchool + `EstablishmentName`)
+	vv2 := g.VirtualValue(values.IRI(nsSchool + `EstablishmentName`))
 	if !vv2.Known {
 		t.Errorf("%q is not known in the loaded graph", vv2.Value)
 	}

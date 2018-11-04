@@ -33,3 +33,9 @@ func constructTrue(r io.Reader) (Value, error) {
 func constructFalse(r io.Reader) (Value, error) {
 	return FALSE, nil
 }
+
+// Inner returns the inner primitive of this Value
+func (b Bool) Inner() interface{} {
+	return bool(b)
+}
+

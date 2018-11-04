@@ -26,18 +26,18 @@ func TestGraphSimpleProps(t *testing.T) {
 	g, tr0, tr1, tr2 := gr()
 
 	s := tr0.S.Value(g)
-	if s.String() != "martin" {
-		t.Error("subject[0] want martin, got", s)
+	if s.Inner() != `martin` {
+		t.Error(`subject[0] want martin, got`, s)
 	}
 
 	p := tr1.P.Value(g)
-	if p.String() != "telefon" {
+	if p.Inner() != "telefon" {
 		t.Error("predicate[1] want telefon, got", p)
 	}
 
 	o := tr2.O.Value(g)
-	if o.String() != "justus" {
-		t.Error("object[2] want justus, got", o)
+	if o.Inner() != `justus` {
+		t.Error(`object[2] want justus, got`, o)
 	}
 }
 
@@ -57,15 +57,15 @@ func TestTriple(t *testing.T) {
 	if g.CountValues() != c+3 {
 		t.Errorf("want %d distinct values, got %d", c+3, g.CountValues())
 	}
-	int0 := int(tr0.O.Value(g).(values.Int))
+	int0 := tr0.O.Value(g).Inner()
 	if int0 != 0 {
 		t.Errorf("want int 0, got %T %[1]v", int0)
 	}
-	fl0 := float64(trfloat.O.Value(g).(values.Float))
+	fl0 := trfloat.O.Value(g).Inner()
 	if fl0 != float64(0) {
 		t.Errorf("want float 0, got %T %[1]v", fl0)
 	}
-	s0 := string(trmixed.O.Value(g).(values.String))
+	s0 := trmixed.O.Value(g).Inner()
 	if s0 != "0" {
 		t.Errorf("want string 0, got %T %[1]v", s0)
 	}

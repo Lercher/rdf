@@ -1,12 +1,14 @@
 package values
 
 func init() {
+	// constants
 	RegisterConstructor(0, constructNil)
-	RegisterConstructor('i', constructInt)
-	RegisterConstructor('f', constructFloat)
-	RegisterConstructor('s', constructString)
 	RegisterConstructor('T', constructTrue)
 	RegisterConstructor('F', constructFalse)
 	RegisterConstructor('I', constructIRI)
-	RegisterConstructor('L', constructLiteral)
+	// datatypes with stored values
+	RegisterConstructor('i', constructInt)
+	RegisterConstructor('f', constructFloat)
+	RegisterConstructor('s', constructString)
+	RegisterConstructor('l', constructLiteral)
 }

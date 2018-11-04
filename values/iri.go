@@ -74,3 +74,8 @@ const (
 	// A is rdf:type, the semantic of 'a' in a sparql query
 	A    = IRI(RDF + `type`)
 )
+
+// Inner returns the inner primitive of this Value
+func (i IRI) Inner() interface{} {
+	return string(i)
+}

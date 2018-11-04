@@ -25,3 +25,8 @@ func constructInt(r io.Reader) (Value, error) {
 	i64, err := binary.ReadVarint(br)
 	return Int(int(i64)), err
 }
+
+// Inner returns the inner primitive of this Value
+func (i Int) Inner() interface{} {
+	return int(i)
+}
