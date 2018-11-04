@@ -30,6 +30,7 @@ func (tree *Tree) String() string {
 func (tree *Tree) stringIndent(sw stringwriter, level int) {
 	const indent = "  "
 	pre := strings.Repeat(indent, level)
+
 	sw.WriteString(pre)
 	sw.WriteString("(")
 	sw.WriteString(tree.Mode)
@@ -38,7 +39,8 @@ func (tree *Tree) stringIndent(sw stringwriter, level int) {
 		sw.WriteString(" ")
 		sw.WriteString(t)
 	}
-
+	sw.WriteString("\n")
+	
 	for _, child := range tree.Children {
 		child.stringIndent(sw, level+1)
 	}
