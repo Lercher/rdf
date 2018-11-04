@@ -1,8 +1,6 @@
 package processor
 
 import (
-	"log"
-
 	"github.com/lercher/rdf/algebra"
 	"github.com/lercher/rdf/graph"
 )
@@ -18,7 +16,6 @@ func Match(g *graph.Graph, tp *algebra.TriplePattern) []*graph.Triple {
 	spsame := algebra.PatternOfSameVar(tp.S, tp.P)
 	sosame := algebra.PatternOfSameVar(tp.S, tp.O)
 	posame := algebra.PatternOfSameVar(tp.P, tp.O)
-	log.Println(tp.S, tp.P, tp.O, spsame, sosame, posame)
 	t := tp.Triple()
 	return graph.Indexed(g, &t, givens, givenp, giveno, spsame, sosame, posame)
 }
