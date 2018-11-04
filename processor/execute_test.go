@@ -23,7 +23,7 @@ func TestExecute2Proj(t *testing.T) {
 
 func TestExecute1Proj(t *testing.T) {
 	ms := exec(t, `select $obj where {?sub ?pred ?obj} order by $obj`)
-	want := `[obj=string:+49897482400] [obj=string:+49897482400] [obj=string:justus] [obj=string:martin]]`
+	want := `[[obj=string:+49897482400] [obj=string:+49897482400] [obj=string:justus] [obj=string:martin]]`
 	got := fmt.Sprint(ms)
 	if got != want {
 		t.Errorf("want %s, got %s", want, got)
@@ -63,12 +63,19 @@ func TestExecuteSome(t *testing.T) {
 	t.Error("#TODO")
 }
 
+func TestExecuteOptionalGood(t *testing.T) {
+	exec(t, `select * where {"andreas" ?pred ?andreas. "martin" ?pred $martin}`)
+	exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" ?pred $martin}}`)
+	t.Error("#TODO")
+}
+
 func exec(t *testing.T, sparql string) (list [][]*algebra.Materialized) {
 	t.Helper()
 	g, _, _, _ := gr2()
 	ast := parse(t, sparql)
 	a := ast.Algebra()
 	a = a.Optimize()
+	t.Log(a.Tree)
 	err := processor.Execute(a, g, func(bs algebra.Binding, vs *algebra.Variables) (bool, error) {
 		m := bs.Materialize(g, vs)
 		list = append(list, m)
