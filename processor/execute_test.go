@@ -25,7 +25,7 @@ func TestExecute2Proj(t *testing.T) {
 	want(t, ms, 4, 2)
 }
 
-func TestExecute1Proj(t *testing.T) {
+func TestExecuteOrderBy(t *testing.T) {
 	ms := exec(t, `select $obj where {?sub ?pred ?obj} order by $obj`)
 	want := `[[obj="+49897482400"] [obj="+49897482400"] [obj="justus"] [obj="martin"]]`
 	got := fmt.Sprint(ms)
@@ -61,6 +61,46 @@ func TestExecuteOptionalEmpty(t *testing.T) {
 	ms := exec(t, `select * where {"andreas" ?pred ?andreas.           $sub <boss> ?andreas}`)
 	want(t, ms, 0, 0)
 	exec1(t, `     select * where {"andreas" ?pred ?andreas. optional {$sub <boss> ?andreas}}`, `[pred=<telefon> andreas="+49897482400" sub=nil]`)
+}
+
+func TestExecuteOptional2Empty(t *testing.T) {
+	exec1(t, `select *
+	{"andreas" ?pred ?andreas. 
+	optional {$sub1 <boss> ?andreas. 
+         	  $sub2 <telefon> "martin"}
+	}`, `[pred=<telefon> andreas="+49897482400" sub1=nil sub2=nil]`)
+}
+
+func TestExecute2OptionalEmpty(t *testing.T) {
+	exec1(t, `select *
+	{"andreas" ?pred ?andreas. 
+	optional {$sub1 <boss> ?andreas.} 
+	optional {$sub2 <telefon> "martin"}
+	}`, `[pred=<telefon> andreas="+49897482400" sub1=nil sub2=nil]`)
+}
+
+func TestExecute2GoodOptional(t *testing.T) {
+	exec1(t, `select *
+	{        "andreas" <telefon> ?andreas_tel. 
+	optional {"martin" <telefon> ?martin_tel}
+	optional {"martin" <boss>    ?martin_boss} 
+	}`, `[andreas_tel="+49897482400" martin_tel="+49897482400" martin_boss="justus"]`)
+}
+
+func TestExecuteMixed2Optional(t *testing.T) {
+	exec1(t, `select *
+	{        "andreas" <telefon> ?andreas_tel. 
+	optional {"martin" <telefon> ?martin_tel}
+	optional {"martin" <boss>    ?andreas_tel} 
+	}`, `[andreas_tel="+49897482400" martin_tel="+49897482400"]`)
+}
+
+func TestExecuteMixed1Optional(t *testing.T) {
+	exec1(t, `select *
+	{        "andreas" <telefon> ?andreas_tel. 
+	optional {"martin" <telefon> ?martin_tel.
+	          "martin" <boss>    ?andreas_tel} 
+	}`, `[andreas_tel="+49897482400" martin_tel=nil]`)
 }
 
 //------------------------ Helpers -------------------------------
