@@ -52,20 +52,17 @@ func TestExecuteSome(t *testing.T) {
 }
 
 func TestExecuteOptionalGood(t *testing.T) {
-	ms:=exec(t, `select * where {"andreas" ?pred ?andreas.            "martin" ?pred $martin}`)
-	want(t, ms, 1, 3)
-	ms = exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" ?pred $martin}}`)
-	want(t, ms, 1, 3)
+	exec1(t, `select * where {"andreas" ?pred ?andreas.           "martin" ?pred $martin} `, `[pred=<telefon> andreas="+49897482400" martin="+49897482400"]`)
+	exec1(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" ?pred $martin}}`, `[pred=<telefon> andreas="+49897482400" martin="+49897482400"]`)
 }
 
 func TestExecuteOptionalEmpty(t *testing.T) {
-	ms:=exec(t, `select * where {"andreas" ?pred ?andreas.}`)
-	want(t, ms, 1, 2)
-	ms=exec(t, `select * where {"andreas" ?pred ?andreas.            "martin" <boss> ?andreas}`)
+	exec1(t, `     select * where {"andreas" ?pred ?andreas.}                                `, `[pred=<telefon> andreas="+49897482400"]`)
+	ms := exec(t, `select * where {"andreas" ?pred ?andreas.           $sub <boss> ?andreas}`)
 	want(t, ms, 0, 0)
-	ms = exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" <boss> ?andreas}}`)
-	want(t, ms, 1, 3)
+	exec1(t, `     select * where {"andreas" ?pred ?andreas. optional {$sub <boss> ?andreas}}`, `[pred=<telefon> andreas="+49897482400" sub=nil]`)
 }
+
 //------------------------ Helpers -------------------------------
 
 func want(t *testing.T, ms [][]*algebra.Materialized, lines, cols int) {
@@ -74,7 +71,7 @@ func want(t *testing.T, ms [][]*algebra.Materialized, lines, cols int) {
 	if len(ms) != lines {
 		t.Errorf("want %d results, got %d", lines, len(ms))
 	}
-	if len(ms)>0 && len(ms[0]) != cols {
+	if len(ms) > 0 && len(ms[0]) != cols {
 		t.Errorf("want %d columns, got %d", cols, len(ms[0]))
 	}
 }
@@ -86,9 +83,11 @@ func exec1(t *testing.T, sparql, want string) {
 	if len(ms) != 1 {
 		t.Errorf("want 1 result line, got %d", len(ms))
 	}
-	got := fmt.Sprint(ms[0])
-	if got != want {
-		t.Errorf("want %s, got %s", want, got)
+	if len(ms) > 0 {
+		got := fmt.Sprint(ms[0])
+		if got != want {
+			t.Errorf("want %s, got %s", want, got)
+		}
 	}
 }
 

@@ -17,32 +17,47 @@ func recursiveJoin(ctx *context, children []*algebra.Tree, current algebra.Bindi
 		return ctx.receiver(current, ctx.variables)
 	}
 
-	child0 := children[0]
-	switch child0.Mode { // #TODO: need to replace this switch by an interface
+	my := children[0]
+	switch my.Mode { // #TODO: need to replace this switch by an interface
 	default:
-		return false, fmt.Errorf("%q not allowed", child0.Mode)
+		return false, fmt.Errorf("%q not allowed", my.Mode)
 	case "BGP":
-		block := child0.Term.(*algebra.Block)
+		block := my.Term.(*algebra.Block)
 		sp := patternFromTerm(ctx.g, current, block.Subject)
 		pp := patternFromTerm(ctx.g, current, block.Predicate)
 		op := patternFromTerm(ctx.g, current, block.Object)
 		tp := &algebra.TriplePattern{S: sp, P: pp, O: op}
 		ms := Match(ctx.g, tp)
 		for _, t := range ms {
-			currentBound := current.BindTriple(tp, t)
-			cont, err := recursiveJoin(ctx, children[1:], currentBound)
+			nextBinding := current.BindTriple(tp, t)
+			cont, err := recursiveJoin(ctx, children[1:], nextBinding) // do next sibling with my new bindings
 			if !cont || err != nil {
 				return cont, err
 			}
 		}
 	case "OPTIONAL":
-		return false, fmt.Errorf("%q not yet supported", child0.Mode)
-	case "GRAPH":
-		return false, fmt.Errorf("%q not yet supported", child0.Mode)
-	case "FILTER":
-		return false, fmt.Errorf("%q not yet supported", child0.Mode)
+		myChildrenHadResults := false
+		newctx := ctx.WithReceiver(func(bs algebra.Binding, vs *algebra.Variables) (bool, error) {
+			// intercept results of the optional tree, to hand them over to the next BGP/OPTIONAL/whatever
+			myChildrenHadResults = true
+			return recursiveJoin(ctx, children[1:], bs) // present the completed optional bindings (bs) to my next sibling
+		})
+		cont, err := recursiveJoin(newctx, my.Children, current) // go deeper with the new receiver and my current bindings
+		if !cont || err != nil {
+			return cont, err
+		}
+		if !myChildrenHadResults {
+			cont, err := recursiveJoin(ctx, children[1:], current) // just ignore this optional node and do the next sibling with my original bindings
+			if !cont || err != nil {
+				return cont, err
+			}
+		} // else is nothing more to do, because the newctx.receiver propagated all results to the next sibling
 	case "UNION":
-		return false, fmt.Errorf("%q not yet supported", child0.Mode)
+		return false, fmt.Errorf("%q not yet supported", my.Mode)
+	case "FILTER":
+		return false, fmt.Errorf("%q not yet supported", my.Mode)
+	case "GRAPH":
+		return false, fmt.Errorf("%q not yet supported", my.Mode)
 	}
 	return true, nil // #TODO: is continue=true OK here?
 }

@@ -13,5 +13,9 @@ type Materialized struct {
 }
 
 func (m *Materialized) String() string {
+	if m.Value == nil {
+		// happens, if an optional did bind nothing
+		return fmt.Sprintf("%s=nil", m.Name)
+	}
 	return fmt.Sprintf("%s=%s", m.Name, m.Value)
 }
