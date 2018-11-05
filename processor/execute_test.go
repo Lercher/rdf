@@ -11,13 +11,18 @@ import (
 	"github.com/lercher/rdf/sparql"
 )
 
+func TestExecuteAll(t *testing.T) {
+	ms := exec(t, `select * where {?sub ?pred ?obj}`)
+	want(t, ms, 4, 3)
+}
+
 func TestExecuteDblProj(t *testing.T) {
 	exec1(t, `select $sub $sub where {?sub <boss> ?obj}`, `[sub="martin"]`)
 }
 
 func TestExecute2Proj(t *testing.T) {
-	exec(t, `select $sub $obj where {?sub ?pred ?obj}`)
-	t.Error("#TODO")
+	ms := exec(t, `select $sub $obj where {?sub ?pred ?obj}`)
+	want(t, ms, 4, 2)
 }
 
 func TestExecute1Proj(t *testing.T) {
@@ -29,24 +34,17 @@ func TestExecute1Proj(t *testing.T) {
 	}
 }
 
-func TestExecuteAll(t *testing.T) {
-	ms := exec(t, `select * where {?sub ?pred ?obj}`)
-	if len(ms) != 4 {
-		t.Errorf("want %d results, got %d", 4, len(ms))
-	}
-}
-
 func TestExecuteSubEqObj(t *testing.T) {
 	exec1(t, `select * where {$sub ?pred ?sub}`, `[sub="martin" pred=<name>]`)
 }
 
 func TestExecute1Join(t *testing.T) {
-	exec(t, `select ?sub ?sub2 ?pred
+	ms := exec(t, `select ?sub ?sub2 ?pred
 	where {
 		?sub ?pred ?obj .
 		?sub2 ?pred ?obj .
 	}`)
-	t.Error("#TODO")
+	want(t, ms, 6, 3)
 }
 
 func TestExecuteSome(t *testing.T) {
@@ -54,12 +52,32 @@ func TestExecuteSome(t *testing.T) {
 }
 
 func TestExecuteOptionalGood(t *testing.T) {
-	exec(t, `select * where {"andreas" ?pred ?andreas. "martin" ?pred $martin}`)
-	exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" ?pred $martin}}`)
-	t.Error("#TODO")
+	ms:=exec(t, `select * where {"andreas" ?pred ?andreas.            "martin" ?pred $martin}`)
+	want(t, ms, 1, 3)
+	ms = exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" ?pred $martin}}`)
+	want(t, ms, 1, 3)
 }
 
+func TestExecuteOptionalEmpty(t *testing.T) {
+	ms:=exec(t, `select * where {"andreas" ?pred ?andreas.}`)
+	want(t, ms, 1, 2)
+	ms=exec(t, `select * where {"andreas" ?pred ?andreas.            "martin" <boss> ?andreas}`)
+	want(t, ms, 0, 0)
+	ms = exec(t, `select * where {"andreas" ?pred ?andreas. optional {"martin" <boss> ?andreas}}`)
+	want(t, ms, 1, 3)
+}
 //------------------------ Helpers -------------------------------
+
+func want(t *testing.T, ms [][]*algebra.Materialized, lines, cols int) {
+	t.Helper()
+
+	if len(ms) != lines {
+		t.Errorf("want %d results, got %d", lines, len(ms))
+	}
+	if len(ms)>0 && len(ms[0]) != cols {
+		t.Errorf("want %d columns, got %d", cols, len(ms[0]))
+	}
+}
 
 func exec1(t *testing.T, sparql, want string) {
 	t.Helper()
