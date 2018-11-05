@@ -91,8 +91,8 @@ func TestExecuteMixed2Optional(t *testing.T) {
 	exec1(t, `select *
 	{        "andreas" <telefon> ?andreas_tel. 
 	optional {"martin" <telefon> ?martin_tel}
-	optional {"martin" <boss>    ?andreas_tel} 
-	}`, `[andreas_tel="+49897482400" martin_tel="+49897482400"]`)
+	optional {?who     <boss>    ?andreas_tel} 
+	}`, `[andreas_tel="+49897482400" martin_tel="+49897482400" who=nil]`) // who=nil b/c nobody has andreas' telefon number as her boss
 }
 
 func TestExecuteMixed1Optional(t *testing.T) {
@@ -100,7 +100,7 @@ func TestExecuteMixed1Optional(t *testing.T) {
 	{        "andreas" <telefon> ?andreas_tel. 
 	optional {"martin" <telefon> ?martin_tel.
 	          "martin" <boss>    ?andreas_tel} 
-	}`, `[andreas_tel="+49897482400" martin_tel=nil]`)
+	}`, `[andreas_tel="+49897482400" martin_tel=nil]`) // martin_tel=nil b/c martin's boss is not andreas' telefon number
 }
 
 //------------------------ Helpers -------------------------------
