@@ -8,7 +8,10 @@ import (
 )
 
 func join(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
-	recursiveJoin(ctx, tree.Children, current) // #TODO: children need to be part of join
+	// only non empty joins have results, so we need to check, if we have children
+	if len(tree.Children) != 0 {		
+		recursiveJoin(ctx, tree.Children, current)
+	} 
 	return nil
 }
 
@@ -42,9 +45,9 @@ func recursiveJoin(ctx *context, children []*algebra.Tree, current algebra.Bindi
 			myChildrenHadResults = true
 			return recursiveJoin(ctx, children[1:], bs) // present the completed optional bindings (bs) to my next sibling
 		})
-		cont, err := recursiveJoin(newctx, my.Children, current) // go deeper with the new receiver and my current bindings
-		if !cont || err != nil {
-			return cont, err
+		err := join(newctx, my, current) // go deeper with the new receiver and my current bindings
+		if err != nil {
+			return false, err
 		}
 		if !myChildrenHadResults {
 			cont, err := recursiveJoin(ctx, children[1:], current) // just ignore this optional node and do the next sibling with my original bindings

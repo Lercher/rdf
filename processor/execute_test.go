@@ -11,6 +11,26 @@ import (
 	"github.com/lercher/rdf/sparql"
 )
 
+func TestExecuteEmpty(t *testing.T) {
+	ms := exec(t, `select * {}`)
+	want(t, ms, 0, 0)
+}
+
+func TestExecuteEmpty1(t *testing.T) {
+	ms := exec(t, `select * {{}}`)
+	want(t, ms, 0, 0)
+}
+
+func TestExecuteEmpty11(t *testing.T) {
+	ms := exec(t, `select * {{}{}}`)
+	want(t, ms, 0, 0)
+}
+
+func TestExecuteEmpty2(t *testing.T) {
+	ms := exec(t, `select * {{{}}}`)
+	want(t, ms, 0, 0)
+}
+
 func TestExecuteAll(t *testing.T) {
 	ms := exec(t, `select * where {?sub ?pred ?obj}`)
 	want(t, ms, 4, 3)
