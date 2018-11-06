@@ -1,6 +1,8 @@
 package algebra
 
 import (
+	"encoding/binary"
+	"bytes"
 	"github.com/lercher/rdf/graph"
 )
 
@@ -10,6 +12,24 @@ type Binding []graph.Virtual
 // NewBinding returns Bindings that are all IsNil
 func NewBinding(n int) Binding {
 	return make(Binding, n)
+}
+
+// Set initializes the first elements from ints. 
+// Useful for testing, but hardly for anything else.
+func (bs Binding) Set(vs ...int) Binding {
+	for i, v := range vs {
+		if i < len(bs) {
+			bs[i] = graph.Virtual(v)
+		}
+	}
+	return bs
+}
+
+// Bytes is a byteslice containing all values
+func (bs Binding) Bytes() []byte {
+	buf := new(bytes.Buffer)
+	binary.Write(buf, binary.LittleEndian, bs)
+	return buf.Bytes()
 }
 
 // IsUnbound is true if the given Variable has not yet a Value
@@ -37,7 +57,7 @@ func (bs Binding) Clone() Binding {
 
 // BindTriple makes a copy of this Binding, replacing Variables with Values
 func (bs Binding) BindTriple(tp *TriplePattern, t *graph.Triple) Binding {
-	set := func (clone Binding, p *Pattern, v graph.Virtual) {
+	set := func(clone Binding, p *Pattern, v graph.Virtual) {
 		if p.IsVariable() {
 			if !p.IsAnonymous() {
 				clone[p.Variable()] = v
@@ -51,8 +71,6 @@ func (bs Binding) BindTriple(tp *TriplePattern, t *graph.Triple) Binding {
 	set(clone, tp.O, t.O)
 	return clone
 }
-
-
 
 // Materialize retrieves names and values of bound variables
 func (bs Binding) Materialize(g *graph.Graph, variables *Variables) (list []*Materialized) {

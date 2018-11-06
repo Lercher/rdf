@@ -31,7 +31,7 @@ func init() {
 	// #TODO: need to replace this map by an interface
 	processorMap = map[string]processingFunction{
 		"PROJECTION": projection,
-		"DISTINCT":   nil,
+		"DISTINCT":   distinct,
 		"REDUCED":    nil,
 		"JOIN":       join,
 		"BGP":        nil,
