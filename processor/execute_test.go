@@ -123,6 +123,19 @@ func TestExecuteMixed1Optional(t *testing.T) {
 	}`, `[andreas_tel="+49897482400" martin_tel=nil]`) // martin_tel=nil b/c martin's boss is not andreas' telefon number
 }
 
+func TestExecuteBasicUnion(t *testing.T) {
+	ms := exec(t, `select ?name ?tel ?boss {
+		{"andreas" <telefon> ?tel}
+		union
+		{"martin"  <telefon> ?tel}
+		union
+		{"martin" <name> ?name ; <telefon> ?tel ; <boss> ?boss}
+		union
+		{?s <boss> ?boss ; <telefon> ?tel; <name> ?name}
+	}`)
+	want(t, ms, 4, 3)
+}
+
 //------------------------ Helpers -------------------------------
 
 func want(t *testing.T, ms [][]*algebra.Materialized, lines, cols int) {
