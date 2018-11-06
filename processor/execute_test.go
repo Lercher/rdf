@@ -138,7 +138,7 @@ func TestExecuteBasicUnion(t *testing.T) {
 
 func TestDistinct(t *testing.T) {
 	ms := exec(t, `select distinct ?s {?s ?p ?o}`)
-	want(t, ms, 2, 1)
+	want(t, ms, 2, 1) // reduced is 3
 	ms = exec(t, `select distinct ?p {?s ?p ?o}`)
 	want(t, ms, 3, 1)
 	ms = exec(t, `select distinct ?o {?s ?p ?o}`)
@@ -147,6 +147,16 @@ func TestDistinct(t *testing.T) {
 	want(t, ms, 4, 2)
 }
 
+func TestReduced(t *testing.T) {
+	ms := exec(t, `select Reduced ?s {?s ?p ?o}`)
+	want(t, ms, 3, 1) // distinct is 2
+	ms = exec(t, `select Reduced ?p {?s ?p ?o}`)
+	want(t, ms, 3, 1)
+	ms = exec(t, `select Reduced ?o {?s ?p ?o}`)
+	want(t, ms, 3, 1)
+	ms = exec(t, `select Reduced ?s ?p {?s ?p ?o}`)
+	want(t, ms, 4, 2)
+}
 //------------------------ Helpers -------------------------------
 
 func want(t *testing.T, ms [][]*algebra.Materialized, lines, cols int) {

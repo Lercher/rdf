@@ -32,7 +32,7 @@ func init() {
 	processorMap = map[string]processingFunction{
 		"PROJECTION": projection,
 		"DISTINCT":   distinct,
-		"REDUCED":    nil,
+		"REDUCED":    reduced,
 		"JOIN":       join,
 		"BGP":        nil,
 		"UNION":      nil,
