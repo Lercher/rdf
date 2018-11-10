@@ -25,3 +25,9 @@ func constructNil(r io.Reader) (Value, error) {
 func (n Nil) Inner() interface{} {
 	return nil
 }
+
+// IsSameTypeAndLessThan compares this with another Value
+func (n Nil) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	_, ok := other.(Nil)
+	return ok, false
+}

@@ -30,3 +30,16 @@ func constructInt(r io.Reader) (Value, error) {
 func (i Int) Inner() interface{} {
 	return int(i)
 }
+
+// IsSameTypeAndLessThan compares this with another Value
+func (i Int) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	i2, ok := other.(Int)
+	if !ok {
+		f2, ok := other.(Float)
+		if !ok {
+			return false, false
+		}
+		return ok, float64(int(i)) < float64(f2)	
+	}
+	return ok, int(i) < int(i2)
+}

@@ -83,3 +83,17 @@ func constructLiteral(r io.Reader) (Value, error) {
 func (lit *Literal) Inner() interface{} {
 	return lit.Text
 }
+
+// IsSameTypeAndLessThan compares this with another Value
+// TODO: Literals don't care about their datatype, so they are compared by their string representation
+func (lit *Literal) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	l2, ok := other.(*Literal)
+	if ok {
+		return true, lit.Text < l2.Text || string(lit.LanguageTag) < string(l2.LanguageTag) || string(lit.DatatypeTag) < string(l2.DatatypeTag)
+	}
+	s2, ok := other.(String)
+	if ok {
+		return true, lit.Text < string(s2)
+	}
+	return false, false
+}

@@ -6,6 +6,23 @@ import (
 	"strings"
 )
 
+const (
+	// RDF is the rdf: namespace, rdf syntax
+	RDF  = IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#`)
+
+	// RDFS is the rdfs: namespace, rdf schema
+	RDFS = IRI(`http://www.w3.org/2000/01/rdf-schema#`)
+
+	// XS is the xs: namespace, XML schema
+	XS  = IRI(`http://www.w3.org/2001/XMLSchema#`)
+	
+	// FOAF is the foaf: namespace, friend of a friend found in many rdf examples
+	FOAF = IRI(`http://xmlns.com/foaf/0.1/`)
+
+	// A is rdf:type, the semantic of 'a' in a sparql query
+	A    = IRI(RDF + `type`)
+)
+
 // IRI encapsules rdf uri like <http://identifiers>
 type IRI string
 
@@ -57,25 +74,16 @@ func constructIRI(r io.Reader) (Value, error) {
 	return IRI(s), err
 }
 
-
-const (
-	// RDF is the rdf: namespace, rdf syntax
-	RDF  = IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#`)
-
-	// RDFS is the rdfs: namespace, rdf schema
-	RDFS = IRI(`http://www.w3.org/2000/01/rdf-schema#`)
-
-	// XS is the xs: namespace, XML schema
-	XS  = IRI(`http://www.w3.org/2001/XMLSchema#`)
-	
-	// FOAF is the foaf: namespace, friend of a friend found in many rdf examples
-	FOAF = IRI(`http://xmlns.com/foaf/0.1/`)
-
-	// A is rdf:type, the semantic of 'a' in a sparql query
-	A    = IRI(RDF + `type`)
-)
-
 // Inner returns the inner primitive of this Value
 func (i IRI) Inner() interface{} {
 	return string(i)
+}
+
+// IsSameTypeAndLessThan compares this with another Value
+func (i IRI) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	i2, ok := other.(IRI)
+	if !ok {
+		return false, false
+	}
+	return ok, string(i) < string(i2)
 }

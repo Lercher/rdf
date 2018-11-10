@@ -54,3 +54,16 @@ func constructString(r io.Reader) (Value, error) {
 func (s String) Inner() interface{} {
 	return string(s)
 }
+
+// IsSameTypeAndLessThan compares this with another Value
+func (s String) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	s2, ok := other.(String)
+	if !ok {
+		l2, ok := other.(*Literal)
+		if ! ok {
+			return false, false
+		}
+		return true, string(s) < l2.Text
+	}
+	return true, string(s) < string(s2)
+}

@@ -31,3 +31,16 @@ func constructFloat(r io.Reader) (Value, error) {
 func (f Float) Inner() interface{} {
 	return float64(f)
 }
+
+// IsSameTypeAndLessThan compares this with another Value
+func (f Float) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	f2, ok := other.(Float)
+	if !ok {
+		i2, ok := other.(Int)
+		if !ok {
+			return false, false
+		}
+		return ok, float64(f) < float64(i2)	
+	}
+	return ok, float64(f) < float64(f2)
+}

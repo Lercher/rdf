@@ -39,3 +39,14 @@ func (b Bool) Inner() interface{} {
 	return bool(b)
 }
 
+// IsSameTypeAndLessThan compares this with another Value
+func (b Bool) IsSameTypeAndLessThan(other Value) (bool, bool) {
+	b2, ok := other.(Bool)
+	if !ok {
+		return false, false
+	}
+	if bool(b) == bool(b2) {
+		return true, false
+	}
+	return true, !bool(b) || bool(b2) // f<t
+}
