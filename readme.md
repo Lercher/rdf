@@ -143,7 +143,7 @@ Don't forget to optimize your algebra after parsing. Currently, however there is
 a = a.Optimize()
 ````
 
-Note: The `ast` variable holds the Abstract Syntax Tree of the parsed query. It might
+**Note:** The `ast` variable holds the Abstract Syntax Tree of the parsed query. It might
 contain information more nearer to the parsed query than the algebra created from the AST.
 
 ### How to Execute the Algebra on a Graph
@@ -171,11 +171,11 @@ The `bool` return value expresses the receiver function's wish to continue proce
 or stop it (`false`). An `error` is passed up to the `processor.Execute` call, ends it
 immediatley and is the return value of it.
 
-Note: Result lines are raised unordered and the sequence will be different on each call, because
+**Note:** Result lines are raised unordered and the sequence will be different on each call, because
 the underlying Go maps behave this way. On the other hand, the query processing only takes the
 memory it needs to produce the current result line.
 
-Warning: Issuing ordered queries implies complete processing and materialization of all result lines
+**Warning:** Issuing ordered queries implies complete processing and materialization of all result lines
 before the first call of the receiver function. This can cost a lot of ressources, if the
 result set is large.
 
