@@ -14,7 +14,7 @@ func (i Int) String() string {
 }
 
 // Serialize to a typebyte and byte slice
-func (i Int) Serialize() (byte,[]byte) {
+func (i Int) Serialize() (byte, []byte) {
 	b := make([]byte, 10)
 	n := binary.PutVarint(b, int64(i))
 	return 'i', b[:n]
@@ -39,7 +39,7 @@ func (i Int) IsSameTypeAndLessThan(other Value) (bool, bool) {
 		if !ok {
 			return false, false
 		}
-		return ok, float64(int(i)) < float64(f2)	
+		return ok, float64(int(i)) < float64(f2)
 	}
 	return ok, int(i) < int(i2)
 }

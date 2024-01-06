@@ -1,21 +1,21 @@
 package processor
 
 import (
-	"github.com/zhenjl/cityhash"
 	"github.com/lercher/rdf/algebra"
+	"github.com/zhenjl/cityhash"
 )
 
 // DistinctGate forms a Receiver that passes unique bindings only
 type DistinctGate struct {
 	inner Receiver
-	m map[cityhash.Uint128]bool
+	m     map[cityhash.Uint128]bool
 }
 
 // NewDistinctGate creates a new DistinctGate based on a Receiver
 func NewDistinctGate(inner Receiver) *DistinctGate {
 	return &DistinctGate{
 		inner: inner,
-		m: make(map[cityhash.Uint128]bool),
+		m:     make(map[cityhash.Uint128]bool),
 	}
 }
 

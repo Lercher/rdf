@@ -20,7 +20,7 @@ func projection(ctx *context, tree *algebra.Tree, current algebra.Binding) error
 		clone := algebra.NewBinding(0)
 		pvs := algebra.NewVariables()
 		for _, v := range proj.Variables {
-			pv:=pvs.Variable(vs.NameOf(v))
+			pv := pvs.Variable(vs.NameOf(v))
 			for int(pv) >= len(clone) {
 				clone = append(clone, bs[v])
 			}

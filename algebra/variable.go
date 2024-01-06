@@ -1,8 +1,8 @@
 package algebra
 
 import (
-	"github.com/lercher/rdf/graph"
 	"fmt"
+	"github.com/lercher/rdf/graph"
 )
 
 // Variable is just an index and therefore depends on Variables
@@ -22,7 +22,7 @@ func (v Variable) String() string {
 }
 
 // I am a binder
-func(v Variable) bind(bs Binding) (Term, graph.Virtual) {
+func (v Variable) bind(bs Binding) (Term, graph.Virtual) {
 	if bs.IsUnbound(v) {
 		return v, graph.NotAVirtual
 	}

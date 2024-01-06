@@ -4,13 +4,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/lercher/rdf/algebra"
 	"github.com/lercher/rdf/sparql"
 )
 
 func TestSimpleAlgebra1(t *testing.T) {
-	at(t, 
+	at(t,
 		`select * where {$s ?p ?o}`, `
 (PROJECTION (Projection:*)
   (JOIN
@@ -22,7 +22,7 @@ func TestSimpleAlgebra1(t *testing.T) {
 }
 
 func TestSimpleAlgebra2(t *testing.T) {
-	at(t, 
+	at(t,
 		`select $s {$s ?p ?o . $o $p $s.}`, `
 (PROJECTION (Projection:[$0])
   (JOIN

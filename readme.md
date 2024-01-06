@@ -129,7 +129,7 @@ Allthough it's possible to construct an algebra from scratch, it's far more conv
 to parse an algebra from a SPARQL query
 
 ````go
-import "github.com/antlr/antlr4/runtime/Go/antlr"
+import "github.com/antlr4-go/antlr/v4"
 import "github.com/lercher/rdf/sparql"
 
 input := antlr.NewInputStream(`select * {?s ?p ?o}`)

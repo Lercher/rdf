@@ -1,9 +1,9 @@
 package binary
 
 import (
-	"github.com/lercher/rdf/values"
 	stdbinary "encoding/binary"
 	"fmt"
+	"github.com/lercher/rdf/values"
 	"io"
 
 	"github.com/lercher/rdf/graph"
@@ -11,7 +11,7 @@ import (
 
 // Decoder deserializes a binary serialized graph.Graph
 type Decoder struct {
-	r io.Reader
+	r  io.Reader
 	br io.ByteReader
 }
 

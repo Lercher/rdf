@@ -28,7 +28,7 @@ func (vs *Variables) Variable(vn Variablename) Variable {
 	return v
 }
 
-// Register parses and then gets and registers a Variablename 
+// Register parses and then gets and registers a Variablename
 func (vs *Variables) Register(s string) Variable {
 	vn := VariablenameParse(s)
 	return vs.Variable(vn)
@@ -39,7 +39,7 @@ func (vs *Variables) NameOf(v Variable) Variablename {
 	return vs.n[v]
 }
 
-func (vs *Variables) String() string {	
+func (vs *Variables) String() string {
 	var list []string
 	for i, vn := range vs.n {
 		list = append(list, fmt.Sprintf("%s:$%d", vn, i))

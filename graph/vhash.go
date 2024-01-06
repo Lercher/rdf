@@ -13,4 +13,3 @@ func hash(seedByte byte, block []byte) vhash {
 	s := cityhash.CityHash128WithSeed(block, uint32(len(block)), seed)
 	return vhash(s)
 }
-

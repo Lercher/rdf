@@ -15,7 +15,7 @@ func (s String) String() string {
 
 func serializeString(s string) []byte {
 	bs := []byte(s)
-	b := make([]byte, 10 + len(bs))
+	b := make([]byte, 10+len(bs))
 	n := binary.PutVarint(b, int64(len(bs)))
 	copy(b[n:], bs)
 	return b[:n+len(bs)]
@@ -60,7 +60,7 @@ func (s String) IsSameTypeAndLessThan(other Value) (bool, bool) {
 	s2, ok := other.(String)
 	if !ok {
 		l2, ok := other.(*Literal)
-		if ! ok {
+		if !ok {
 			return false, false
 		}
 		return true, string(s) < l2.Text

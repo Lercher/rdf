@@ -11,9 +11,9 @@ func join(ctx *context, tree *algebra.Tree, current algebra.Binding) error {
 	// "JOIN"
 
 	// only non empty joins have results, so we need to check, if we have children
-	if len(tree.Children) != 0 {		
+	if len(tree.Children) != 0 {
 		recursiveJoin(ctx, tree.Children, current)
-	} 
+	}
 	return nil
 }
 

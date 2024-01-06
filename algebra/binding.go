@@ -1,8 +1,8 @@
 package algebra
 
 import (
-	"encoding/binary"
 	"bytes"
+	"encoding/binary"
 	"github.com/lercher/rdf/graph"
 )
 
@@ -14,7 +14,7 @@ func NewBinding(n int) Binding {
 	return make(Binding, n)
 }
 
-// Set initializes the first elements from ints. 
+// Set initializes the first elements from ints.
 // Useful for testing, but hardly for anything else.
 func (bs Binding) Set(vs ...int) Binding {
 	for i, v := range vs {

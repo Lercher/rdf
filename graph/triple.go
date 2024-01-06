@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"github.com/lercher/rdf/values"
 	"fmt"
+	"github.com/lercher/rdf/values"
 )
 
 // Triple stores an assertation in a Graph in virtual form,

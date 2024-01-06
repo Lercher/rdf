@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/lercher/rdf/algebra"
 	"github.com/lercher/rdf/graph"
 	"github.com/lercher/rdf/processor"
@@ -157,6 +157,7 @@ func TestReduced(t *testing.T) {
 	ms = exec(t, `select Reduced ?s ?p {?s ?p ?o}`)
 	want(t, ms, 4, 2)
 }
+
 //------------------------ Helpers -------------------------------
 
 func want(t *testing.T, ms [][]*algebra.Materialized, lines, cols int) {

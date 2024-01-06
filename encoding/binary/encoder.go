@@ -78,8 +78,8 @@ func (e *Encoder) encodeValues(values []values.Value) error {
 	return nil
 }
 
-func write(w io.Writer, tb byte, bs[] byte) error {
-	_, err:= w.Write([]byte{tb})
+func write(w io.Writer, tb byte, bs []byte) error {
+	_, err := w.Write([]byte{tb})
 	if err != nil {
 		return err
 	}

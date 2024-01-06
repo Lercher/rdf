@@ -22,7 +22,7 @@ func TestBinding(t *testing.T) {
 
 	clone := bs.Clone()
 	for i := range clone {
-		clone[i] = graph.Virtual(10+i) // not Nil
+		clone[i] = graph.Virtual(10 + i) // not Nil
 	}
 	if clone.HasNil() {
 		t.Errorf("wanted cloned Bindings not HasNil, got true")

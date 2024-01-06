@@ -40,7 +40,7 @@ func (tree *Tree) stringIndent(sw stringwriter, level int) {
 		sw.WriteString(t)
 	}
 	sw.WriteString("\n")
-	
+
 	for _, child := range tree.Children {
 		child.stringIndent(sw, level+1)
 	}

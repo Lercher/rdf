@@ -47,7 +47,7 @@ func TestTriple(t *testing.T) {
 	c := g.CountValues()
 	tr0 := g.Assert(values.Int(0), values.Int(0), values.Int(0))
 	trfloat := g.Assert(values.Float(0), values.Float(0), values.Float(0))
-	trmixed := g.Assert(values.Int(0), values.Float(0),values.LiteralString("0"))
+	trmixed := g.Assert(values.Int(0), values.Float(0), values.LiteralString("0"))
 	if g.CountTriples() != l+3 {
 		t.Fatalf("graph dataset length want %d, got %d", l+3, g.CountTriples())
 	}

@@ -8,19 +8,19 @@ import (
 
 const (
 	// RDF is the rdf: namespace, rdf syntax
-	RDF  = IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#`)
+	RDF = IRI(`http://www.w3.org/1999/02/22-rdf-syntax-ns#`)
 
 	// RDFS is the rdfs: namespace, rdf schema
 	RDFS = IRI(`http://www.w3.org/2000/01/rdf-schema#`)
 
 	// XS is the xs: namespace, XML schema
-	XS  = IRI(`http://www.w3.org/2001/XMLSchema#`)
-	
+	XS = IRI(`http://www.w3.org/2001/XMLSchema#`)
+
 	// FOAF is the foaf: namespace, friend of a friend found in many rdf examples
 	FOAF = IRI(`http://xmlns.com/foaf/0.1/`)
 
 	// A is rdf:type, the semantic of 'a' in a sparql query
-	A    = IRI(RDF + `type`)
+	A = IRI(RDF + `type`)
 )
 
 // IRI encapsules rdf uri like <http://identifiers>

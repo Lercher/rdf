@@ -13,7 +13,7 @@ func TestDistinctBinding(t *testing.T) {
 	b2 := b1.Clone().Set(4)
 
 	n := 0
-	testr := func (bs algebra.Binding, vs *algebra.Variables) (bool, error) {
+	testr := func(bs algebra.Binding, vs *algebra.Variables) (bool, error) {
 		n++
 		t.Log(bs)
 		return true, nil

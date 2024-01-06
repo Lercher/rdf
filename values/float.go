@@ -40,7 +40,7 @@ func (f Float) IsSameTypeAndLessThan(other Value) (bool, bool) {
 		if !ok {
 			return false, false
 		}
-		return ok, float64(f) < float64(i2)	
+		return ok, float64(f) < float64(i2)
 	}
 	return ok, float64(f) < float64(f2)
 }

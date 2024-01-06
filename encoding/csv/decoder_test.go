@@ -1,8 +1,8 @@
 package csv
 
 import (
-	"github.com/lercher/rdf/values"
 	"compress/gzip"
+	"github.com/lercher/rdf/values"
 	"os"
 	"path/filepath"
 	"runtime"

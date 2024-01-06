@@ -1,8 +1,8 @@
-// Code generated from d:\Daten\Go\src\github.com\lercher\rdf\sparql\Sparql.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from c://git//src//github.com//lercher//rdf//sparql//Sparql.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // Sparql
 
-import "github.com/antlr/antlr4/runtime/Go/antlr"
+import "github.com/antlr4-go/antlr/v4"
 
 // BaseSparqlListener is a complete listener for a parse tree produced by SparqlParser.
 type BaseSparqlListener struct{}

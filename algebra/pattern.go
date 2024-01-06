@@ -18,7 +18,7 @@ func (p *Pattern) String(g *graph.Graph) string {
 		return "_"
 	}
 	if p.IsVariable() {
-		return string(p.variable)
+		return fmt.Sprint("_var", p.variable)
 	}
 	return p.virtual.String(g)
 }

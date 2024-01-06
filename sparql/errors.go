@@ -3,7 +3,7 @@ package sparql
 import (
 	"log"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/antlr4-go/antlr/v4"
 )
 
 // Baseerror logs and counts semantic errors in a file
